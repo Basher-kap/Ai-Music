@@ -1,21 +1,28 @@
 // app/_layout.tsx
+
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, StyleSheet } from 'react-native';
+import { BgImgThemeProvider, useBgImgTheme, themeImages } from '../context/BgImgContext';
 
-export default function RootLayout() {
+const defaultBackgroundImage = require('../assets/bg-images/nostalgia_theme4.jpg');
+
+function RootLayoutInner() {
+  const { activeTheme } = useBgImgTheme();
+  const backgroundImage = activeTheme ? themeImages[activeTheme] : defaultBackgroundImage;
+
   return (
     <>
       <StatusBar hidden={true} />
       <ImageBackground
-        source={require('../assets/bg-images/nostalgia_theme.jpg')}
+        source={backgroundImage}
         style={styles.background}
         resizeMode="cover"
       >
         <Stack
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: 'transparent' }, 
+            contentStyle: { backgroundColor: 'transparent' },
             animation: 'none',
           }}
         >
@@ -23,6 +30,14 @@ export default function RootLayout() {
         </Stack>
       </ImageBackground>
     </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <BgImgThemeProvider>
+      <RootLayoutInner />
+    </BgImgThemeProvider>
   );
 }
 

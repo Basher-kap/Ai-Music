@@ -1,33 +1,40 @@
 // app/(tabs)/theme.tsx
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useBgImgTheme } from '../../context/BgImgContext';
 
 const themes = [
   {
+    key: 'nostalgia',
     name: 'Nostalgia',
     emoji: '🌿',
     description: 'Atmospheric nature-tinted vibe filled with melancholy, healing, and dreamlike youth memories lingering away yet remains.',
   },
   {
+    key: 'love',
     name: 'Love',
     emoji: '🌸',
     description: 'Story of unrequited feelings, first shiver of romance, and supporting of one\'s dear life.',
   },
   {
+    key: 'cheerful',
     name: 'Cheerful',
     emoji: '☀️',
     description: 'Gives warm burst of joy and hope, will to take another challenge, embrace moments, and slice of life.',
   },
   {
+    key: 'emo',
     name: 'Emo',
     emoji: '🖤',
     description: 'Descending, sinking deep to darkness of despair born from tragedies and unhealthy inner self shadows.',
   },
   {
+    key: 'determination',
     name: 'Determination',
     emoji: '🔥',
     description: 'Unwavering strong belief, hardened resolve — one\'s commitment to war.',
   },
   {
+    key: 'wrath',
     name: 'Wrath',
     emoji: '🩸',
     description: 'Aggressive motivation forged from anger turned to power, fueling rebellion and adapts to evil.',
@@ -35,20 +42,32 @@ const themes = [
 ];
 
 export default function Theme() {
+  const { activeTheme, setActiveTheme } = useBgImgTheme();
+
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
       <Text style={styles.appTitle}>AI Music</Text>
       <Text style={styles.sectionTitle}>Themes</Text>
 
-      {themes.map((theme) => (
-        <View key={theme.name} style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.emoji}>{theme.emoji}</Text>
-            <Text style={styles.themeName}>{theme.name}</Text>
-          </View>
-          <Text style={styles.description}>{theme.description}</Text>
-        </View>
-      ))}
+      {themes.map((theme) => {
+        const isActive = activeTheme === theme.key;
+        return (
+          <TouchableOpacity
+            key={theme.name}
+            onPress={() => setActiveTheme(theme.key as any)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.emoji}>{theme.emoji}</Text>
+                <Text style={styles.themeName}>{theme.name}</Text>
+                {isActive && <Text style={styles.activeBadge}>Active</Text>}
+              </View>
+              <Text style={styles.description}>{theme.description}</Text>
+            </View>
+          </TouchableOpacity>
+        );
+      })}
     </ScrollView>
   );
 }
@@ -107,5 +126,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     fontStyle: 'italic',
+  },
+  activeBadge: {
+    backgroundColor: '#ff6b6b',
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
+    marginLeft: 10,
   },
 });
