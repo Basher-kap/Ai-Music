@@ -25,7 +25,7 @@ const themes = [
     key: 'cheerful',
     name: 'Cheerful',
     emoji: '☀️',
-    description: 'Gives warm burst of joy and hope, will to take another challenge, embrace moments, and slice of life.',
+    description: 'Gives warm burst of joy and hope, a will to take another challenge, and embrace sunshine moments of happiness and fun.',
   },
   {
     key: 'emo',
