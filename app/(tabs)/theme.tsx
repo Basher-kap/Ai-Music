@@ -10,6 +10,12 @@ const themes = [
     description: 'Atmospheric nature-tinted vibe filled with melancholy, healing, and dreamlike youth memories lingering away yet remains.',
   },
   {
+    key: 'refreshing',
+    name: 'Refreshing',
+    emoji: '🌊',
+    description: 'Light, airy, and uplifting mood that eases one\'s mind then taking a deep breath, evoking feelings of renewal, hope, and rejuvenation.',
+  },
+  {
     key: 'love',
     name: 'Love',
     emoji: '🌸',

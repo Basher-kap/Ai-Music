@@ -2,10 +2,11 @@
 
 import { createContext, useState, ReactNode, useContext } from 'react';
 
-type BgImgThemeKey = 'nostalgia' | 'love' | 'cheerful' | 'emo' | 'determination' | 'wrath';
+type BgImgThemeKey = 'nostalgia' | 'refreshing' | 'love' | 'cheerful' | 'emo' | 'determination' | 'wrath';
 
 export const themeImages: Record<BgImgThemeKey, any> = {
   nostalgia: require('../assets/bg-images/nostalgia_theme2.jpg'),
+  refreshing: require('../assets/bg-images/refreshing_theme.jpg'),
   love: require('../assets/bg-images/love_theme2.jpg'),
   cheerful: require('../assets/bg-images/cheerful_theme2.jpg'),
   emo: require('../assets/bg-images/emos_theme2.jpg'),
