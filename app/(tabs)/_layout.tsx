@@ -38,7 +38,7 @@ export default function TabLayout() {
           title: 'Theme',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24}/>
+            <Ionicons name={focused ? 'color-palette' : 'color-palette-outline'} color={color} size={24}/>
           ),
         }}
       />
