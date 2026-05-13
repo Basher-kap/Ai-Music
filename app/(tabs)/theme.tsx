@@ -1,7 +1,7 @@
 // app/(tabs)/theme.tsx
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
-import { useTextTheme } from '../../context/TextContext';
+import { themeTextStyles, useTextTheme } from '../../context/TextContext';
 
 const themes = [
   {
@@ -67,14 +67,13 @@ const themeAccents: Record<string, string> = {
 
 export default function Theme() {
   const { activeTheme, setActiveTheme } = useTheme();
-  const { textStyles } = useTextTheme();
+  const { ThemeTextStyles } = useTextTheme();
 
   return (
     <View style={styles.container}>
 
-      {/* Header — stays fixed, not affected by scroll */}
       <View style={styles.header}>
-        <Text style={styles.textTitle}>Ai Music</Text>
+        <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
         <Text style={styles.textSectionTitle}>Atmospheres</Text>
       </View>
 
@@ -101,7 +100,7 @@ export default function Theme() {
                   <View style={styles.nameRow}>
                     <Text style={[
                       styles.themeName,
-                      isNostalgia && textStyles.title,
+                      isNostalgia && ThemeTextStyles.title,
                       !isNostalgia && isActive && { color: accent }
                     ]}>
                       {theme.name}
@@ -112,7 +111,7 @@ export default function Theme() {
                 <View style={isNostalgia ? styles.descriptionWrapper : undefined}>
                   <Text style={[
                     styles.description,
-                    isNostalgia && textStyles.description,
+                    isNostalgia && ThemeTextStyles.description,
                   ]}>
                     {theme.description}
                   </Text>

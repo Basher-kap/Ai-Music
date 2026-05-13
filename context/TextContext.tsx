@@ -1,18 +1,20 @@
 // context/TextContext.tsx
 import { useTheme, ThemeKey } from './ThemeContext';
 
-export const themeTextColors: Record<ThemeKey, string> = {
-  nostalgia:     '#7EC8A0',
-  refreshing:    '#87CEEB',
-  love:          '#FFB6C1',
-  cheerful:      '#FFD700',
-  emo:           '#9B59B6',
-  determination: '#FF4500',
-  wrath:         '#FF0000',
-};
-
 export const themeTextStyles: Record<ThemeKey, any> = {
   nostalgia: {
+    appTitle: {
+        color: '#7EC8A0', 
+        fontSize: 32,
+        fontWeight: '900',
+        letterSpacing: 2,
+        textShadowColor: 'rgba(0,0,0,0.6)',
+        textShadowOffset: { width: 0, height: 2 },
+        textShadowRadius: 6,
+    },
+    color: {
+        color: '#7EC8A0',
+    },
     title: {
       color: '#7EC8A0',
       fontFamily: 'serif', 
@@ -50,8 +52,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 export function useTextTheme() {
   const { activeTheme } = useTheme();
 
-  const textColor = activeTheme ? themeTextColors[activeTheme] : '#ffffff';
-  const textStyles = activeTheme ? themeTextStyles[activeTheme] : { title: {}, description: {}, badge: {} };
+  const ThemeTextStyles = activeTheme ? themeTextStyles[activeTheme] : { title: {}, description: {}, badge: {} };
 
-  return { textColor, textStyles };
+  return { ThemeTextStyles };
 }
