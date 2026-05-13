@@ -1,6 +1,6 @@
 // app/(tabs)/theme.tsx
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useBgImgTheme } from '../../context/BgImgContext';
+import { useTheme } from '../../context/ThemeContext';
 
 const themes = [
   {
@@ -48,7 +48,7 @@ const themes = [
 ];
 
 export default function Theme() {
-  const { activeTheme, setActiveTheme } = useBgImgTheme();
+  const { activeTheme, setActiveTheme } = useTheme();
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>

@@ -3,13 +3,13 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, StyleSheet } from 'react-native';
-import { BgImgThemeProvider, useBgImgTheme, themeImages } from '../context/BgImgContext';
+import { useBgImg } from '../context/BgImgContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 const defaultBackgroundImage = require('../assets/bg-images/nostalgia_theme4.jpg');
 
 function RootLayoutInner() {
-  const { activeTheme } = useBgImgTheme();
-  const backgroundImage = activeTheme ? themeImages[activeTheme] : defaultBackgroundImage;
+  const backgroundImage = useBgImg();
 
   return (
     <>
@@ -35,9 +35,9 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   return (
-    <BgImgThemeProvider>
+    <ThemeProvider>
       <RootLayoutInner />
-    </BgImgThemeProvider>
+    </ThemeProvider>
   );
 }
 
