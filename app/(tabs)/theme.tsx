@@ -1,6 +1,7 @@
 // app/(tabs)/theme.tsx
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useTextTheme } from '../../context/TextContext';
 
 const themes = [
   {
@@ -8,91 +9,146 @@ const themes = [
     name: 'Nostalgia',
     emoji: '🌿',
     description: 'Atmospheric nature-tinted vibe filled with melancholy, healing, and dreamlike youth memories lingering away yet remains.',
+    tagline: 'linger a little longer',
   },
   {
     key: 'refreshing',
     name: 'Refreshing',
     emoji: '🌊',
-    description: 'Light, airy, and uplifting mood that eases one\'s mind then taking a deep breath, evoking feelings of renewal, hope, and rejuvenation.',
+    description: "Light, airy, and uplifting mood that eases one's mind then taking a deep breath, evoking feelings of renewal, hope, and rejuvenation.",
+    tagline: '',
   },
   {
     key: 'love',
     name: 'Love',
     emoji: '🌸',
-    description: 'Story of unrequited feelings, first shiver of romance, and supporting of one\'s dear life.',
+    description: "Story of unrequited feelings, first shiver of romance, and supporting of one's dear life.",
+    tagline: '',
   },
   {
     key: 'cheerful',
     name: 'Cheerful',
     emoji: '☀️',
     description: 'Gives warm burst of joy and hope, a will to take another challenge, and embrace sunshine moments of happiness and fun.',
+    tagline: '',
   },
   {
     key: 'emo',
     name: 'Emo',
     emoji: '🖤',
     description: 'Descending, sinking deep to darkness of despair born from tragedies and unhealthy inner self shadows.',
+    tagline: '',
   },
   {
     key: 'determination',
     name: 'Determination',
     emoji: '🔥',
-    description: 'Unwavering strong belief, hardened resolve — one\'s commitment to war.',
+    description: "Unwavering strong belief, hardened resolve — one's commitment to war.",
+    tagline: '',
   },
   {
     key: 'wrath',
     name: 'Wrath',
     emoji: '🩸',
     description: 'Aggressive motivation forged from anger turned to power, fueling rebellion and adapts to evil.',
+    tagline: '',
   },
 ];
 
+const themeAccents: Record<string, string> = {
+  nostalgia:     '#7EC8A0',
+  refreshing:    '#7EC8E3',
+  love:          '#E8A0B4',
+  cheerful:      '#FFD166',
+  emo:           '#9B7FD4',
+  determination: '#FF6B35',
+  wrath:         '#C0392B',
+};
+
 export default function Theme() {
   const { activeTheme, setActiveTheme } = useTheme();
+  const { textStyles } = useTextTheme();
 
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-      <Text style={styles.textTitle}>AI Music</Text>
-      <Text style={styles.textSectionTitle}>Themes</Text>
+    <View style={styles.container}>
 
-      {themes.map((theme) => {
-        const isActive = activeTheme === theme.key;
-        return (
-          <TouchableOpacity
-            key={theme.name}
-            onPress={() => setActiveTheme(theme.key as any)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.emoji}>{theme.emoji}</Text>
-                <Text style={styles.themeName}>{theme.name}</Text>
-                {isActive && <Text style={styles.activeBadge}>Active</Text>}
+      {/* Header — stays fixed, not affected by scroll */}
+      <View style={styles.header}>
+        <Text style={styles.textTitle}>Ai Music</Text>
+        <Text style={styles.textSectionTitle}>Atmospheres</Text>
+      </View>
+
+      {/* Scrollable cards below */}
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        {themes.map((theme) => {
+          const isActive = activeTheme === theme.key;
+          const isNostalgia = isActive && theme.key === 'nostalgia';
+          const accent = themeAccents[theme.key];
+
+          return (
+            <TouchableOpacity
+              key={theme.key}
+              onPress={() => setActiveTheme(theme.key as any)}
+              activeOpacity={0.8}
+            >
+              <View style={[
+                styles.card,
+                isActive && { borderColor: accent, backgroundColor: 'rgba(0,0,0,0.6)' },
+                isActive && isNostalgia && { borderLeftWidth: 5, borderLeftColor: accent }
+              ]}>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.emoji}>{theme.emoji}</Text>
+                  <View style={styles.nameRow}>
+                    <Text style={[
+                      styles.themeName,
+                      isNostalgia && textStyles.title,
+                      !isNostalgia && isActive && { color: accent }
+                    ]}>
+                      {theme.name}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={isNostalgia ? styles.descriptionWrapper : undefined}>
+                  <Text style={[
+                    styles.description,
+                    isNostalgia && textStyles.description,
+                  ]}>
+                    {theme.description}
+                  </Text>
+                </View>
               </View>
-              <Text style={styles.description}>{theme.description}</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-    </ScrollView>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: {
+  container: {
     flex: 1,
+  },
+  scroll: { flex: 1 },
+  header: {
+    alignItems: 'center',
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   content: {
     padding: 20,
-    paddingTop: 60,
     paddingBottom: 40,
   },
-  textTitle: { //app title
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  textTitle: {
     fontSize: 32,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: 2,
-    marginBottom: 4,
     textShadowColor: 'rgba(0,0,0,0.6)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
@@ -102,45 +158,45 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.5)',
     letterSpacing: 4,
     textTransform: 'uppercase',
-    marginBottom: 24,
   },
-  card: {
-    backgroundColor: 'rgba(0,0,0,0.45)',
+card: {
+    backgroundColor: 'rgba(15, 15, 15, 0.45)',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-    padding: 18,
+    padding: 20,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  descriptionWrapper: {
+    marginTop: 4,
+    paddingLeft: 4, 
+    opacity: 0.9,
+  },
+  nostalgiaCardActive: {
+    backgroundColor: 'rgba(20, 45, 35, 0.6)', // Deep moss tint for nostalgia
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    gap: 10,
+    gap: 12,
   },
-  emoji: {
-    fontSize: 24,
+  emoji: { fontSize: 26 },
+  nameRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   themeName: {
     fontSize: 22,
     fontWeight: '800',
-    letterSpacing: 1,
     color: '#fff',
   },
   description: {
-    color: 'rgba(255,255,255,0.75)',
-    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
     lineHeight: 20,
     fontStyle: 'italic',
-  },
-  activeBadge: {
-    backgroundColor: '#ff6b6b',
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    marginLeft: 10,
   },
 });
