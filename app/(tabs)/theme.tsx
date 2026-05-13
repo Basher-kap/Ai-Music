@@ -52,8 +52,8 @@ export default function Theme() {
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-      <Text style={styles.appTitle}>AI Music</Text>
-      <Text style={styles.sectionTitle}>Themes</Text>
+      <Text style={styles.textTitle}>AI Music</Text>
+      <Text style={styles.textSectionTitle}>Themes</Text>
 
       {themes.map((theme) => {
         const isActive = activeTheme === theme.key;
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 40,
   },
-  appTitle: {
+  textTitle: { //app title
     fontSize: 32,
     fontWeight: '900',
     color: '#fff',
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
   },
-  sectionTitle: {
+  textSectionTitle: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.5)',
     letterSpacing: 4,
