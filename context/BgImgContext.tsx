@@ -1,10 +1,8 @@
 // context/BgImgContext.tsx
 
-import { createContext, useState, ReactNode, useContext } from 'react';
+import { useTheme, ThemeKey } from './ThemeContext'; 
 
-type BgImgThemeKey = 'nostalgia' | 'refreshing' | 'love' | 'cheerful' | 'emo' | 'determination' | 'wrath';
-
-export const themeImages: Record<BgImgThemeKey, any> = {
+export const themeImages: Record<ThemeKey, any> = {
   nostalgia: require('../assets/bg-images/nostalgia_theme2.jpg'),
   refreshing: require('../assets/bg-images/refreshing_theme.jpg'),
   love: require('../assets/bg-images/love_theme.png'),
@@ -14,24 +12,9 @@ export const themeImages: Record<BgImgThemeKey, any> = {
   wrath: require('../assets/bg-images/wrath_theme.png'),
 };
 
-type BgImgContextType = {
-    activeTheme: BgImgThemeKey  | null;
-    setActiveTheme: (theme: BgImgThemeKey) => void;
-};
+const defaultImage = require('../assets/bg-images/nostalgia_theme4.jpg');
 
-const BgImgContext = createContext<BgImgContextType>({
-    activeTheme: null,
-    setActiveTheme: () => {},
-});
-
-export function BgImgThemeProvider({ children }: { children: ReactNode }) {
-  const [activeTheme, setActiveTheme] = useState<BgImgThemeKey | null>(null);
-
-  return (
-    <BgImgContext.Provider value={{ activeTheme, setActiveTheme }}>
-      {children}
-    </BgImgContext.Provider>
-  );
+export function useBgImg() {
+  const { activeTheme } = useTheme(); // ← borrows from ThemeContext
+  return activeTheme ? themeImages[activeTheme] : defaultImage;
 }
-
-export const useBgImgTheme = () => useContext(BgImgContext);
