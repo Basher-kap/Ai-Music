@@ -1,16 +1,18 @@
 // context/TextContext.tsx
 import { useTheme, ThemeKey } from './ThemeContext';
 
+
 export const themeTextStyles: Record<ThemeKey, any> = {
   nostalgia: {
     appTitle: {
-        color: '#7EC8A0', 
-        fontSize: 32,
-        fontWeight: '900',
-        letterSpacing: 2,
-        textShadowColor: 'rgba(0,0,0,0.6)',
-        textShadowOffset: { width: 0, height: 2 },
-        textShadowRadius: 6,
+      fontFamily: 'ZenOldMincho_900Black',
+      color: '#9ff7c2',
+      fontSize: 32,
+      letterSpacing: 1,
+      // Wide emerald aura
+      textShadowColor: 'rgba(46, 204, 113, 0.9)', 
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 25,
     },
     color: {
         color: '#7EC8A0',

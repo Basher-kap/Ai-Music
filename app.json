@@ -40,7 +40,12 @@
           }
         }
       ],
-      "expo-font"
+      [
+        "expo-font",
+        {
+          "fonts": ["./node_modules/@expo-google-fonts/zen-old-mincho/900Black/ZenOldMincho_900Black.ttf"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

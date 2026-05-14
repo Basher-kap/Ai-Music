@@ -1,7 +1,7 @@
 // app/(tabs)/theme.tsx
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
-import { themeTextStyles, useTextTheme } from '../../context/TextContext';
+import { useTextTheme } from '../../context/TextContext';
 
 const themes = [
   {
