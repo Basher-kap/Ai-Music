@@ -4,17 +4,17 @@ import { createContext, useState, useContext, ReactNode } from 'react';
 export type ThemeKey = 'nostalgia' | 'refreshing' | 'love' | 'cheerful' | 'emo' | 'determination' | 'wrath';
 
 type ThemeContextType = {
-  activeTheme: ThemeKey | null;       // currently selected theme
+  activeTheme: ThemeKey;       
   setActiveTheme: (theme: ThemeKey) => void;  // called when a card is pressed
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  activeTheme: null,
+  activeTheme: 'nostalgia',
   setActiveTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [activeTheme, setActiveTheme] = useState<ThemeKey | null>(null);
+  const [activeTheme, setActiveTheme] = useState<ThemeKey>('nostalgia'); //default theme
 
   return (
     <ThemeContext.Provider value={{ activeTheme, setActiveTheme }}>

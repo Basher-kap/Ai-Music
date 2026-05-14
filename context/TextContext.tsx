@@ -51,8 +51,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
 export function useTextTheme() {
   const { activeTheme } = useTheme();
-
-  const ThemeTextStyles = activeTheme ? themeTextStyles[activeTheme] : { title: {}, description: {}, badge: {} };
-
+  const ThemeTextStyles = themeTextStyles[activeTheme];
   return { ThemeTextStyles };
 }

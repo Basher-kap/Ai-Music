@@ -12,9 +12,7 @@ export const themeImages: Record<ThemeKey, any> = {
   wrath: require('../assets/bg-images/wrath_theme.png'),
 };
 
-const defaultImage = require('../assets/bg-images/nostalgia_theme2.jpg');
-
 export function useBgImg() {
   const { activeTheme } = useTheme(); // ← borrows from ThemeContext
-  return activeTheme ? themeImages[activeTheme] : defaultImage;
+  return themeImages[activeTheme];
 }
