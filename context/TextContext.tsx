@@ -47,6 +47,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   love:          { title: {}, description: {} },
   cheerful:      { title: {}, description: {} },
   emo:           { title: {}, description: {} },
+  cosmic:      { title: {}, description: {} },
   determination: { title: {}, description: {} },
   wrath:         { title: {}, description: {} },
 };
