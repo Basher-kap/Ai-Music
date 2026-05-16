@@ -7,7 +7,7 @@ import { useBgImg } from '../context/BgImgContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 import { useFonts } from 'expo-font';
-import { ZenOldMincho_900Black } from '@expo-google-fonts/zen-old-mincho';
+import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 
 import { ActivityIndicator, View } from 'react-native';
 
@@ -16,7 +16,7 @@ function RootLayoutInner() {
 
   const [loadFonts] = useFonts(
     {
-      ZenOldMincho_900Black,
+      Marcellus_400Regular,
     }
   )
 

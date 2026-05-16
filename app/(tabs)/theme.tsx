@@ -67,7 +67,7 @@ const themeAccents: Record<string, string> = {
   refreshing:    '#7EC8E3',
   love:          '#E8A0B4',
   cheerful:      '#FFD166',
-  emo:           '#160439',
+  emo:           '#00030d',
   aspire:        '#6334ae',
   determination: '#FF6B35',
   wrath:         '#C0392B',

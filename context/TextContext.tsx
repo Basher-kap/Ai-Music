@@ -5,14 +5,22 @@ import { useTheme, ThemeKey } from './ThemeContext';
 export const themeTextStyles: Record<ThemeKey, any> = {
   nostalgia: {
     appTitle: {
-      fontFamily: 'ZenOldMincho_900Black',
-      color: '#9ff7c2',
-      fontSize: 32,
-      letterSpacing: 1,
-      // Wide emerald aura
-      textShadowColor: 'rgba(46, 204, 113, 0.9)', 
-      textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 25,
+      fontFamily: 'Marcellus_400Regular',
+      fontSize: 45,
+      letterSpacing: 4,
+      color: '#E8F5E9',
+      textShadowColor: 'rgba(18, 45, 12, 0.95)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 2,
+      opacity: 0.98,
+      transform: [{ scaleX: 1.08 }],
+    },
+    header:{
+      // atmospheric dark overlay
+    backgroundColor: 'rgba(10, 20, 12, 0.35)',
+    // soft separation from background image
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.05)',
     },
     color: {
         color: '#7EC8A0',

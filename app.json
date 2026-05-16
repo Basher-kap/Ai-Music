@@ -43,7 +43,7 @@
       [
         "expo-font",
         {
-          "fonts": ["./node_modules/@expo-google-fonts/zen-old-mincho/900Black/ZenOldMincho_900Black.ttf"]
+          "fonts": ["./node_modules/@expo-google-fonts/marcellus/400Regular/Marcellus_400Regular.ttf"]
         }
       ]
     ],
