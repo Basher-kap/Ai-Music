@@ -40,8 +40,8 @@ const themes = [
     tagline: '',
   },
   {
-    key: 'cosmic',
-    name: 'Cosmic',
+    key: 'aspire',
+    name: 'Aspire',
     emoji: '🌌',
     description: 'Gaze into the stars, expanding galaxy, starry skies, and find the never-ending future of our life and this world.',
     tagline: '',
@@ -68,7 +68,7 @@ const themeAccents: Record<string, string> = {
   love:          '#E8A0B4',
   cheerful:      '#FFD166',
   emo:           '#160439',
-  cosmic:      '#7048b1',
+  aspire:        '#6334ae',
   determination: '#FF6B35',
   wrath:         '#C0392B',
 };

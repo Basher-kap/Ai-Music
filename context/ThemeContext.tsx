@@ -1,7 +1,7 @@
 // context/ThemeContext.tsx
 import { createContext, useState, useContext, ReactNode } from 'react';
 
-export type ThemeKey = 'nostalgia' | 'refreshing' | 'love' | 'cheerful' | 'emo' | 'cosmic' | 'determination' | 'wrath';
+export type ThemeKey = 'nostalgia' | 'refreshing' | 'love' | 'cheerful' | 'emo' | 'aspire' | 'determination' | 'wrath';
 
 type ThemeContextType = {
   activeTheme: ThemeKey;       
