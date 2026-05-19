@@ -52,48 +52,39 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     },
   },
   refreshing:    { title: {}, description: {} },
-  love:          { // context/TextContext.tsx
-
   love: {
     appTitle: {
-      fontFamily: 'PlaywriteITModerna_400Regular',
-      fontSize: 36,
-      color: '#FFF5F7', // Near-white pink
-      letterSpacing: 1,
-      textShadowColor: 'rgba(232, 160, 180, 0.8)', // Soft Petal Pink glow
+      fontFamily: 'DancingScript_600SemiBold',
+      fontSize: 48,
+      color: '#FFFFFF', 
+      textShadowColor: 'rgba(232, 160, 180, 0.8)', // Pink aura glow
       textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 12,
+      textShadowRadius: 15,
     },
     header: {
-      backgroundColor: 'rgba(255, 240, 245, 0.25)', // Blushed mist
+      backgroundColor: 'rgba(255, 240, 245, 0.3)', // Soft morning light mist
       borderBottomWidth: 1,
-      borderBottomColor: 'rgba(232, 160, 180, 0.3)',
-    },
-    color: {
-      color: '#E8A0B4', // Main Love Pink
+      borderBottomColor: 'rgba(232, 160, 180, 0.2)',
     },
     title: {
-      color: '#D87093', // Pale Violet Red for readability
-      fontFamily: 'PlaywriteITModerna_400Regular',
-      fontSize: 22,
-      textShadowColor: 'rgba(255, 255, 255, 0.9)',
-      textShadowRadius: 5,
+      color: '#C2185B', // Stronger pink for card titles
+      fontFamily: 'DancingScript_600SemiBold',
+      fontSize: 26,
     },
     description: {
-      color: 'rgba(100, 50, 60, 0.7)', // Warm cocoa-tinted text
+      color: 'rgba(136, 14, 79, 0.8)', // Deep wine-tinted text for readability
       fontSize: 14,
-      lineHeight: 22,
+      lineHeight: 20,
       fontFamily: 'serif',
       fontStyle: 'italic',
     },
     badge: {
-      color: '#D87093',
+      color: '#C2185B',
       fontSize: 10,
-      fontWeight: '600',
-      letterSpacing: 2,
+      letterSpacing: 1.5,
+      textTransform: 'uppercase',
     },
   },
-},
   cheerful:      { title: {}, description: {} },
   emo:           { title: {}, description: {} },
   aspire:      { title: {}, description: {} },

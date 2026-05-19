@@ -39,38 +39,33 @@ const tabThemeStyles: Record<ThemeKey, any> = {
       <LinearGradient
         colors={["#E0F7FA", "#80DEEA", "#00BCD4"]} // ← white → light cyan → deep cyan
         start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }} // ← top to bottom
+        end={{ x: 0, y: 1 }} 
         style={{ flex: 1 }}
       />
     ),
   },
   love: {
-    tabBarActiveTintColor: "#B03060", // Deep Maroon-Pink for visibility
-    tabBarInactiveTintColor: "rgba(176, 48, 96, 0.4)", 
-    
+    tabBarActiveTintColor: "#AD1457", 
+    tabBarInactiveTintColor: "rgba(173, 20, 87, 0.45)", 
     tabBarStyle: {
-      borderTopColor: "rgba(232, 160, 180, 0.4)",
+      borderTopColor: "rgba(232, 160, 180, 0.3)",
       borderTopWidth: 1,
-      elevation: 0,
       backgroundColor: 'transparent',
-      height: 65,
-      paddingBottom: 10,
     },
     tabBarLabelStyle: {
-      fontFamily: "PlaywriteITModerna_400Regular",
-      fontSize: 10,
+      fontFamily: "DancingScript_600SemiBold",
+      fontSize: 12, 
       letterSpacing: 0,
-      marginTop: 2,
-      textShadowColor: 'rgba(255, 255, 255, 0.5)',
+      fontWeight: '600',
+      textShadowColor: 'rgba(255, 255, 255, 0.7)',
       textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 2,
+      textShadowRadius: 3,
     },
     tabBarBackground: () => (
       <LinearGradient
-        // Pearl White → Petal Pink → Dusty Rose
-        colors={["#FFF9FB", "#F8C8D4", "#E8A0B4"]} 
-        start={{ x: 0.5, y: 0 }} 
-        end={{ x: 0.5, y: 1 }} 
+        colors={["#FFF0F5", "#FFD1DC", "#F48FB1"]} 
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
         style={{ flex: 1 }}
       />
     ),

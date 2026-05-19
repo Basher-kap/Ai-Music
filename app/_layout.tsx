@@ -9,7 +9,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteITModerna_400Regular } from '@expo-google-fonts/playwrite-it-moderna';
-
+import { DancingScript_600SemiBold } from '@expo-google-fonts/dancing-script';
 import { ActivityIndicator, View } from 'react-native';
 
 function RootLayoutInner() {
@@ -17,7 +17,7 @@ function RootLayoutInner() {
 
   const [loadFonts] = useFonts(
     {
-      Marcellus_400Regular, PlaywriteITModerna_400Regular,
+      Marcellus_400Regular, PlaywriteITModerna_400Regular, DancingScript_600SemiBold
     }
   )
 
