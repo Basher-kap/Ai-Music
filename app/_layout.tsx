@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
+import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
 
 import { ActivityIndicator, View } from 'react-native';
 
@@ -16,7 +17,7 @@ function RootLayoutInner() {
 
   const [loadFonts] = useFonts(
     {
-      Marcellus_400Regular,
+      Marcellus_400Regular, PlaywriteGBS_400Regular,
     }
   )
 
