@@ -51,28 +51,70 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textTransform: 'uppercase',
     },
   },
-  refreshing:    { title: {}, description: {} },
+  refreshing: {
+    appTitle: {
+      fontFamily: 'PlaywriteGBS_400Regular',
+      fontSize: 40, 
+      color: '#F0FDFF', 
+      letterSpacing: 5, 
+      textShadowColor: 'rgba(0, 206, 209, 0.6)', 
+      textShadowOffset: { width: 0, height: 0 }, 
+      textShadowRadius: 15,
+      opacity: 1,
+    },
+    header: {
+      backgroundColor: 'rgba(224, 247, 250, 0.2)', 
+      borderBottomWidth: 1.5,
+      borderBottomColor: 'rgba(255, 255, 255, 0.3)', 
+    },
+    color: {
+      color: '#00CED1', 
+    },
+    title: {
+      color: '#008B8B', 
+      fontFamily: 'PlaywriteGBS_400Regular', 
+      fontSize: 22,
+      letterSpacing: 0,
+      textShadowColor: 'rgba(255, 255, 255, 0.8)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 4,
+    },
+    description: {
+      color: 'rgba(0, 50, 60, 0.75)', 
+      fontSize: 14,
+      lineHeight: 22,
+      fontFamily: 'serif',
+      fontStyle: 'italic',
+    },
+    badge: {
+      color: '#008B8B',
+      fontSize: 10,
+      fontWeight: '700',
+      letterSpacing: 2,
+      textTransform: 'uppercase',
+    },
+  },
   love: {
     appTitle: {
       fontFamily: 'DancingScript_600SemiBold',
       fontSize: 48,
       color: '#FFFFFF', 
-      textShadowColor: 'rgba(232, 160, 180, 0.8)', // Pink aura glow
+      textShadowColor: 'rgba(232, 160, 180, 0.8)', 
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 15,
     },
     header: {
-      backgroundColor: 'rgba(255, 240, 245, 0.3)', // Soft morning light mist
+      backgroundColor: 'rgba(255, 240, 245, 0.3)', 
       borderBottomWidth: 1,
       borderBottomColor: 'rgba(232, 160, 180, 0.2)',
     },
     title: {
-      color: '#C2185B', // Stronger pink for card titles
+      color: '#C2185B',
       fontFamily: 'DancingScript_600SemiBold',
       fontSize: 26,
     },
     description: {
-      color: 'rgba(136, 14, 79, 0.8)', // Deep wine-tinted text for readability
+      color: 'rgba(136, 14, 79, 0.8)', 
       fontSize: 14,
       lineHeight: 20,
       fontFamily: 'serif',

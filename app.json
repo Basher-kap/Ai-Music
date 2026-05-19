@@ -44,7 +44,7 @@
         "expo-font",
         {
           "fonts": ["./node_modules/@expo-google-fonts/marcellus/400Regular/Marcellus_400Regular.ttf", 
-                    "./node_modules/@expo-google-fonts/playwrite-it-moderna/400Regular/PlaywriteITModerna_400Regular.ttf",
+                    "./node_modules/@expo-google-fonts/playwrite-gb-s/400Regular/PlaywriteGBS_400Regular.ttf",
                     "./node_modules/@expo-google-fonts/dancing-script/600SemiBold/DancingScript_600SemiBold.ttf"]
         }
       ]
