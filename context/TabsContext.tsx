@@ -4,19 +4,27 @@ import { ThemeKey, useTheme } from "./ThemeContext";
 
 const tabThemeStyles: Record<ThemeKey, any> = {
   nostalgia: {
-    tabBarActiveTintColor: "#7EC8A0",
-    tabBarInactiveTintColor: "rgba(255,255,255,0.35)",
+    tabBarActiveTintColor: "#1B3022", 
+    tabBarInactiveTintColor: "rgba(27, 48, 34, 0.45)", 
+    
     tabBarStyle: {
-      borderTopColor: "rgba(126, 200, 160, 0.15)",
+      borderTopColor: "rgba(126, 200, 160, 0.3)", 
       borderTopWidth: 1,
+      elevation: 0,
+      backgroundColor: 'transparent',
     },
     tabBarLabelStyle: {
       fontFamily: "Marcellus_400Regular",
       fontSize: 11,
-      letterSpacing: 1,
+      letterSpacing: 1.5,
+      fontWeight: '600',
+      textShadowColor: 'rgba(255, 255, 255, 0.25)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 3,
     },
     tabBarBackground: () => (
       <LinearGradient
+        // Your exact nature-tinted colors
         colors={["#96C47B", "#548687"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -25,15 +33,22 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   refreshing: {
-    tabBarActiveTintColor: "#00CED1", // ← deep cyan for active
-    tabBarInactiveTintColor: "rgba(200, 240, 245, 0.45)",
+    tabBarActiveTintColor: "#006064", 
+    tabBarInactiveTintColor: "rgba(0, 77, 64, 0.5)", 
+    
     tabBarStyle: {
-      borderTopColor: "rgba(0, 206, 209, 0.15)",
+      borderTopColor: "rgba(0, 151, 167, 0.3)", // Slightly stronger cyan border
       borderTopWidth: 1,
+      elevation: 0,
+      backgroundColor: 'transparent', 
     },
     tabBarLabelStyle: {
-      fontSize: 11,
+      fontFamily: "PlaywriteGBS_400Regular",
+      fontSize: 10,
       letterSpacing: 1,
+      textShadowColor: 'rgba(255, 255, 255, 0.6)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
     },
     tabBarBackground: () => (
       <LinearGradient

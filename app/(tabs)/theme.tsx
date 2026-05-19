@@ -16,7 +16,7 @@ const themes = [
     name: 'Refreshing',
     emoji: '🌊',
     description: "Light, airy, and uplifting mood that eases one's mind then taking a deep breath, evoking feelings of renewal, hope, and rejuvenation.",
-    tagline: '',
+    tagline: 'a breath of new life',
   },
   {
     key: 'love',
