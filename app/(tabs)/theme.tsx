@@ -23,7 +23,7 @@ const themes = [
     name: 'Love',
     emoji: '🌸',
     description: "Story of unrequited feelings, first shiver of romance, and supporting of one's dear life.",
-    tagline: '',
+    tagline: 'my feelings for you would reach',
   },
   {
     key: 'cheerful',

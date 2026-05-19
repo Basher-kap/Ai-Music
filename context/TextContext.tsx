@@ -52,7 +52,48 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     },
   },
   refreshing:    { title: {}, description: {} },
-  love:          { title: {}, description: {} },
+  love:          { // context/TextContext.tsx
+
+  love: {
+    appTitle: {
+      fontFamily: 'PlaywriteITModerna_400Regular',
+      fontSize: 36,
+      color: '#FFF5F7', // Near-white pink
+      letterSpacing: 1,
+      textShadowColor: 'rgba(232, 160, 180, 0.8)', // Soft Petal Pink glow
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 12,
+    },
+    header: {
+      backgroundColor: 'rgba(255, 240, 245, 0.25)', // Blushed mist
+      borderBottomWidth: 1,
+      borderBottomColor: 'rgba(232, 160, 180, 0.3)',
+    },
+    color: {
+      color: '#E8A0B4', // Main Love Pink
+    },
+    title: {
+      color: '#D87093', // Pale Violet Red for readability
+      fontFamily: 'PlaywriteITModerna_400Regular',
+      fontSize: 22,
+      textShadowColor: 'rgba(255, 255, 255, 0.9)',
+      textShadowRadius: 5,
+    },
+    description: {
+      color: 'rgba(100, 50, 60, 0.7)', // Warm cocoa-tinted text
+      fontSize: 14,
+      lineHeight: 22,
+      fontFamily: 'serif',
+      fontStyle: 'italic',
+    },
+    badge: {
+      color: '#D87093',
+      fontSize: 10,
+      fontWeight: '600',
+      letterSpacing: 2,
+    },
+  },
+},
   cheerful:      { title: {}, description: {} },
   emo:           { title: {}, description: {} },
   aspire:      { title: {}, description: {} },

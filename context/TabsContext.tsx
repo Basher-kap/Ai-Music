@@ -45,8 +45,35 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   love: {
-    tabBarActiveTintColor: "#E8A0B4",
-    tabBarStyle: { backgroundColor: "transparent" },
+    tabBarActiveTintColor: "#B03060", // Deep Maroon-Pink for visibility
+    tabBarInactiveTintColor: "rgba(176, 48, 96, 0.4)", 
+    
+    tabBarStyle: {
+      borderTopColor: "rgba(232, 160, 180, 0.4)",
+      borderTopWidth: 1,
+      elevation: 0,
+      backgroundColor: 'transparent',
+      height: 65,
+      paddingBottom: 10,
+    },
+    tabBarLabelStyle: {
+      fontFamily: "PlaywriteITModerna_400Regular",
+      fontSize: 10,
+      letterSpacing: 0,
+      marginTop: 2,
+      textShadowColor: 'rgba(255, 255, 255, 0.5)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
+    },
+    tabBarBackground: () => (
+      <LinearGradient
+        // Pearl White → Petal Pink → Dusty Rose
+        colors={["#FFF9FB", "#F8C8D4", "#E8A0B4"]} 
+        start={{ x: 0.5, y: 0 }} 
+        end={{ x: 0.5, y: 1 }} 
+        style={{ flex: 1 }}
+      />
+    ),
   },
   cheerful: {
     tabBarActiveTintColor: "#FFD166",
