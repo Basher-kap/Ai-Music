@@ -165,8 +165,8 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   },
   emo: {
     appTitle: {
-      fontFamily: 'AlmendraDisplay_400Regular',
-      fontSize: 44,
+      fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 48,
       color: '#BDBDBD', 
       textShadowColor: 'rgba(0, 0, 0, 0.9)',
       textShadowOffset: { width: 2, height: 2 },
@@ -179,14 +179,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     },
     title: {
       color: '#E0E0E0', 
-      fontFamily: 'AlmendraDisplay_400Regular',
+      fontFamily: 'MedievalSharp_400Regular',
       fontSize: 26,
     },
     description: {
       color: '#9E9E9E',
       fontSize: 14,
       lineHeight: 22,
-      fontFamily: 'serif', // Standard serif looks good for "old" notes
+      fontFamily: 'serif', 
       fontStyle: 'italic',
     },
   },

@@ -12,6 +12,7 @@ import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
 import { DancingScript_600SemiBold } from '@expo-google-fonts/dancing-script';
 import { Fredoka_600SemiBold } from '@expo-google-fonts/fredoka';
 import { AlmendraDisplay_400Regular } from '@expo-google-fonts/almendra-display';
+import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { ActivityIndicator, View } from 'react-native';
 
 function RootLayoutInner() {
@@ -19,7 +20,8 @@ function RootLayoutInner() {
 
   const [loadFonts] = useFonts(
     {
-      Marcellus_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, AlmendraDisplay_400Regular
+      Marcellus_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, 
+      AlmendraDisplay_400Regular, MedievalSharp_400Regular
     }
   )
 
