@@ -2,7 +2,6 @@
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { useBgImg } from '../context/BgImgContext';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -52,11 +51,9 @@ if (!loadFonts) return (
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <RootLayoutInner />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <ThemeProvider>
+      <RootLayoutInner />
+    </ThemeProvider>
   );
 }
 
