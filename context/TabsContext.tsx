@@ -86,8 +86,43 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   cheerful: {
-    tabBarActiveTintColor: "#FFD166",
-    tabBarStyle: { backgroundColor: "transparent" },
+    tabBarActiveTintColor: "#BF360C", 
+    tabBarInactiveTintColor: "rgba(120, 70, 0, 0.5)", // Muted Amber-Bronze
+    
+    tabBarStyle: {
+      borderTopColor: "rgba(255, 255, 255, 0.5)", // White "Sunbeam" top border
+      borderTopWidth: 2,
+      elevation: 10, 
+      paddingBottom: 12,
+      backgroundColor: 'transparent',
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      position: 'absolute',
+    },
+    
+    tabBarLabelStyle: {
+      fontFamily: "Fredoka_600SemiBold",
+      fontSize: 12,
+      letterSpacing: 0.5,
+      textTransform: 'lowercase', 
+      textShadowColor: 'rgba(255, 255, 255, 0.9)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 4,
+    },
+
+    tabBarBackground: () => (
+      <LinearGradient
+        colors={["#FFFDE7", "#FFD54F", "#F57C00"]} 
+        start={{ x: 0, y: 1 }} 
+        end={{ x: 1, y: 0 }} 
+        style={{ 
+          flex: 1, 
+          borderTopLeftRadius: 20, 
+          borderTopRightRadius: 20,
+          overflow: 'hidden' 
+        }}
+      />
+    ),
   },
   emo: {
     tabBarActiveTintColor: "#00030d",

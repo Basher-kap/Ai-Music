@@ -128,7 +128,41 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textTransform: 'uppercase',
     },
   },
-  cheerful:      { title: {}, description: {} },
+  cheerful: {
+    appTitle: {
+      fontFamily: 'Fredoka_600SemiBold',
+      fontSize: 48,
+      color: '#FFFFFF', 
+      textShadowColor: 'rgba(255, 160, 0, 0.8)', // Warm Solar Glow
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 10,
+      letterSpacing: 4,
+    },
+    header: {
+      backgroundColor: 'rgba(255, 253, 231, 0.3)', // Warm morning mist
+      borderBottomWidth: 1,
+      borderBottomColor: 'rgba(255, 209, 102, 0.3)',
+    },
+    title: {
+      color: '#F57C00', // Energetic Orange
+      fontFamily: 'Fredoka_600SemiBold',
+      fontSize: 24,
+    },
+    description: {
+      color: 'rgba(94, 44, 0, 0.85)', // Deep Earthy Brown for maximum legibility on yellow
+      fontSize: 14,
+      lineHeight: 20,
+      fontFamily: 'sans-serif',
+      fontWeight: '500',
+    },
+    badge: {
+      color: '#F57C00',
+      fontSize: 10,
+      fontWeight: '700',
+      letterSpacing: 1.5,
+      textTransform: 'uppercase',
+    },
+  },
   emo:           { title: {}, description: {} },
   aspire:      { title: {}, description: {} },
   determination: { title: {}, description: {} },
