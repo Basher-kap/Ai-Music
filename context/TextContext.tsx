@@ -166,14 +166,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   emo: {
     appTitle: {
       fontFamily: 'MedievalSharp_400Regular',
-      fontSize: 48,
+      fontSize: 46,
       color: '#BDBDBD', 
       textShadowColor: 'rgba(0, 0, 0, 0.9)',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 10,
     },
     header: {
-      backgroundColor: 'rgba(10, 10, 15, 0.7)', // Dark obsidian mist
+      backgroundColor: 'rgba(10, 10, 15, 0.7)', 
       borderBottomWidth: 1,
       borderBottomColor: '#333',
     },

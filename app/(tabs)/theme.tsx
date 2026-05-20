@@ -67,7 +67,7 @@ const themeAccents: Record<string, string> = {
   refreshing:    '#7EC8E3',
   love:          '#E8A0B4',
   cheerful:      '#FFD166',
-  emo:           '#00030d',
+  emo:           '#525252',
   aspire:        '#6334ae',
   determination: '#FF6B35',
   wrath:         '#C0392B',
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   header: {
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 50,
     paddingHorizontal: 20,
     paddingBottom: 16,
   },
