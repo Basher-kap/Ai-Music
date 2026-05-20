@@ -1,6 +1,7 @@
 // context/TabContext.tsx
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeKey, useTheme } from "./ThemeContext";
+import { View } from "react-native";
 
 const tabThemeStyles: Record<ThemeKey, any> = {
   nostalgia: {
@@ -125,9 +126,41 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   emo: {
-    tabBarActiveTintColor: "#00030d",
-    tabBarStyle: { backgroundColor: "transparent" },
+  tabBarActiveTintColor: "#FFFFFF", // Pure white for a sharp "glint"
+  tabBarInactiveTintColor: "rgba(255, 255, 255, 0.51)", // Faded, cold grey
+  
+  tabBarStyle: {
+    borderTopColor: "#000000", 
+    borderTopWidth: 3,
+    backgroundColor: '#050505', 
+    paddingBottom: 15,
+    shadowOpacity: 0,
   },
+  
+  tabBarLabelStyle: {
+    fontFamily: "AlmendraDisplay_400Regular",
+    fontSize: 12,
+    letterSpacing: 2, 
+    marginBottom: 1,
+  },
+
+  tabBarBackground: () => (
+    <View style={{ flex: 1, backgroundColor: '#050505' }}>
+      {/* A very thin "Rim Light" at the top to catch the edge */}
+      <LinearGradient
+        colors={["rgba(255, 255, 255, 0.1)", "transparent"]}
+        style={{ height: 1, width: '100%' }}
+      />
+      <LinearGradient
+        // Vertical gradient: Dark Charcoal to Void
+        colors={["#1A1A1D", "#000000"]} 
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={{ flex: 1 }}
+      />
+    </View>
+  ),
+},
   aspire: {
     tabBarActiveTintColor: "#6334ae",
     tabBarStyle: { backgroundColor: "transparent" },

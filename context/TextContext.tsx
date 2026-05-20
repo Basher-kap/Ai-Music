@@ -163,7 +163,33 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textTransform: 'uppercase',
     },
   },
-  emo:           { title: {}, description: {} },
+  emo: {
+    appTitle: {
+      fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 48,
+      color: '#BDBDBD', 
+      textShadowColor: 'rgba(0, 0, 0, 0.9)',
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 10,
+    },
+    header: {
+      backgroundColor: 'rgba(10, 10, 15, 0.7)', // Dark obsidian mist
+      borderBottomWidth: 1,
+      borderBottomColor: '#333',
+    },
+    title: {
+      color: '#E0E0E0', 
+      fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 26,
+    },
+    description: {
+      color: '#9E9E9E',
+      fontSize: 14,
+      lineHeight: 22,
+      fontFamily: 'serif', 
+      fontStyle: 'italic',
+    },
+  },
   aspire:      { title: {}, description: {} },
   determination: { title: {}, description: {} },
   wrath:         { title: {}, description: {} },
