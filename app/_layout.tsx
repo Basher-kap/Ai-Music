@@ -2,6 +2,7 @@
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { BgImgThemeProvider, useBgImgTheme, themeImages } from '../context/BgImgContext';
 
@@ -35,9 +36,11 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   return (
-    <BgImgThemeProvider>
-      <RootLayoutInner />
-    </BgImgThemeProvider>
+    <SafeAreaProvider>
+      <BgImgThemeProvider>
+        <RootLayoutInner />
+      </BgImgThemeProvider>
+    </SafeAreaProvider>
   );
 }
 
