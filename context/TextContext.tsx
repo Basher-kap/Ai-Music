@@ -6,7 +6,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   nostalgia: {
     appTitle: {
       fontFamily: 'Marcellus_400Regular',
-      fontSize: 45,
+      fontSize: 48,
       bottom: '20' , //move a little higher
       letterSpacing: 4,
       color: '#E8F5E9',
@@ -98,7 +98,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     appTitle: {
       fontFamily: 'DancingScript_600SemiBold',
       bottom: '20' ,
-      fontSize: 48,
+      fontSize: 58,
       color: '#FFFFFF', 
       textShadowColor: 'rgba(232, 160, 180, 0.8)', 
       textShadowOffset: { width: 0, height: 0 },
