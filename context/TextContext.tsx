@@ -7,6 +7,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     appTitle: {
       fontFamily: 'Marcellus_400Regular',
       fontSize: 45,
+      bottom: '20' , //move a little higher
       letterSpacing: 4,
       color: '#E8F5E9',
       textShadowColor: 'rgba(18, 45, 12, 0.95)',
@@ -16,9 +17,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       transform: [{ scaleX: 1.08 }],
     },
     header:{
-      // atmospheric dark overlay
     backgroundColor: 'rgba(10, 20, 12, 0.35)',
-    // soft separation from background image
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.05)',
     },
@@ -54,7 +53,8 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   refreshing: {
     appTitle: {
       fontFamily: 'PlaywriteGBS_400Regular',
-      fontSize: 40, 
+      fontSize: 48, 
+      bottom: '20' ,
       color: '#F0FDFF', 
       letterSpacing: 5, 
       textShadowColor: 'rgba(0, 206, 209, 0.6)', 
@@ -97,6 +97,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   love: {
     appTitle: {
       fontFamily: 'DancingScript_600SemiBold',
+      bottom: '20' ,
       fontSize: 48,
       color: '#FFFFFF', 
       textShadowColor: 'rgba(232, 160, 180, 0.8)', 
