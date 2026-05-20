@@ -125,9 +125,28 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   emo: {
-    tabBarActiveTintColor: "#00030d",
-    tabBarStyle: { backgroundColor: "transparent" },
+  tabBarActiveTintColor: "#E0E0E0", 
+  tabBarInactiveTintColor: "rgba(255, 255, 255, 0.2)", 
+  
+  tabBarStyle: {
+    backgroundColor: 'transparent',
+    borderTopColor: "rgba(255, 255, 255, 0.05)", 
+    borderTopWidth: 1,
   },
+  tabBarLabelStyle: {
+    fontFamily: "AlmendraDisplay_400Regular",
+    fontSize: 12,
+    letterSpacing: 2,
+  },
+  tabBarBackground: () => (
+    <LinearGradient
+      colors={["#000000", "#1A1A1B", "#2D2D2E"]} 
+      start={{ x: 0.5, y: 1 }} 
+      end={{ x: 0.5, y: 0 }} 
+      style={{ flex: 1 }}
+    />
+  ),
+},
   aspire: {
     tabBarActiveTintColor: "#6334ae",
     tabBarStyle: { backgroundColor: "transparent" },
