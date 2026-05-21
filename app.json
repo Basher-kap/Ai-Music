@@ -50,7 +50,8 @@
                     "./node_modules/@expo-google-fonts/almendra-display/400Regular/AlmendraDisplay_400Regular.ttf",
                     "./node_modules/@expo-google-fonts/medievalsharp/400Regular/MedievalSharp_400Regular.ttf",
                      "./node_modules/@expo-google-fonts/syne/600SemiBold/Syne_600SemiBold.ttf",
-                     "./node_modules/@expo-google-fonts/russo-one/400Regular/RussoOne_400Regular.ttf"]
+                     "./node_modules/@expo-google-fonts/russo-one/400Regular/RussoOne_400Regular.ttf",
+                    "./node_modules/@expo-google-fonts/metal-mania/400Regular/MetalMania_400Regular.ttf"]
         }
       ]
     ],

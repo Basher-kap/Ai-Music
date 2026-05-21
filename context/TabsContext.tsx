@@ -2,6 +2,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeKey, useTheme } from "./ThemeContext";
 import { View } from "react-native";
+import React from "react";
 
 const tabThemeStyles: Record<ThemeKey, any> = {
   nostalgia: {
@@ -93,17 +94,15 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarStyle: {
       borderTopColor: "rgba(255, 255, 255, 0.5)", // White "Sunbeam" top border
       borderTopWidth: 2,
-      elevation: 10, 
-      paddingBottom: 12,
+      elevation: 0, 
       backgroundColor: 'transparent',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
-      position: 'absolute',
     },
     
     tabBarLabelStyle: {
       fontFamily: "Fredoka_600SemiBold",
-      fontSize: 12,
+      fontSize: 8,
       letterSpacing: 0.5,
       textTransform: 'lowercase', 
       textShadowColor: 'rgba(255, 255, 255, 0.9)',
@@ -190,11 +189,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarStyle: {
       backgroundColor: "transparent",
       borderTopWidth: 0,
-      position: "absolute",
-      left: 30,
-      right: 30,
       borderRadius: 20,
-      elevation: 15,
       shadowColor: "#54168e",
       shadowOpacity: 0.4,
       shadowRadius: 20,
@@ -202,7 +197,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
 
     tabBarLabelStyle: {
       fontFamily: "Syne_600SemiBold",
-      fontSize: 10,
+      fontSize: 8,
       letterSpacing: 2,
       textTransform: "uppercase",
       marginTop: 2,
@@ -285,7 +280,6 @@ const tabThemeStyles: Record<ThemeKey, any> = {
   tabBarStyle: {
     backgroundColor: "#0A0A0A", 
     borderTopWidth: 0,
-    elevation: 20,
     shadowColor: "#ff8400",
     shadowOpacity: 0.2,
     shadowRadius: 10,
@@ -339,18 +333,72 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   wrath: {
-    tabBarActiveTintColor: "#C0392B",
-    tabBarStyle: { backgroundColor: "transparent" },
-  },
-};
+    tabBarActiveTintColor: "#FFFFFF", // Pure white for a sharp "glint"
+    tabBarInactiveTintColor: "rgba(216, 27, 17, 0.73)", // Dim red "embers"
+    
+    tabBarStyle: {
+      backgroundColor: "#000000", 
+      borderTopWidth: 0, 
+    },
+    
+    tabBarLabelStyle: {
+      fontFamily: "MetalMania_400Regular",
+      fontSize: 8,
+      letterSpacing: 2,
+      textTransform: 'uppercase',
+    },
 
-const defaultTabStyle = {
-  tabBarActiveTintColor: "#ffd33d",
-  tabBarStyle: { backgroundColor: "transparent" },
+    tabBarBackground: () => (
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#000' }}>
+        {/* 1. THE HEAT VENT (Deep Red Glow) */}
+        <LinearGradient
+          colors={["#ff0000a0", "#660000", "#000000"]}
+          style={{ position: 'absolute', top: 0, height: 20, width: '100%' }}
+        />
+
+        {/* 2. THE HAZARD STRIPES (Aggressive & Visible) */}
+        <View style={{ position: 'absolute', top: 4, left: 0, right: 0, bottom: 0, flexDirection: 'row', opacity: 0.1 }}>
+          {[...Array(10)].map((_, i) => (
+            <View 
+              key={i}
+              style={{
+                flex: 1,
+                height: '100%',
+                backgroundColor: '#FF0000',
+                marginHorizontal: 1,
+                transform: [{ skewX: '-25deg' }]
+              }} 
+            />
+          ))}
+        </View>
+
+        {/* 3. ACTIVE TAB "GLOW" (Centrally focused) */}
+        <LinearGradient
+          colors={["rgba(255, 0, 0, 0.3)", "transparent"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{ position: 'absolute', bottom: -30, left: '25%', width: '50%', height: 100, borderRadius: 50 }}
+        />
+
+        {/* 4. TOP EDGE SCAR */}
+        <View 
+          style={{ 
+            height: 1, 
+            backgroundColor: "#9f0c0c", 
+            width: '100%', 
+            position: 'absolute', 
+            shadowColor: "#4b0d0d",
+            shadowOpacity: 1,
+            shadowRadius: 15,
+          }} 
+        />
+      </View>
+    ),
+  },
 };
 
 export function useTabTheme() {
   const { activeTheme } = useTheme();
-  const tabStyles = activeTheme ? tabThemeStyles[activeTheme] : defaultTabStyle;
+  const tabStyles = activeTheme ? tabThemeStyles[activeTheme] : {};
   return { tabStyles };
 }

@@ -87,7 +87,18 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     textShadowRadius: 15,
    },
   },
-  wrath:         { appTitle: {}, description: {} },
+  wrath: { 
+    appTitle: {
+      fontFamily: 'MetalMania_400Regular',
+      fontSize: 55,
+      color: '#d72727ad', 
+      textAlign: 'center',
+      letterSpacing: 4,
+      textShadowColor: 'rgba(20, 3, 3, 0.9)', 
+      textShadowOffset: { width: 3, height: 5 },
+      textShadowRadius: 1,
+    }, 
+  },
 };
 
 export function useTextTheme() {

@@ -15,6 +15,7 @@ import { AlmendraDisplay_400Regular } from '@expo-google-fonts/almendra-display'
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { Syne_600SemiBold, Syne_700Bold } from '@expo-google-fonts/syne';
 import { RussoOne_400Regular } from '@expo-google-fonts/russo-one';
+import { MetalMania_400Regular } from '@expo-google-fonts/metal-mania'; 
 
 import { ActivityIndicator, View } from 'react-native';
 
@@ -24,7 +25,7 @@ function RootLayoutInner() {
   const [loadFonts] = useFonts(
     {
       Marcellus_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, 
-      AlmendraDisplay_400Regular, MedievalSharp_400Regular, Syne_600SemiBold, Syne_700Bold, RussoOne_400Regular
+      AlmendraDisplay_400Regular, MedievalSharp_400Regular, Syne_600SemiBold, Syne_700Bold, RussoOne_400Regular, MetalMania_400Regular
     }
   )
 
