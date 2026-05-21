@@ -62,9 +62,23 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowRadius: 10,
     },
   },
-  aspire:      { title: {}, description: {} },
-  determination: { title: {}, description: {} },
-  wrath:         { title: {}, description: {} },
+  aspire: {
+    appTitle: {
+      fontFamily: 'Syne_700Bold', 
+      fontSize: 43,
+      color: '#FFFFFF',
+      letterSpacing: -1.5, // Tightening Syne creates a "dense" cosmic look
+      textAlign: 'center',
+      
+      // THE GALAXY GLOW
+      // This color (#B06AB3) is a mix of starlight and nebula violet
+      textShadowColor: 'rgba(176, 106, 179, 0.85)', 
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 18, // Large radius creates the "misty" rainbow aura
+    },
+  },
+  determination: { appTitle: {}, description: {} },
+  wrath:         { appTitle: {}, description: {} },
 };
 
 export function useTextTheme() {

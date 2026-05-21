@@ -126,66 +126,157 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   emo: {
-  tabBarActiveTintColor: "#EAE6FF", // Moonlight white-lavender
-  tabBarInactiveTintColor: "rgba(168, 156, 200, 0.55)",
+    tabBarActiveTintColor: "#EAE6FF", // Moonlight white-lavender
+    tabBarInactiveTintColor: "rgba(168, 156, 200, 0.55)",
 
-  tabBarStyle: {
-    borderTopColor: "rgba(80, 79, 81, 0.1)",
-    borderTopWidth: 1,
+    tabBarStyle: {
+      borderTopColor: "rgba(80, 79, 81, 0.1)",
+      borderTopWidth: 1,
 
-    backgroundColor: "transparent",
+      backgroundColor: "transparent",
 
-    elevation: 0,
-    shadowOpacity: 0,
-    paddingBottom: 10,
-  },
-
-  tabBarLabelStyle: {
-    fontFamily: "AlmendraDisplay_400Regular",
-    fontSize: 12,
-    letterSpacing: 1.5,
-    textShadowColor: "rgba(255,255,255,0.15)",
-
-    textShadowOffset: {
-      width: 0,
-      height: 1,
+      elevation: 0,
+      shadowOpacity: 0,
+      paddingBottom: 10,
     },
 
-    textShadowRadius: 6,
+    tabBarLabelStyle: {
+      fontFamily: "AlmendraDisplay_400Regular",
+      fontSize: 12,
+      letterSpacing: 1.5,
+      textShadowColor: "rgba(255,255,255,0.15)",
+
+      textShadowOffset: {
+        width: 0,
+        height: 1,
+      },
+
+      textShadowRadius: 6,
+    },
+
+    tabBarBackground: () => (
+      <View style={{ flex: 1 }}>
+        {/* Moonlight reflection line */}
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 1,
+            backgroundColor: "rgba(101, 138, 249, 0.06)",
+            zIndex: 10,
+          }}
+        />
+
+        <LinearGradient
+          colors={[
+            "#03101a", // dusk purple
+            "#050505", // midnight violet
+            "#101014", // dark charcoal
+            "#050505", // deep black
+          ]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{ flex: 1 }}
+        />
+      </View>
+    ),
   },
-
-  tabBarBackground: () => (
-    <View style={{ flex: 1 }}>
-      {/* Moonlight reflection line */}
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 1,
-          backgroundColor: "rgba(101, 138, 249, 0.06)",
-          zIndex: 10,
-        }}
-      />
-
-      <LinearGradient
-        colors={[
-          "#03101a", // dusk purple
-          "#050505", // midnight violet
-          "#101014", // dark charcoal
-          "#050505", // deep black
-        ]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={{ flex: 1 }}
-      />
-    </View>
-  ),
-},
   aspire: {
-    tabBarActiveTintColor: "#6334ae",
-    tabBarStyle: { backgroundColor: "transparent" },
+    tabBarActiveTintColor: "#FFFFFF",
+    tabBarInactiveTintColor: "rgba(200, 200, 255, 0.4)",
+
+    tabBarStyle: {
+      backgroundColor: "transparent",
+      borderTopWidth: 0,
+      position: "absolute",
+      left: 30,
+      right: 30,
+      borderRadius: 20,
+      elevation: 15,
+      shadowColor: "#54168e",
+      shadowOpacity: 0.4,
+      shadowRadius: 20,
+    },
+
+    tabBarLabelStyle: {
+      fontFamily: "Syne_600SemiBold",
+      fontSize: 10,
+      letterSpacing: 2,
+      textTransform: "uppercase",
+      marginTop: 2,
+    },
+
+    tabBarBackground: () => (
+      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, borderRadius: 20, overflow: "hidden" }}>
+        {/* NEBULA BASE */}
+        <LinearGradient
+          colors={["rgba(40, 20, 80, 0.85)", "rgba(15, 5, 30, 0.95)"]}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* STARDUST GLOW */}
+        <LinearGradient
+          colors={["rgba(255, 255, 255, 0.15)", "transparent"]}
+          start={{ x: 0.8, y: 0 }}
+          end={{ x: 0.8, y: 0.8 }}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* 1. DISTANT CLUSTERS (Low Opacity / 1px) */}
+        <View style={{ position: "absolute", top: 15, left: 50, width: 1, height: 1, backgroundColor: "#FFF", opacity: 0.3 }} />
+        <View style={{ position: "absolute", top: 40, left: 110, width: 1, height: 1, backgroundColor: "#FFF", opacity: 0.2 }} />
+        <View style={{ position: "absolute", bottom: 15, right: 100, width: 1, height: 1, backgroundColor: "#FFF", opacity: 0.4 }} />
+        <View style={{ position: "absolute", top: 25, left: 200, width: 1, height: 1, backgroundColor: "#FFF", opacity: 0.3 }} />
+
+        {/* 2. MID-GROUND STARS (Varying Tints) */}
+        <View style={{ position: "absolute", top: 10, left: 25, width: 2, height: 2, borderRadius: 1, backgroundColor: "#FFFFFF" }} />
+        <View style={{ position: "absolute", top: 22, left: 70, width: 3, height: 3, borderRadius: 2, backgroundColor: "#E8E8FF" }} />
+        <View style={{ position: "absolute", top: 14, left: 130, width: 2, height: 2, borderRadius: 1, backgroundColor: "#FFFFFF" }} />
+        <View style={{ position: "absolute", top: 45, left: 40, width: 2, height: 2, borderRadius: 1, backgroundColor: "#D0D0FF", opacity: 0.6 }} />
+
+        {/* 3. BOLD FOREGROUND STARS */}
+        <View style={{ position: "absolute", top: 28, left: 180, width: 3, height: 3, borderRadius: 2, backgroundColor: "#FFFFFF" }} />
+        <View style={{ position: "absolute", top: 12, right: 120, width: 2, height: 2, borderRadius: 1, backgroundColor: "#EAEAFF" }} />
+        <View style={{ position: "absolute", top: 24, right: 85, width: 3, height: 3, borderRadius: 2, backgroundColor: "#FFFFFF" }} />
+        <View style={{ position: "absolute", top: 35, right: 160, width: 2, height: 2, borderRadius: 1, backgroundColor: "#FFF", opacity: 0.8 }} />
+
+        {/* 4. THE NORTH STAR (The Anchor) */}
+        <View
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 150,
+            width: 4,
+            height: 4,
+            borderRadius: 2,
+            backgroundColor: "#FFFFFF",
+            // Halo effect
+            shadowColor: "#FFFFFF",
+            shadowOpacity: 0.8,
+            shadowRadius: 5,
+          }}
+        />
+
+        {/* 5. TINY ACCENT STARS */}
+        <View style={{ position: "absolute", top: 9, right: 45, width: 2, height: 2, borderRadius: 1, backgroundColor: "#FFFFFF" }} />
+        <View style={{ position: "absolute", top: 30, right: 20, width: 2, height: 2, borderRadius: 1, backgroundColor: "#D8D8FF" }} />
+        <View style={{ position: "absolute", bottom: 10, left: 100, width: 1.5, height: 1.5, borderRadius: 1, backgroundColor: "#FFF", opacity: 0.5 }} />
+
+        {/* GLASS RIM */}
+        <View
+          style={{
+            height: 1,
+            backgroundColor: "rgba(255, 255, 255, 0.3)",
+            width: "80%",
+            alignSelf: "center",
+            position: "absolute",
+            top: 0,
+          }}
+        />
+      </View>
+    ),
   },
   determination: {
     tabBarActiveTintColor: "#FF6B35",
