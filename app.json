@@ -47,9 +47,10 @@
                     "./node_modules/@expo-google-fonts/playwrite-gb-s/400Regular/PlaywriteGBS_400Regular.ttf",
                     "./node_modules/@expo-google-fonts/dancing-script/600SemiBold/DancingScript_600SemiBold.ttf",
                     "./node_modules/@expo-google-fonts/fredoka/600SemiBold/Fredoka_600SemiBold.ttf",
-                    "./node_modules/expo-google-fonts/almendra-display/400Regular/AlmendraDisplay_400Regular.ttf",
-                    "./node_module/expo-google-fonts/medievalsharp/400Regular/MedievalSharp_400Regular.ttf",
-                     "./node_modules/@expo-google-fonts/syne/600SemiBold/Syne_600SemiBold.ttf"]
+                    "./node_modules/@expo-google-fonts/almendra-display/400Regular/AlmendraDisplay_400Regular.ttf",
+                    "./node_modules/@expo-google-fonts/medievalsharp/400Regular/MedievalSharp_400Regular.ttf",
+                     "./node_modules/@expo-google-fonts/syne/600SemiBold/Syne_600SemiBold.ttf",
+                     "./node_modules/@expo-google-fonts/russo-one/400Regular/RussoOne_400Regular.ttf"]
         }
       ]
     ],

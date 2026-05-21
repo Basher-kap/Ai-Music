@@ -279,8 +279,64 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   determination: {
-    tabBarActiveTintColor: "#FF6B35",
-    tabBarStyle: { backgroundColor: "transparent" },
+    tabBarActiveTintColor: "#c35e0c", 
+    tabBarInactiveTintColor: "rgba(255, 255, 255, 0.3)",
+  
+  tabBarStyle: {
+    backgroundColor: "#0A0A0A", 
+    borderTopWidth: 0,
+    elevation: 20,
+    shadowColor: "#ff8400",
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  
+  tabBarLabelStyle: {
+    fontFamily: "RussoOne_400Regular",
+    fontSize: 7,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+
+  tabBarBackground: () => (
+    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#0F0F0F' }}>
+      {/* 1. MISTY TEXTURE (Subtle Heat) */}
+      <LinearGradient
+        colors={["rgba(255, 49, 49, 0.05)", "transparent"]}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+      />
+
+      {/* 2. ACTION LINES (Momentum) */}
+      {[...Array(15)].map((_, i) => (
+        <View 
+          key={i}
+          style={{
+            position: 'absolute',
+            left: i * 30,
+            width: 2,
+            height: '100%',
+            backgroundColor: 'rgba(255,255,255,0.02)',
+            transform: [{ skewX: '-20deg' }]
+          }} 
+        />
+      ))}
+
+      {/* 3. THE REDLINE ACCENT */}
+      <View 
+        style={{ 
+          height: 3, 
+          backgroundColor: "#ff5331", 
+          width: '30%', 
+          position: 'absolute', 
+          top: 0,
+          left: '35%', // Focused in the center
+          shadowColor: "#ff8400",
+          shadowOpacity: 0.9,
+          shadowRadius: 8,
+        }} 
+      />
+    </View>
+    ),
   },
   wrath: {
     tabBarActiveTintColor: "#C0392B",

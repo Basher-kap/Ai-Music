@@ -67,17 +67,26 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       fontFamily: 'Syne_700Bold', 
       fontSize: 43,
       color: '#FFFFFF',
-      letterSpacing: -1.5, // Tightening Syne creates a "dense" cosmic look
+      letterSpacing: -1.5, 
       textAlign: 'center',
       
-      // THE GALAXY GLOW
-      // This color (#B06AB3) is a mix of starlight and nebula violet
       textShadowColor: 'rgba(176, 106, 179, 0.85)', 
       textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 18, // Large radius creates the "misty" rainbow aura
+      textShadowRadius: 18, 
     },
   },
-  determination: { appTitle: {}, description: {} },
+  determination: { 
+    appTitle: {
+    fontFamily: 'RussoOne_400Regular',
+    fontSize: 44,
+    color: '#eddad4',
+    letterSpacing: 1,
+    textAlign: 'center',
+    textShadowColor: 'rgba(240, 101, 46, 0.82)', 
+    textShadowOffset: { width: 3, height: 4 },
+    textShadowRadius: 15,
+   },
+  },
   wrath:         { appTitle: {}, description: {} },
 };
 
