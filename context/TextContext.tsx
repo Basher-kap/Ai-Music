@@ -20,23 +20,28 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   refreshing: {
     appTitle: {
       fontFamily: 'PlaywriteGBS_400Regular',
-      fontSize: 48, 
+      fontSize: 40, 
       letterSpacing: 4, 
       color: '#F0FDFF', 
       textShadowColor: 'rgba(0, 206, 209, 0.6)', 
       textShadowOffset: { width: 0, height: 0 }, 
       textShadowRadius: 30,
       opacity: 1,
+
+      paddingBottom: 10,
     },
   },
   love: {
     appTitle: {
       fontFamily: 'DancingScript_600SemiBold',
-      fontSize: 60,
+      fontSize: 55,
       color: '#FFFFFF', 
       textShadowColor: 'rgba(232, 160, 180, 0.8)', 
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 15,
+      letterSpacing: 2,
+      
+
     },
   },
   cheerful: {
