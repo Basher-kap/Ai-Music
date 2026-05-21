@@ -126,34 +126,56 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   emo: {
-  tabBarActiveTintColor: "#FFFFFF", // Pure white for a sharp "glint"
-  tabBarInactiveTintColor: "rgba(255, 255, 255, 0.51)", // Faded, cold grey
-  
+  tabBarActiveTintColor: "#EAE6FF", // Moonlight white-lavender
+  tabBarInactiveTintColor: "rgba(168, 156, 200, 0.55)",
+
   tabBarStyle: {
-    borderTopColor: "#000000", 
-    borderTopWidth: 3,
-    backgroundColor: '#050505', 
-    paddingBottom: 15,
+    borderTopColor: "rgba(80, 79, 81, 0.1)",
+    borderTopWidth: 1,
+
+    backgroundColor: "transparent",
+
+    elevation: 0,
     shadowOpacity: 0,
+    paddingBottom: 10,
   },
-  
+
   tabBarLabelStyle: {
     fontFamily: "AlmendraDisplay_400Regular",
     fontSize: 12,
-    letterSpacing: 2, 
-    marginBottom: 1,
+    letterSpacing: 1.5,
+    textShadowColor: "rgba(255,255,255,0.15)",
+
+    textShadowOffset: {
+      width: 0,
+      height: 1,
+    },
+
+    textShadowRadius: 6,
   },
 
   tabBarBackground: () => (
-    <View style={{ flex: 1, backgroundColor: '#050505' }}>
-      {/* A very thin "Rim Light" at the top to catch the edge */}
-      <LinearGradient
-        colors={["rgba(255, 255, 255, 0.1)", "transparent"]}
-        style={{ height: 1, width: '100%' }}
+    <View style={{ flex: 1 }}>
+      {/* Moonlight reflection line */}
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+          backgroundColor: "rgba(101, 138, 249, 0.06)",
+          zIndex: 10,
+        }}
       />
+
       <LinearGradient
-        // Vertical gradient: Dark Charcoal to Void
-        colors={["#1A1A1D", "#000000"]} 
+        colors={[
+          "#03101a", // dusk purple
+          "#050505", // midnight violet
+          "#101014", // dark charcoal
+          "#050505", // deep black
+        ]}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={{ flex: 1 }}
