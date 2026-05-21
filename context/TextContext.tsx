@@ -7,14 +7,13 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     appTitle: {
       fontFamily: 'Marcellus_400Regular',
       fontSize: 48,
-      bottom: '20' , //move a little higher
+      bottom: '20' ,
       letterSpacing: 4,
       color: '#E8F5E9',
       textShadowColor: 'rgba(18, 45, 12, 0.95)',
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 2,
       opacity: 0.98,
-      transform: [{ scaleX: 1.08 }],
     },
   },
   refreshing: {
@@ -22,19 +21,19 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       fontFamily: 'PlaywriteGBS_400Regular',
       fontSize: 48, 
       bottom: '20' ,
+      letterSpacing: 4, 
       color: '#F0FDFF', 
-      letterSpacing: 5, 
       textShadowColor: 'rgba(0, 206, 209, 0.6)', 
       textShadowOffset: { width: 0, height: 0 }, 
-      textShadowRadius: 15,
+      textShadowRadius: 30,
       opacity: 1,
     },
   },
   love: {
     appTitle: {
       fontFamily: 'DancingScript_600SemiBold',
-      bottom: '20' ,
       fontSize: 58,
+      bottom: '20' ,
       color: '#FFFFFF', 
       textShadowColor: 'rgba(232, 160, 180, 0.8)', 
       textShadowOffset: { width: 0, height: 0 },

@@ -23,7 +23,7 @@ const themes = [
     name: 'Love',
     emoji: '🌸',
     description: "Story of unrequited feelings, first shiver of romance, and supporting of one's dear life.",
-    tagline: 'my feelings for you would reach',
+    tagline: 'my feelings for you will reach',
   },
   {
     key: 'cheerful',
@@ -82,14 +82,12 @@ export default function Theme() {
 
       <View style={styles.header}>
         <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
-        <Text style={styles.textSectionTitle}>Atmospheres</Text>
       </View>
 
       {/* Scrollable cards below */}
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         {themes.map((theme) => {
           const isActive = activeTheme === theme.key;
-          const isNostalgia = isActive && theme.key === 'nostalgia';
           const accent = themeAccents[theme.key];
 
           return (
@@ -101,25 +99,24 @@ export default function Theme() {
               <View style={[
                 styles.card,
                 isActive && { borderColor: accent, backgroundColor: 'rgba(0,0,0,0.6)' },
-                isActive && isNostalgia && { borderLeftWidth: 5, borderLeftColor: accent }
+                isActive && { borderLeftWidth: 5, borderLeftColor: accent }
               ]}>
                 <View style={styles.cardHeader}>
                   <Text style={styles.emoji}>{theme.emoji}</Text>
                   <View style={styles.nameRow}>
                     <Text style={[
                       styles.themeName,
-                      isNostalgia && ThemeTextStyles.title,
-                      !isNostalgia && isActive && { color: accent }
+                      isActive && { color: accent },
                     ]}>
                       {theme.name}
                     </Text>
                   </View>
                 </View>
 
-                <View style={isNostalgia ? styles.descriptionWrapper : undefined}>
+                <View style={isActive ? styles.descriptionWrapper : undefined}>
                   <Text style={[
                     styles.description,
-                    isNostalgia && ThemeTextStyles.description,
+                    isActive && ThemeTextStyles.description,
                   ]}>
                     {theme.description}
                   </Text>
@@ -143,30 +140,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 10,
   },
   content: {
     padding: 20,
     paddingBottom: 40,
   },
-
-  // ── Header ────────────────────────────────────────────────────────────────
-  textTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: 2,
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
-  },
-  textSectionTitle: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.5)',
-    letterSpacing: 4,
-    textTransform: 'uppercase',
-  },
-card: {
+  card: {
     backgroundColor: 'rgba(15, 15, 15, 0.45)',
     borderRadius: 16,
     padding: 20,
@@ -178,9 +158,6 @@ card: {
     marginTop: 4,
     paddingLeft: 4, 
     opacity: 0.9,
-  },
-  nostalgiaCardActive: {
-    backgroundColor: 'rgba(20, 45, 35, 0.6)', // Deep moss tint for nostalgia
   },
   cardHeader: {
     flexDirection: 'row',

@@ -29,15 +29,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'center',   
   },
-  textTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: 2,
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
-  },
   body: {
     flex: 1,
     alignItems: 'center',
