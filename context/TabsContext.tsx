@@ -142,7 +142,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     
     tabBarLabelStyle: {
       fontFamily: "DancingScript_600SemiBold",
-      fontSize: 14, 
+      fontSize: 11, 
       letterSpacing: 0,
     },
 
