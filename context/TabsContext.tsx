@@ -225,58 +225,64 @@ const tabThemeStyles: Record<ThemeKey, any> = {
   },
   emo: {
     tabBarActiveTintColor: "#EAE6FF", // Moonlight white-lavender
-    tabBarInactiveTintColor: "rgba(168, 156, 200, 0.55)",
+    tabBarInactiveTintColor: "rgba(195, 187, 217, 0.4)",
 
     tabBarStyle: {
-      borderTopColor: "rgba(80, 79, 81, 0.1)",
-      borderTopWidth: 1,
-
       backgroundColor: "transparent",
-
-      elevation: 0,
-      shadowOpacity: 0,
+      borderTopWidth: 0, 
       paddingBottom: 10,
     },
 
     tabBarLabelStyle: {
       fontFamily: "AlmendraDisplay_400Regular",
-      fontSize: 12,
-      letterSpacing: 1.5,
-      textShadowColor: "rgba(255,255,255,0.15)",
-
-      textShadowOffset: {
-        width: 0,
-        height: 1,
-      },
-
-      textShadowRadius: 6,
+      letterSpacing: 2,
+      textShadowColor: "rgba(168, 156, 200, 0.6)",
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 8,
     },
 
     tabBarBackground: () => (
-      <View style={{ flex: 1 }}>
-        {/* Moonlight reflection line */}
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 1,
-            backgroundColor: "rgba(101, 138, 249, 0.06)",
-            zIndex: 10,
-          }}
+      <View style={{ flex: 1, backgroundColor: '#050505', overflow: 'hidden' }}>
+        {/* 1. THE DEEP NIGHT GRADIENT */}
+        <LinearGradient
+          colors={["#0A0A12", "#050505", "#f4f1f1"]}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
         />
 
+        {/* 2. MIDNIGHT MIST: A soft purple glow from the bottom */}
         <LinearGradient
-          colors={[
-            "#03101a", // dusk purple
-            "#050505", // midnight violet
-            "#101014", // dark charcoal
-            "#050505", // deep black
-          ]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={{ flex: 1 }}
+          colors={["transparent", "rgba(97, 85, 129, 0.2)"]}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* 3. "FALLING RAIN" (Thin vertical needles) */}
+        {[...Array(12)].map((_, i) => (
+          <View 
+            key={i}
+            style={{
+              position: 'absolute',
+              top: (i * 7) % 40, 
+              left: (i * 35),
+              width: 1,
+              height: 5,
+              backgroundColor: 'rgba(234, 230, 255, 0.24)',
+              opacity: 0.5,
+            }} 
+          />
+        ))}
+
+        {/* 4. LONELY MOONLIGHT: A sharp glint at the very top */}
+        <LinearGradient
+          colors={["rgba(247, 246, 253, 0.2)", "transparent"]}
+          style={{ height: 1.5, width: '100%', position: 'absolute', top: 0 }}
+        />
+
+        {/* 5. GOTHIC CORNERS (Vignette) */}
+        <LinearGradient
+          colors={["rgba(0, 4, 19, 0.8)", "transparent", "rgba(1, 10, 28, 0.8)"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
         />
       </View>
     ),
@@ -477,6 +483,20 @@ const tabThemeStyles: Record<ThemeKey, any> = {
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={{ position: 'absolute', bottom: -30, left: '25%', width: '50%', height: 100, borderRadius: 50 }}
+        />
+
+        <LinearGradient
+          colors={["rgba(188, 7, 7, 0.36)", "transparent"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{ position: 'absolute', bottom: -30, left: '88%', width: '20%', height: 100, borderRadius: 50 }}
+        />
+
+        <LinearGradient
+          colors={["rgba(199, 6, 6, 0.3)", "transparent"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{ position: 'absolute', bottom: -30, right: '88%', width: '20%', height: 100, borderRadius: 50 }}
         />
 
         {/* 4. TOP EDGE SCAR */}
