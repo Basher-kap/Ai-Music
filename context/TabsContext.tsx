@@ -7,31 +7,61 @@ import React from "react";
 const tabThemeStyles: Record<ThemeKey, any> = {
   nostalgia: {
     tabBarActiveTintColor: "#1B3022", 
-    tabBarInactiveTintColor: "rgba(27, 48, 34, 0.45)", 
+    tabBarInactiveTintColor: "rgba(27, 48, 34, 0.5)", 
     
     tabBarStyle: {
-      borderTopColor: "rgba(126, 200, 160, 0.3)", 
-      borderTopWidth: 1,
-      elevation: 0,
-      backgroundColor: 'transparent',
+      backgroundColor: '#7aaf5bc1', 
+      borderTopWidth: 2,
+      borderTopColor: "rgba(255, 255, 255, 0.3)", 
+      shadowColor: '#1B3022',
+      shadowOpacity: 0.1,
+      shadowRadius: 10,
     },
+    
     tabBarLabelStyle: {
       fontFamily: "Marcellus_400Regular",
-      fontSize: 11,
+      fontSize: 9,
       letterSpacing: 1.5,
-      fontWeight: '600',
-      textShadowColor: 'rgba(255, 255, 255, 0.25)',
+      textTransform: 'lowercase', 
+      textShadowColor: 'rgb(109, 214, 93)',
       textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 3,
+      textShadowRadius: 30,
     },
+
     tabBarBackground: () => (
-      <LinearGradient
-        // Your exact nature-tinted colors
-        colors={["#96C47B", "#548687"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{ flex: 1 }}
-      />
+      <View style={{ flex: 1, overflow: 'hidden' }}>
+        {/* 1. THE ORGANIC GRADIENT (Nature Tones) */}
+        <LinearGradient
+          colors={["#A8D08D", "#76A68F", "#548687"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ flex: 1 }}
+        />
+
+        {/* 2. THE "TEXTURE" (Simulated Paper Grain/Noise) */}
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0.08 }}>
+          {[...Array(6)].map((_, i) => (
+            <View 
+              key={i}
+              style={{
+                position: 'absolute',
+                top: i * 15,
+                width: '100%',
+                height: 1,
+                backgroundColor: '#465f3c', // Horizontal "Grain" lines
+              }} 
+            />
+          ))}
+        </View>
+
+        {/* 3. VINTAGE VIGNETTE (Darkened corners for an old-photo feel) */}
+        <LinearGradient
+          colors={["rgba(27, 48, 34, 0.15)", "transparent", "rgba(27, 48, 34, 0.15)"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+      </View>
     ),
   },
   refreshing: {
