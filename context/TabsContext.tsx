@@ -129,29 +129,61 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     ),
   },
   love: {
-    tabBarActiveTintColor: "#AD1457", 
-    tabBarInactiveTintColor: "rgba(173, 20, 87, 0.45)", 
+    tabBarActiveTintColor: "#880E4F", 
+    tabBarInactiveTintColor: "rgba(173, 20, 87, 0.4)", 
+    
     tabBarStyle: {
-      borderTopColor: "rgba(232, 160, 180, 0.3)",
-      borderTopWidth: 1,
-      backgroundColor: 'transparent',
+      backgroundColor: '#FFF0F5', 
+      borderTopWidth: 0, 
+      shadowColor: '#AD1457',
+      shadowOpacity: 0.2,
+      shadowRadius: 10,
     },
+    
     tabBarLabelStyle: {
       fontFamily: "DancingScript_600SemiBold",
-      fontSize: 12, 
+      fontSize: 14, 
       letterSpacing: 0,
-      fontWeight: '600',
-      textShadowColor: 'rgba(255, 255, 255, 0.7)',
-      textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 3,
     },
+
     tabBarBackground: () => (
-      <LinearGradient
-        colors={["#FFF0F5", "#FFD1DC", "#F48FB1"]} 
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={{ flex: 1 }}
-      />
+      <View style={{ flex: 1, backgroundColor: '#FFD1DC' }}>
+        {/* 1. BASE LAYER: Soft Blush Gradient */}
+        <LinearGradient
+          colors={["#FFF0F5", "#FFD1DC", "#F48FB1"]}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* 2. SILK SHINE: A soft white diagonal "sweep" */}
+        <LinearGradient
+          colors={["rgba(255, 255, 255, 0.5)", "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* 3. BOKEH HEARTS (Enhanced Procedural soft circles) */}
+        <View style={{ position: 'absolute', top: 5, left: '5%', width: 22, height: 22, borderRadius: 11, backgroundColor: 'rgba(249, 143, 143, 0.8)', opacity: 0.4 }} />
+        <View style={{ position: 'absolute', top: -9, left: '25%', width: 45, height: 45, borderRadius: 22.5, backgroundColor: '#ab2a55', opacity: 0.2 }} />
+        <View style={{ position: 'absolute', top: 20, left: '45%', width: 12, height: 12, borderRadius: 6, backgroundColor: 'rgba(242, 170, 170, 0.6)', opacity: 0.5 }} />
+        <View style={{ position: 'absolute', bottom: 10, right: '35%', width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(248, 192, 235, 0.9)', opacity: 0.4 }} />
+        <View style={{ position: 'absolute', top: 15, right: '10%', width: 18, height: 18, borderRadius: 9, backgroundColor: '#AD1457', opacity: 0.25 }} />
+        <View style={{ position: 'absolute', bottom: 20, right: '5%', width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'rgba(240, 126, 126, 0.5)', opacity: 0.4 }} />
+        <View style={{ position: 'absolute', top: -5, left: '64%', width: 30, height: 30, borderRadius: 15, backgroundColor: 'rgba(244, 143, 177, 0.7)', opacity: 0.3 }} />
+              {/* 4. SOFT LACE TOP BORDER */}
+        <View 
+          style={{ 
+            height: 3, 
+            backgroundColor: "rgba(255, 255, 255, 0.6)", 
+            width: '100%', 
+            position: 'absolute', 
+            top: 0,
+            shadowColor: "#221719",
+            shadowOpacity: 1,
+            shadowRadius: 10,
+          }} 
+        />
+      </View>
     ),
   },
   cheerful: {
