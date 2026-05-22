@@ -66,29 +66,66 @@ const tabThemeStyles: Record<ThemeKey, any> = {
   },
   refreshing: {
     tabBarActiveTintColor: "#006064", 
-    tabBarInactiveTintColor: "rgba(0, 77, 64, 0.5)", 
+    tabBarInactiveTintColor: "rgba(0, 96, 100, 0.4)", 
     
     tabBarStyle: {
-      borderTopColor: "rgba(0, 151, 167, 0.3)", // Slightly stronger cyan border
-      borderTopWidth: 1,
-      elevation: 0,
       backgroundColor: 'transparent', 
+      borderTopWidth: 0, 
     },
+    
     tabBarLabelStyle: {
       fontFamily: "PlaywriteGBS_400Regular",
-      fontSize: 10,
-      letterSpacing: 1,
-      textShadowColor: 'rgba(255, 255, 255, 0.6)',
+      fontSize: 9,
+      letterSpacing: 0.5,
+      textTransform: 'lowercase',
+      textShadowColor: 'rgba(0, 206, 209, 0.6)', 
       textShadowOffset: { width: 0, height: 1 },
-      textShadowRadius: 2,
+      textShadowRadius: 4,
     },
+
     tabBarBackground: () => (
-      <LinearGradient
-        colors={["#E0F7FA", "#80DEEA", "#00BCD4"]} // ← white → light cyan → deep cyan
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }} 
-        style={{ flex: 1 }}
-      />
+      <View style={{ flex: 1 }}>
+        {/* 1. CRYSTAL BASE: Horizontal gradient mimicking a shoreline */}
+        <LinearGradient
+          colors={["#E0F7FA", "#B2EBF2", "#80DEEA"]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* 2. THE "DEW" OVERLAY: Top-to-bottom transparency */}
+        <LinearGradient
+          colors={["rgba(255, 255, 255, 0.7)", "transparent"]}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%' }}
+        />
+
+        {/* 3. REFRACTIVE LIGHT: A diagonal "sunlight-on-water" glint */}
+        <LinearGradient
+          colors={["transparent", "rgba(255, 255, 255, 0.4)", "transparent"]}
+          start={{ x: 0.2, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+        />
+
+        {/* 4. WATER DROPLETS (Procedural condensation) */}
+        <View style={{ position: 'absolute', top: 10, left: '15%', width: 6, height: 6, borderRadius: 3, backgroundColor: '#FFF', opacity: 0.3 }} />
+        <View style={{ position: 'absolute', top: 25, right: '20%', width: 4, height: 4, borderRadius: 2, backgroundColor: '#FFF', opacity: 0.2 }} />
+        <View style={{ position: 'absolute', bottom: 15, left: '40%', width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#FFF', opacity: 0.4 }} />
+
+        {/* 5. FROSTED TOP EDGE */}
+        <View 
+          style={{ 
+            height: 1.5, 
+            backgroundColor: "rgba(255, 255, 255, 0.8)", 
+            width: '100%', 
+            position: 'absolute', 
+            top: 0,
+            shadowColor: "#FFF",
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          }} 
+        />
+      </View>
     ),
   },
   love: {

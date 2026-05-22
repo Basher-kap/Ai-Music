@@ -24,7 +24,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       fontSize: 40, 
       letterSpacing: 4, 
       color: '#F0FDFF', 
-      textShadowColor: 'rgba(0, 206, 209, 0.6)', 
+      textShadowColor: 'rgba(38, 222, 225, 0.82)', 
       textShadowOffset: { width: 0, height: 0 }, 
       textShadowRadius: 30,
       opacity: 1,
