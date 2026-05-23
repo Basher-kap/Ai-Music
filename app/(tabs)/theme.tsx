@@ -30,35 +30,35 @@ const themes = [
     name: 'Cheerful',
     emoji: '☀️',
     description: 'Gives warm burst of joy and hope, a will to take another challenge, and embrace sunshine moments of happiness and fun.',
-    tagline: '',
+    tagline: 'smile for the another day',
   },
   {
     key: 'emo',
     name: 'Emo',
     emoji: '🖤',
     description: 'Descending, sinking deep to darkness of despair born from tragedies and unhealthy inner self shadows.',
-    tagline: '',
+    tagline: 'silently screaming in pain',
   },
   {
     key: 'aspire',
     name: 'Aspire',
     emoji: '🌌',
     description: 'Gaze into the stars, expanding galaxy, starry skies, and find the never-ending future of our life and this world.',
-    tagline: '',
+    tagline: 'universe is waiting for us',
   },
   {
     key: 'determination',
     name: 'Determination',
     emoji: '🔥',
     description: "Unwavering strong belief, hardened resolve — one's commitment to war.",
-    tagline: '',
+    tagline: 'desire for victory and never surrender',
   },
   {
     key: 'wrath',
     name: 'Wrath',
     emoji: '🩸',
     description: 'Aggressive motivation forged from anger turned to power, fueling rebellion and adapts to evil.',
-    tagline: '',
+    tagline: 'let the rage be unleashed',
   },
 ];
 
@@ -82,6 +82,12 @@ export default function Theme() {
 
       <View style={styles.header}>
         <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+      </View>
+
+      <View style={styles.subHeader}>
+        <Text style={[ThemeTextStyles.tagline]}>
+          {themes.find(t => t.key === activeTheme)?.tagline }
+        </Text>
       </View>
 
       {/* Scrollable cards below */}
@@ -141,6 +147,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 10,
     alignItems: 'center',   
+  },
+  subHeader: {
+    height: 24,                        
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 4,
   },
   content: {
     padding: 20,

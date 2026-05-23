@@ -17,6 +17,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
       paddingBottom: 20,
     },
+    tagline: {
+      fontFamily: 'Marcellus_400Regular',
+      fontSize: 20,
+      color: '#e5f2e3',
+      textShadowColor: 'rgba(27, 48, 34, 0.8)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 10,
+    },
   },
   refreshing: {
     appTitle: {
@@ -31,6 +39,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
       paddingBottom: 10,
     },
+    tagline: {
+      fontFamily: 'PlaywriteGBS_400Regular',
+      fontSize: 16,
+      color: '#F0FDFF',
+      textShadowColor: 'rgba(38, 222, 225, 0.82)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 10,
+    },    
   },
   love: {
     appTitle: {
@@ -43,8 +59,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       letterSpacing: 2,
 
       paddingBottom: 10,
-      
-
+    },
+    tagline: {
+      fontFamily: 'DancingScript_600SemiBold',
+      fontSize: 20,
+      color: '#FFFFFF',
+      textShadowColor: 'rgba(232, 160, 180, 0.8)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 10,
     },
   },
   cheerful: {
@@ -59,6 +81,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
       paddingBottom: 20,
     },
+    tagline: {
+      fontFamily: 'Fredoka_600SemiBold',
+      fontSize: 20,
+      color: '#FFFFFF',
+      textShadowColor: 'rgba(255, 160, 0, 0.8)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 10,
+    },
   },
   emo: {
     appTitle: {
@@ -71,6 +101,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowRadius: 10,
 
       paddingBottom: 20,
+    },
+    tagline: {
+      fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 16,
+      color: '#BDBDBD',
+      textShadowColor: 'rgba(0, 0, 0, 0.9)',
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 10,
     },
   },
   aspire: {
@@ -87,6 +125,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
       paddingBottom: 20,
     },
+    tagline: {
+      fontFamily: 'Syne_700Bold',
+      fontSize: 16,
+      color: '#FFFFFF',
+      textShadowColor: 'rgba(176, 106, 179, 0.85)',
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 18,
+    },
   },
   determination: { 
     appTitle: {
@@ -101,6 +147,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
     paddingBottom: 20,
    },
+    tagline: {
+      fontFamily: 'RussoOne_400Regular',
+      fontSize: 14,
+      color: '#eddad4',
+      textShadowColor: 'rgba(240, 101, 46, 0.82)',
+      textShadowOffset: { width: 3, height: 4 },
+      textShadowRadius: 15,
+    },
   },
   wrath: { 
     appTitle: {
@@ -115,6 +169,14 @@ export const themeTextStyles: Record<ThemeKey, any> = {
 
       paddingBottom: 15,
     }, 
+    tagline: {
+      fontFamily: 'MetalMania_400Regular',
+      fontSize: 16,
+      color: '#d72727ad',
+      textShadowColor: 'rgba(20, 3, 3, 0.9)',
+      textShadowOffset: { width: 3, height: 5 },
+      textShadowRadius: 1,
+    },
   },
 };
 
