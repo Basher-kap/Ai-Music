@@ -26,10 +26,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 50,
+    height: 130,              
+    paddingTop: 50,           
     paddingHorizontal: 20,
-    paddingBottom: 10,
-    alignItems: 'center',   
+    alignItems: 'center',
+    justifyContent: 'flex-end', 
+    overflow: 'hidden',
   },
   body: {
     flex: 1,

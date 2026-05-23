@@ -14,8 +14,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowRadius: 20,
       opacity: 0.95,
       transform: [{ rotate: '-1deg' }],
-
-      paddingBottom: 20,
     },
     tagline: {
       fontFamily: 'Marcellus_400Regular',
@@ -36,8 +34,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowOffset: { width: 0, height: 0 }, 
       textShadowRadius: 30,
       opacity: 1,
-
-      paddingBottom: 10,
     },
     tagline: {
       fontFamily: 'PlaywriteGBS_400Regular',
@@ -57,8 +53,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 15,
       letterSpacing: 2,
-
-      paddingBottom: 10,
     },
     tagline: {
       fontFamily: 'DancingScript_600SemiBold',
@@ -78,8 +72,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
       letterSpacing: 4,
-
-      paddingBottom: 20,
     },
     tagline: {
       fontFamily: 'Fredoka_600SemiBold',
@@ -99,8 +91,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowColor: 'rgba(0, 0, 0, 0.9)',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 10,
-
-      paddingBottom: 20,
     },
     tagline: {
       fontFamily: 'MedievalSharp_400Regular',
@@ -122,8 +112,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowColor: 'rgba(176, 106, 179, 0.85)', 
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 18, 
-
-      paddingBottom: 20,
     },
     tagline: {
       fontFamily: 'Syne_700Bold',
@@ -144,8 +132,6 @@ export const themeTextStyles: Record<ThemeKey, any> = {
     textShadowColor: 'rgba(240, 101, 46, 0.82)', 
     textShadowOffset: { width: 3, height: 4 },
     textShadowRadius: 15,
-
-    paddingBottom: 20,
    },
     tagline: {
       fontFamily: 'RussoOne_400Regular',
@@ -166,15 +152,13 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowColor: 'rgba(20, 3, 3, 0.9)', 
       textShadowOffset: { width: 3, height: 5 },
       textShadowRadius: 1,
-
-      paddingBottom: 15,
     }, 
     tagline: {
       fontFamily: 'MetalMania_400Regular',
-      fontSize: 16,
+      fontSize: 19,
       color: '#d72727ad',
       textShadowColor: 'rgba(20, 3, 3, 0.9)',
-      textShadowOffset: { width: 3, height: 5 },
+      textShadowOffset: { width: 3, height: 1 },
       textShadowRadius: 1,
     },
   },
