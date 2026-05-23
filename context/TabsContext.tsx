@@ -248,6 +248,11 @@ const tabThemeStyles: Record<ThemeKey, any> = {
 
     tabBarBackground: () => (
       <View style={{ flex: 1, backgroundColor: '#050505', overflow: 'hidden' }}>
+        {/* 1. THE DEEP NIGHT GRADIENT */}
+        <LinearGradient
+          colors={["#0A0A12", "#050505", "#f4f1f1"]}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+        />
 
         {/* 2. MIDNIGHT MIST: A soft purple glow from the bottom */}
         <LinearGradient
@@ -500,7 +505,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
           colors={["rgba(199, 6, 6, 0.3)", "transparent"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={{ position: 'absolute', bottom: -60, right: '88%', width: '20%', height: 100, borderRadius: 50 }}
+          style={{ position: 'absolute', bottom: -30, right: '88%', width: '20%', height: 100, borderRadius: 50 }}
         />
 
         {/* 4. TOP EDGE SCAR */}
