@@ -41,6 +41,8 @@ export const themeTextStyles: Record<ThemeKey, any> = {
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 15,
       letterSpacing: 2,
+
+      paddingBottom: 10,
       
 
     },

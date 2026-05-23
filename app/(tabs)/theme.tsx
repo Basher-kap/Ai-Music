@@ -137,17 +137,17 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   header: {
-    alignItems: 'center',
     paddingTop: 50,
     paddingHorizontal: 20,
     paddingBottom: 10,
+    alignItems: 'center',   
   },
   content: {
     padding: 20,
     paddingBottom: 40,
   },
   card: {
-    backgroundColor: 'rgba(15, 15, 15, 0.45)',
+    backgroundColor: 'rgba(15, 15, 15, 0.32)',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   description: {
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(255, 255, 255, 0.94)',
     fontSize: 14,
     lineHeight: 20,
     fontStyle: 'italic',

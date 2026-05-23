@@ -35,11 +35,11 @@ function RootLayoutInner() {
     }
   )
 
-if (!loadFonts) return (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
-    <ActivityIndicator size="large" color="#7EC8A0" />
-  </View>
-);
+  if (!loadFonts) return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
+      <ActivityIndicator size="large" color="#7EC8A0" />
+    </View>
+  );
   return (
     <>
       <StatusBar hidden={true} />
