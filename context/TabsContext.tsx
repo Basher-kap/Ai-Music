@@ -10,6 +10,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(27, 48, 34, 0.5)", 
     
     tabBarStyle: {
+      height: 60,
       backgroundColor: '#7aaf5bc1', 
       borderTopWidth: 2,
       borderTopColor: "rgba(255, 255, 255, 0.3)", 
@@ -69,6 +70,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(0, 96, 100, 0.4)", 
     
     tabBarStyle: {
+      height: 60,
       backgroundColor: 'transparent', 
       borderTopWidth: 0, 
     },
@@ -133,6 +135,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(173, 20, 87, 0.4)", 
     
     tabBarStyle: {
+      height: 60,
       backgroundColor: '#FFF0F5', 
       borderTopWidth: 0, 
       shadowColor: '#AD1457',
@@ -191,6 +194,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(120, 70, 0, 0.5)", // Muted Amber-Bronze
     
     tabBarStyle: {
+      height: 60,
       borderTopColor: "rgba(255, 255, 255, 0.5)", // White "Sunbeam" top border
       borderTopWidth: 2,
       elevation: 0, 
@@ -228,6 +232,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(195, 187, 217, 0.4)",
 
     tabBarStyle: {
+      height: 60,
       backgroundColor: "transparent",
       borderTopWidth: 0, 
       paddingBottom: 10,
@@ -243,11 +248,6 @@ const tabThemeStyles: Record<ThemeKey, any> = {
 
     tabBarBackground: () => (
       <View style={{ flex: 1, backgroundColor: '#050505', overflow: 'hidden' }}>
-        {/* 1. THE DEEP NIGHT GRADIENT */}
-        <LinearGradient
-          colors={["#0A0A12", "#050505", "#f4f1f1"]}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-        />
 
         {/* 2. MIDNIGHT MIST: A soft purple glow from the bottom */}
         <LinearGradient
@@ -292,6 +292,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(200, 200, 255, 0.4)",
 
     tabBarStyle: {
+      height: 60,
       backgroundColor: "transparent",
       borderTopWidth: 0,
       borderRadius: 20,
@@ -383,6 +384,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(255, 255, 255, 0.3)",
   
   tabBarStyle: {
+    height: 60,
     backgroundColor: "#0A0A0A", 
     borderTopWidth: 0,
     shadowColor: "#ff8400",
@@ -442,11 +444,13 @@ const tabThemeStyles: Record<ThemeKey, any> = {
     tabBarInactiveTintColor: "rgba(216, 27, 17, 0.73)", // Dim red "embers"
     
     tabBarStyle: {
+      height: 60,
       backgroundColor: "#000000", 
       borderTopWidth: 0, 
     },
     
     tabBarLabelStyle: {
+      
       fontFamily: "MetalMania_400Regular",
       fontSize: 8,
       letterSpacing: 2,
@@ -482,21 +486,21 @@ const tabThemeStyles: Record<ThemeKey, any> = {
           colors={["rgba(255, 0, 0, 0.3)", "transparent"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={{ position: 'absolute', bottom: -30, left: '25%', width: '50%', height: 100, borderRadius: 50 }}
+          style={{ position: 'absolute', bottom: -85, left: '25%', width: '50%', height: 100, borderRadius: 50 }}
         />
 
         <LinearGradient
           colors={["rgba(188, 7, 7, 0.36)", "transparent"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={{ position: 'absolute', bottom: -30, left: '88%', width: '20%', height: 100, borderRadius: 50 }}
+          style={{ position: 'absolute', bottom: -60, left: '88%', width: '20%', height: 100, borderRadius: 50 }}
         />
 
         <LinearGradient
           colors={["rgba(199, 6, 6, 0.3)", "transparent"]}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
-          style={{ position: 'absolute', bottom: -30, right: '88%', width: '20%', height: 100, borderRadius: 50 }}
+          style={{ position: 'absolute', bottom: -60, right: '88%', width: '20%', height: 100, borderRadius: 50 }}
         />
 
         {/* 4. TOP EDGE SCAR */}
