@@ -18,9 +18,15 @@ import { RussoOne_400Regular } from '@expo-google-fonts/russo-one';
 import { MetalMania_400Regular } from '@expo-google-fonts/metal-mania'; 
 
 import { ActivityIndicator, View } from 'react-native';
+import { useEffect } from 'react';
+import * as NavigationBar from 'expo-navigation-bar';
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
+
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync('hidden');
+  }, []);
 
   const [loadFonts] = useFonts(
     {
