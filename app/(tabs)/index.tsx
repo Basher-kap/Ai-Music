@@ -1,14 +1,24 @@
 // app/(tabs)/index.tsx
-import { Text, View,  StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTextTheme } from '@/context/TextContext';
+
 
 export default function Index() {
+  const { ThemeTextStyles } = useTextTheme();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home screen</Text>
-      <Link href="/theme" style={styles.button}>
-        Go to Theme screen
-      </Link>
+
+      <View style={styles.header}>
+        <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+      </View>
+
+      <View style={styles.body}>
+        <Text style={[ThemeTextStyles.color ]}>Home screen</Text>
+      </View>
+
     </View>
   );
 }
@@ -16,15 +26,16 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+    alignItems: 'center',   
+  },
+  body: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  text: {
-    color: '#fff',
-  },
-  button: {
-    fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
   },
 });

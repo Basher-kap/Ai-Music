@@ -19,6 +19,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
+      "softwareKeyboardLayoutMode": "pan",
       "predictiveBackGestureEnabled": false,
       "package": "com.nagiiiqt.AiMusic"
     },
@@ -38,6 +39,20 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["./node_modules/@expo-google-fonts/marcellus/400Regular/Marcellus_400Regular.ttf", 
+                    "./node_modules/@expo-google-fonts/playwrite-gb-s/400Regular/PlaywriteGBS_400Regular.ttf",
+                    "./node_modules/@expo-google-fonts/dancing-script/600SemiBold/DancingScript_600SemiBold.ttf",
+                    "./node_modules/@expo-google-fonts/fredoka/600SemiBold/Fredoka_600SemiBold.ttf",
+                    "./node_modules/@expo-google-fonts/almendra-display/400Regular/AlmendraDisplay_400Regular.ttf",
+                    "./node_modules/@expo-google-fonts/medievalsharp/400Regular/MedievalSharp_400Regular.ttf",
+                     "./node_modules/@expo-google-fonts/syne/600SemiBold/Syne_600SemiBold.ttf",
+                     "./node_modules/@expo-google-fonts/russo-one/400Regular/RussoOne_400Regular.ttf",
+                    "./node_modules/@expo-google-fonts/metal-mania/400Regular/MetalMania_400Regular.ttf"]
         }
       ]
     ],

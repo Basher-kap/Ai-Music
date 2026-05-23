@@ -5,13 +5,25 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
   "dependencies": {
+    "@expo-google-fonts/almendra-display": "^0.4.1",
+    "@expo-google-fonts/dancing-script": "^0.4.2",
+    "@expo-google-fonts/fredoka": "^0.4.1",
+    "@expo-google-fonts/marcellus": "^0.4.1",
+    "@expo-google-fonts/medievalsharp": "^0.4.1",
+    "@expo-google-fonts/metal-mania": "^0.4.1",
+    "@expo-google-fonts/playwrite-gb-s": "^0.4.1",
+    "@expo-google-fonts/playwrite-it-moderna": "^0.4.1",
+    "@expo-google-fonts/russo-one": "^0.4.1",
+    "@expo-google-fonts/syne": "^0.4.2",
+    "@expo-google-fonts/zen-old-mincho": "^0.4.1",
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-masked-view/masked-view": "0.3.2",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
@@ -21,7 +33,9 @@
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
+    "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.11",
+    "expo-navigation-bar": "~5.0.10",
     "expo-router": "~6.0.23",
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.9",
@@ -40,9 +54,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
-    "typescript": "~5.9.2",
     "eslint": "^9.25.0",
-    "eslint-config-expo": "~10.0.0"
+    "eslint-config-expo": "~10.0.0",
+    "typescript": "~5.9.2"
   },
   "private": true
 }

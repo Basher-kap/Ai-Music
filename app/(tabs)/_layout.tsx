@@ -2,13 +2,15 @@
 
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTabTheme } from '@/context/TabsContext';
 
 
 export default function TabLayout() {
+  const { tabStyles } = useTabTheme();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#ffd33d',
+        ...tabStyles,
         sceneStyle: { backgroundColor: 'transparent' },
       }}
     >
