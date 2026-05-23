@@ -97,28 +97,28 @@ const tabThemeStyles: Record<ThemeKey, any> = {
 
         {/* 2. THE "DEW" OVERLAY: Top-to-bottom transparency */}
         <LinearGradient
-          colors={["rgba(255, 255, 255, 0.7)", "transparent"]}
+          colors={["rgba(255, 255, 255, 0.94)", "transparent"]}
           style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '100%' }}
         />
 
         {/* 3. REFRACTIVE LIGHT: A diagonal "sunlight-on-water" glint */}
         <LinearGradient
-          colors={["transparent", "rgba(255, 255, 255, 0.4)", "transparent"]}
+          colors={["transparent", "rgba(198, 234, 242, 0.4)", "transparent"]}
           start={{ x: 0.2, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
         />
 
         {/* 4. WATER DROPLETS (Procedural condensation) */}
-        <View style={{ position: 'absolute', top: 10, left: '15%', width: 6, height: 6, borderRadius: 3, backgroundColor: '#FFF', opacity: 0.3 }} />
-        <View style={{ position: 'absolute', top: 25, right: '20%', width: 4, height: 4, borderRadius: 2, backgroundColor: '#FFF', opacity: 0.2 }} />
-        <View style={{ position: 'absolute', bottom: 15, left: '40%', width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#FFF', opacity: 0.4 }} />
+        <View style={{ position: 'absolute', top: 0, left: '15%', width: 10, height:10, borderRadius: 30, backgroundColor: '#6ac3ec', opacity: 0.3 }} />
+        <View style={{ position: 'absolute', top: 0, right: '20%', width:30, height: 30, borderRadius: 30, backgroundColor: '#7dd0ecbd', opacity: 0.2 }} />
+        <View style={{ position: 'absolute', bottom: 15, left: '40%', width: 20, height: 20, borderRadius: 30, backgroundColor: 'rgba(159, 234, 249, 0.63)', opacity: 0.4 }} />
 
         {/* 5. FROSTED TOP EDGE */}
         <View 
           style={{ 
             height: 1.5, 
-            backgroundColor: "rgba(255, 255, 255, 0.8)", 
+            backgroundColor: "rgba(182, 239, 255, 0.8)", 
             width: '100%', 
             position: 'absolute', 
             top: 0,
@@ -169,7 +169,7 @@ const tabThemeStyles: Record<ThemeKey, any> = {
         <View style={{ position: 'absolute', top: 5, left: '5%', width: 22, height: 22, borderRadius: 11, backgroundColor: 'rgba(249, 143, 143, 0.8)', opacity: 0.4 }} />
         <View style={{ position: 'absolute', top: -9, left: '25%', width: 45, height: 45, borderRadius: 22.5, backgroundColor: '#ab2a55', opacity: 0.2 }} />
         <View style={{ position: 'absolute', top: 20, left: '45%', width: 12, height: 12, borderRadius: 6, backgroundColor: 'rgba(242, 170, 170, 0.6)', opacity: 0.5 }} />
-        <View style={{ position: 'absolute', bottom: 10, right: '35%', width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(248, 192, 235, 0.9)', opacity: 0.4 }} />
+        <View style={{ position: 'absolute', bottom: 10, right: '35%', width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(241, 192, 230, 0.63)', opacity: 0.4 }} />
         <View style={{ position: 'absolute', top: 15, right: '10%', width: 18, height: 18, borderRadius: 9, backgroundColor: '#AD1457', opacity: 0.25 }} />
         <View style={{ position: 'absolute', bottom: 20, right: '5%', width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'rgba(240, 126, 126, 0.5)', opacity: 0.4 }} />
         <View style={{ position: 'absolute', top: -5, left: '64%', width: 30, height: 30, borderRadius: 15, backgroundColor: 'rgba(244, 143, 177, 0.7)', opacity: 0.3 }} />
@@ -248,11 +248,6 @@ const tabThemeStyles: Record<ThemeKey, any> = {
 
     tabBarBackground: () => (
       <View style={{ flex: 1, backgroundColor: '#050505', overflow: 'hidden' }}>
-        {/* 1. THE DEEP NIGHT GRADIENT */}
-        <LinearGradient
-          colors={["#0A0A12", "#050505", "#f4f1f1"]}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
-        />
 
         {/* 2. MIDNIGHT MIST: A soft purple glow from the bottom */}
         <LinearGradient
@@ -427,20 +422,28 @@ const tabThemeStyles: Record<ThemeKey, any> = {
         />
       ))}
 
-      {/* 3. THE REDLINE ACCENT */}
-      <View 
+      {/* 3. THE GRADIENT REDLINE ACCENT */}
+      <LinearGradient
+        // This creates a "glow" effect where the center is brightest
+        colors={["#8c1818", "#ff5331", "#8c1818"]} 
+        start={{ x: 0, y: 0 }} // Start at the left
+        end={{ x: 1, y: 0 }}   // End at the right
         style={{ 
           height: 3, 
-          backgroundColor: "#ff5331", 
           width: '30%', 
           position: 'absolute', 
-          top: 0,
-          left: '35%', // Focused in the center
-          shadowColor: "#ff8400",
-          shadowOpacity: 0.9,
-          shadowRadius: 8,
+          top: 0,        // Sits perfectly in that 6px gap you made
+          left: '35%', 
+          borderRadius: 2,
+          zIndex: 100,
         }} 
       />
+
+       {/* 4. THE SCORCHING FIRE*/}
+        <LinearGradient
+          colors={["#0A0A12", "#8c1818", "#f6890d"]}
+          style={{ position: 'absolute', top: 18, left: 0, right: 0, bottom: 0 }}
+        />
     </View>
     ),
   },
