@@ -1,8 +1,10 @@
 // context/BgImgContext.tsx
 
+
+import { ImageSourcePropType } from 'react-native';
 import { useTheme, ThemeKey } from './ThemeContext'; 
 
-export const themeImages: Record<ThemeKey, any> = {
+export const themeImages: Record<ThemeKey, ImageSourcePropType> = {
   nostalgia: require('../assets/bg-images/nostalgia_theme2.jpg'),
   refreshing: require('../assets/bg-images/refreshing_theme.jpg'),
   love: require('../assets/bg-images/love_theme.png'),
@@ -13,7 +15,7 @@ export const themeImages: Record<ThemeKey, any> = {
   wrath: require('../assets/bg-images/wrath_theme.png'),
 };
 
-export function useBgImg() {
+export function useBgImg() : ImageSourcePropType {
   const { activeTheme } = useTheme(); // ← borrows from ThemeContext
   return themeImages[activeTheme];
 }
