@@ -1,6 +1,7 @@
 // app/(tabs)/songs.tsx
 import { Text, View, StyleSheet } from 'react-native';
-import { useTextTheme } from '@/context/TextContext';
+import { useTextTheme } from '@/context';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
@@ -19,7 +20,7 @@ export default function Songs() {
       </View>
 
       <View style={styles.body}>
-        <Text style={[ThemeTextStyles.color]}>This page is the song list</Text>
+        <Text style={[ThemeTextStyles.tagline]}>This page is the song list</Text>
       </View>
 
 
@@ -32,8 +33,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 130,              
-    paddingTop: 50,           
+    height: HEADER_HEIGHT,              
+    paddingTop: HEADER_PADDING_TOP,           
     paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'flex-end', 

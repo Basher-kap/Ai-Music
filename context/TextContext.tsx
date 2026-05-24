@@ -1,8 +1,14 @@
 // context/TextContext.tsx
 import { ThemeKey, useTheme } from './ThemeContext';
+import { TextStyle } from 'react-native';
 
+interface ThemeTextStyle {
+  appTitle: TextStyle;
+  tagline: TextStyle;
+  description?: TextStyle;  // only some themes define this
+}
 
-export const themeTextStyles: Record<ThemeKey, any> = {
+export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
   nostalgia: {
     appTitle: {
       fontFamily: 'Marcellus_400Regular',
@@ -164,7 +170,7 @@ export const themeTextStyles: Record<ThemeKey, any> = {
   },
 };
 
-export function useTextTheme() {
+export function useTextTheme() : { ThemeTextStyles: ThemeTextStyle } {
   const { activeTheme } = useTheme();
   const ThemeTextStyles = themeTextStyles[activeTheme];
   return { ThemeTextStyles };

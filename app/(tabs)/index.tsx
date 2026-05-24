@@ -1,6 +1,7 @@
 // app/(tabs)/index.tsx
 import { Text, View, StyleSheet } from 'react-native';
-import { useTextTheme } from '@/context/TextContext';
+import { useTextTheme } from '@/context';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
 
 
 export default function Index() {
@@ -14,7 +15,7 @@ export default function Index() {
       </View>
 
       <View style={styles.body}>
-        <Text style={[ThemeTextStyles.color ]}>Home screen</Text>
+        <Text style={[ThemeTextStyles.tagline]}>Home screen</Text>
       </View>
 
     </View>
@@ -26,8 +27,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 130,              
-    paddingTop: 50,           
+    height: HEADER_HEIGHT,              
+    paddingTop: HEADER_PADDING_TOP,           
     paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'flex-end', 
