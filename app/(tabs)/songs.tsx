@@ -1,10 +1,18 @@
 // app/(tabs)/songs.tsx
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { useTextTheme } from '@/context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
+import { SONGS } from '@/models/songs';
+
+import { useState } from 'react';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
+
+  const [search, setSearch] = useState('');
 
   return (
     <View style={styles.container}>
@@ -14,15 +22,39 @@ export default function Songs() {
       </View>
 
       <View style={styles.actionRow}>
-        <>{/* Add search input here */}</>
-
-        <>{/* Add "Add Song" button here */}</>
+        <View style={styles.searchContainer}>
+          <TextInput
+            placeholder="Search songs..."
+            placeholderTextColor="rgba(255, 255, 255, 0.7)"
+            style={styles.searchInput}
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
+        <TouchableOpacity onPress={() => {}}>
+          <LinearGradient
+            colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.addButton}
+          >
+            <Ionicons name="add" size={28} color="#000000" />
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.body}>
-        <Text style={[ThemeTextStyles.tagline]}>This page is the song list</Text>
-      </View>
-
+      
+      <FlatList data={SONGS} //get the data
+        keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
+        contentContainerStyle={styles.listContent} //for managing the gap between items
+        style={styles.body}
+        renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
+          <View style={styles.songCard}>
+            <Text style={styles.songTitle}>{songItem.title}</Text>
+            <Text style={styles.songArtist}>{songItem.artist}</Text>
+          </View>
+        )}
+      />
 
     </View>
   );
@@ -42,8 +74,29 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 20,
+    margin: 12,
+    padding: 5,
+  },
+  listContent: {
+    padding: 16,
+    gap: 5,
+  },
+  songCard: {
+    backgroundColor: 'rgba(15, 15, 15, 0.53)',
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+  },
+  songTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  songArtist: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 10,
   },
   actionRow: {
     height: 60,
@@ -51,5 +104,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+    gap: 12,
+
   },
+  searchContainer: {
+    flex: 1,
+    height: 40,
+    backgroundColor: 'rgba(15, 15, 15, 0.53)',
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    borderWidth: 1,
+    
+  },
+  searchInput: {
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  addButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
