@@ -16,6 +16,6 @@ export const themeImages: Record<ThemeKey, ImageSourcePropType> = {
 };
 
 export function useBgImg() : ImageSourcePropType {
-  const { activeTheme } = useTheme(); // ← borrows from ThemeContext
+  const { activeTheme } = useTheme(); // supposed activeTheme is 'love', then themeImages[activeTheme] will return require('../assets/bg-images/love_theme.png')
   return themeImages[activeTheme];
 }

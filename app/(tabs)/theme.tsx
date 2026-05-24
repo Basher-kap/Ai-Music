@@ -99,7 +99,7 @@ export default function Theme() {
           return (
             <TouchableOpacity
               key={theme.key}
-              onPress={() => setActiveTheme(theme.key as any)}
+              onPress={() => setActiveTheme(theme.key as any)} // this is where the theme changes on cards to press
               activeOpacity={0.8}
             >
               <View style={[
