@@ -3,9 +3,7 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, StyleSheet } from 'react-native';
-import { useBgImg } from '../context/BgImgContext';
-import { ThemeProvider } from '@/context/ThemeContext';
-
+import { useBgImg, ThemeProvider } from '@/context';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';

@@ -1,6 +1,6 @@
 // app/(tabs)/songs.tsx
 import { Text, View, StyleSheet } from 'react-native';
-import { useTextTheme } from '@/context/TextContext';
+import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
 
 export default function Songs() {
