@@ -12,9 +12,17 @@ export default function Songs() {
         <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
       </View>
 
+      <View style={styles.actionRow}>
+        <>{/* Add search input here */}</>
+
+        <>{/* Add "Add Song" button here */}</>
+      </View>
+
       <View style={styles.body}>
         <Text style={[ThemeTextStyles.color]}>This page is the song list</Text>
       </View>
+
+
     </View>
   );
 }
@@ -35,5 +43,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  actionRow: {
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
 });
