@@ -12,6 +12,10 @@ export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
 
   const [search, setSearch] = useState('');
+  const filteredSongs = SONGS.filter(song =>
+    song.title.toLowerCase().includes(search.toLowerCase()) ||
+    song.artist.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <View style={styles.container}>
@@ -43,29 +47,22 @@ export default function Songs() {
       </View>
 
       
-      <FlatList data={SONGS} //get the data
+      <FlatList data={filteredSongs} //get the filtered data
         keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
         contentContainerStyle={styles.listContent} //for managing the gap between items
         style={styles.body}
         renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
           <View style={styles.songCard}>
             
-
-            <TouchableOpacity onPress={() => {}}>
-              <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between' }}>
-
-                <View style={{ flexDirection: 'column', gap: 4, }}>
+            <TouchableOpacity  style={{ flexDirection: 'column', gap: 4, flex: 1 }}
+              onPress={() => {}}>
                   <Text style={styles.songTitle}>{songItem.title}</Text>
                   <Text style={styles.songArtist}>{songItem.artist}</Text>
-                </View>
-
-                <TouchableOpacity onPress={() => {}}>
-                  <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
-                </TouchableOpacity>
-
-              </View>
             </TouchableOpacity>
-              
+
+            <TouchableOpacity onPress={() => {}}>
+              <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -97,6 +94,11 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   songCard: {
+    flexDirection: 'row',        // ← add this
+    alignItems: 'center',        // ← add this
+    justifyContent: 'space-between', // ← add this
+
+
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
