@@ -121,8 +121,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',        
     alignItems: 'center',        
     justifyContent: 'space-between',
-    overflow: 'hidden',
-
 
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
