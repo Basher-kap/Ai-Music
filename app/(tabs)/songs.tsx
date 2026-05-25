@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   listContent: {
-    padding: 16,
+    padding: 12,
     gap: 5,
   },
   songCard: {
-    backgroundColor: 'rgba(15, 15, 15, 0.53)',
+    backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 12,
-    paddingVertical: 10,
+    borderRadius: 10,
+    paddingVertical: 8,
     paddingHorizontal: 15,
     borderWidth: 1,
   },
@@ -112,11 +112,10 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'rgba(15, 15, 15, 0.53)',
     borderColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 20,
+    borderRadius: 18,
     paddingHorizontal: 16,
     justifyContent: 'center',
     borderWidth: 1,
-    
   },
   searchInput: {
     fontSize: 14,
