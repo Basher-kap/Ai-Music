@@ -17,9 +17,7 @@ export default function Songs() {
     song.artist.toLowerCase().includes(search.toLowerCase())
   );
 
-
-  const  [openMenuId, setOpenMenuId] = useState<string | null>(null);
-
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   return (
     <TouchableWithoutFeedback onPress={() => setOpenMenuId(null)}>
@@ -51,43 +49,50 @@ export default function Songs() {
           </TouchableOpacity>
         </View>
 
-        
-        <FlatList data={filteredSongs} //get the filtered data
+        <FlatList 
+          data={filteredSongs} //get the filtered data
           keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
           contentContainerStyle={styles.listContent} //for managing the gap between items
           style={styles.body}
-          renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
-            <View style={styles.songCard}>
-              
-              <TouchableOpacity  style={{ flexDirection: 'column', gap: 4, flex: 1 }}
-                onPress={() => {}}>
-                    <Text style={styles.songTitle}>{songItem.title}</Text>
-                    <Text style={styles.songArtist}>{songItem.artist}</Text>
-              </TouchableOpacity>
+          renderItem={({ item: songItem, index }) => { //now calls it with an object that has an item property
+            // Logic to check if dropdown should open upwards
+            const isLastItems = index >= filteredSongs.length - 2 && filteredSongs.length > 3;
+            
+            return (
+              <View style={[styles.songCard, { zIndex: openMenuId === songItem.id ? 1000 : 1 }]}>
+                
+                <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
+                  onPress={() => {}}>
+                      <Text style={styles.songTitle}>{songItem.title}</Text>
+                      <Text style={styles.songArtist}>{songItem.artist}</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => 
-                setOpenMenuId(openMenuId === songItem.id ? null : songItem.id)}>
-                <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
-              </TouchableOpacity>
+                <TouchableOpacity onPress={() => 
+                  setOpenMenuId(openMenuId === songItem.id ? null : songItem.id)}>
+                  <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+                </TouchableOpacity>
 
-              {openMenuId === songItem.id && (
-              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-                <View style={styles.dropdown}>
-                  <TouchableOpacity style={styles.dropdownItem} onPress={() => {}}>
-                    <Ionicons name="pencil-outline" size={16} color="#FFFFFF" />
-                    <Text style={styles.dropdownText}>Rename</Text>
-                  </TouchableOpacity>
+                {openMenuId === songItem.id && (
+                  <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                    <View style={[
+                      styles.dropdown,
+                      isLastItems ? { bottom: 45, top: undefined } : { top: 40 }
+                    ]}> 
+                      <TouchableOpacity style={styles.dropdownItem} onPress={() => {}}>
+                        <Ionicons name="pencil-outline" size={16} color="#FFFFFF" />
+                        <Text style={styles.dropdownText}>Rename</Text>
+                      </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.dropdownItem} onPress={() => {}}>
-                    <Ionicons name="trash-outline" size={16} color="#ff4444" />
-                    <Text style={[styles.dropdownText, { color: '#ff4444' }]}>Delete</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableWithoutFeedback>
-            )}
-
-            </View>
-          )}
+                      <TouchableOpacity style={styles.dropdownItem} onPress={() => {}}>
+                        <Ionicons name="trash-outline" size={16} color="#ff4444" />
+                        <Text style={[styles.dropdownText, { color: '#ff4444' }]}>Delete</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableWithoutFeedback>
+                )}
+              </View>
+            );
+          }}
         />
 
       </View>
@@ -121,7 +126,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',        
     alignItems: 'center',        
     justifyContent: 'space-between',
-
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
@@ -144,7 +148,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     gap: 12,
-
   },
   searchContainer: {
     flex: 1,
@@ -170,7 +173,6 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    top: 40,
     right: 0,
     backgroundColor: 'rgba(20, 20, 20, 0.95)',
     borderRadius: 10,
@@ -179,6 +181,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     minWidth: 130,
     zIndex: 999,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   dropdownItem: {
     flexDirection: 'row',
