@@ -1,5 +1,5 @@
 // app/(tabs)/songs.tsx
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { useTextTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
@@ -17,57 +17,81 @@ export default function Songs() {
     song.artist.toLowerCase().includes(search.toLowerCase())
   );
 
+
+  const  [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+
   return (
-    <View style={styles.container}>
-    
-      <View style={styles.header}>
-        <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
-      </View>
-
-      <View style={styles.actionRow}>
-        <View style={styles.searchContainer}>
-          <TextInput
-            placeholder="Search songs..."
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            style={styles.searchInput}
-            value={search}
-            onChangeText={setSearch}
-          />
-        </View>
-        <TouchableOpacity onPress={() => {}}>
-          <LinearGradient
-            colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.addButton}
-          >
-            <Ionicons name="add" size={28} color="#000000" />
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-
+    <TouchableWithoutFeedback onPress={() => setOpenMenuId(null)}>
+      <View style={styles.container}>
       
-      <FlatList data={filteredSongs} //get the filtered data
-        keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
-        contentContainerStyle={styles.listContent} //for managing the gap between items
-        style={styles.body}
-        renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
-          <View style={styles.songCard}>
-            
-            <TouchableOpacity  style={{ flexDirection: 'column', gap: 4, flex: 1 }}
-              onPress={() => {}}>
-                  <Text style={styles.songTitle}>{songItem.title}</Text>
-                  <Text style={styles.songArtist}>{songItem.artist}</Text>
-            </TouchableOpacity>
+        <View style={styles.header}>
+          <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+        </View>
 
-            <TouchableOpacity onPress={() => {}}>
-              <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
+        <View style={styles.actionRow}>
+          <View style={styles.searchContainer}>
+            <TextInput
+              placeholder="Search songs..."
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              style={styles.searchInput}
+              value={search}
+              onChangeText={setSearch}
+            />
           </View>
-        )}
-      />
+          <TouchableOpacity onPress={() => {}}>
+            <LinearGradient
+              colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.addButton}
+            >
+              <Ionicons name="add" size={28} color="#000000" />
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
 
-    </View>
+        
+        <FlatList data={filteredSongs} //get the filtered data
+          keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
+          contentContainerStyle={styles.listContent} //for managing the gap between items
+          style={styles.body}
+          renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
+            <View style={styles.songCard}>
+              
+              <TouchableOpacity  style={{ flexDirection: 'column', gap: 4, flex: 1 }}
+                onPress={() => {}}>
+                    <Text style={styles.songTitle}>{songItem.title}</Text>
+                    <Text style={styles.songArtist}>{songItem.artist}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => 
+                setOpenMenuId(openMenuId === songItem.id ? null : songItem.id)}>
+                <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+              </TouchableOpacity>
+
+              {openMenuId === songItem.id && (
+              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                <View style={styles.dropdown}>
+                  <TouchableOpacity style={styles.dropdownItem} onPress={() => {}}>
+                    <Ionicons name="pencil-outline" size={16} color="#FFFFFF" />
+                    <Text style={styles.dropdownText}>Rename</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.dropdownItem} onPress={() => {}}>
+                    <Ionicons name="trash-outline" size={16} color="#ff4444" />
+                    <Text style={[styles.dropdownText, { color: '#ff4444' }]}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+
+            </View>
+          )}
+        />
+
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -94,9 +118,10 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   songCard: {
-    flexDirection: 'row',        // ← add this
-    alignItems: 'center',        // ← add this
-    justifyContent: 'space-between', // ← add this
+    flexDirection: 'row',        
+    alignItems: 'center',        
+    justifyContent: 'space-between',
+    overflow: 'hidden',
 
 
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
@@ -144,5 +169,28 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-  }
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 40,
+    right: 0,
+    backgroundColor: 'rgba(20, 20, 20, 0.95)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    paddingVertical: 4,
+    minWidth: 130,
+    zIndex: 999,
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  dropdownText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
 });
