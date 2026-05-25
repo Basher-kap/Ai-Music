@@ -6,7 +6,6 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
 import { SONGS } from '@/models/songs';
 
 import { useState } from 'react';
-
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Songs() {
@@ -50,8 +49,18 @@ export default function Songs() {
         style={styles.body}
         renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
           <View style={styles.songCard}>
-            <Text style={styles.songTitle}>{songItem.title}</Text>
-            <Text style={styles.songArtist}>{songItem.artist}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between' }}>
+
+              <View style={{ flexDirection: 'column', gap: 4, }}>
+                <Text style={styles.songTitle}>{songItem.title}</Text>
+                <Text style={styles.songArtist}>{songItem.artist}</Text>
+              </View>
+
+              <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+
+            </View>
+
+              
           </View>
         )}
       />
