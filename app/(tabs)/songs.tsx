@@ -49,17 +49,22 @@ export default function Songs() {
         style={styles.body}
         renderItem={({ item: songItem }) => ( //now calls it with an object that has an item property
           <View style={styles.songCard}>
-            <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between' }}>
+            
 
-              <View style={{ flexDirection: 'column', gap: 4, }}>
-                <Text style={styles.songTitle}>{songItem.title}</Text>
-                <Text style={styles.songArtist}>{songItem.artist}</Text>
+            <TouchableOpacity onPress={() => {}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between' }}>
+
+                <View style={{ flexDirection: 'column', gap: 4, }}>
+                  <Text style={styles.songTitle}>{songItem.title}</Text>
+                  <Text style={styles.songArtist}>{songItem.artist}</Text>
+                </View>
+
+                <TouchableOpacity onPress={() => {}}>
+                  <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+                </TouchableOpacity>
+
               </View>
-
-              <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
-
-            </View>
-
+            </TouchableOpacity>
               
           </View>
         )}
