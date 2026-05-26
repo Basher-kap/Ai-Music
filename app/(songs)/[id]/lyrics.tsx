@@ -3,7 +3,10 @@ import { useGlobalSearchParams } from 'expo-router';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
 import { useTextTheme } from '@/context';
 import { SONGS } from '@/models/songs';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();
@@ -20,6 +23,25 @@ export default function Lyrics() {
         <Text style={ThemeTextStyles.tagline}>{song?.artist}</Text>
       </View>
 
+      <View style={styles.actionRow}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => router.replace('/(tabs)/songs')}>
+            <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+            <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+            <Ionicons name="trash-outline" size={20} color="#ff4444" />
+        </TouchableOpacity>
+      </View>
+
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
+            {/* split by lines and trim of whitespace for consistent centering */}
+          <Text style={styles.lyricsText} >{song?.lyrics.split('\n').map(line => line.trim()).join('\n')}</Text>
+        </ScrollView>
+
     </View>
   );
 }
@@ -34,7 +56,43 @@ const styles = StyleSheet.create({
     paddingTop: HEADER_PADDING_TOP,
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'flex-end',
     overflow: 'hidden',
+
+    justifyContent: 'center',
+  },
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    gap: 8,
+    },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(15, 15, 15, 0.53)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    },
+  lyricsContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(15, 15, 15, 0.26)',
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 10,
+    margin: 12,
+    },
+  lyricsText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    lineHeight: 24,
+    textAlign: 'center',
+    width: '100%', //to use full width of container 
   },
 });
