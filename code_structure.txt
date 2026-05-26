@@ -1,0 +1,19 @@
+app/
+  (tabs)/
+    _layout.tsx        ← main app tabs
+    index.tsx
+    songs.tsx
+    theme.tsx
+  (songs)/
+    _layout.tsx        ← song detail tabs layout
+    [id]/              ← folder named [id]
+      songs.tsx        ← Songs (back button)
+      lyrics.tsx       ← Lyrics tab
+      review.tsx       ← Review tab
+assets/
+components/
+constant/
+  layout.ts
+context/
+models/
+  songs.ts

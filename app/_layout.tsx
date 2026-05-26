@@ -54,6 +54,13 @@ function RootLayoutInner() {
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen 
+    name="(songs)/[id]" 
+    options={{ 
+      headerShown: false,
+      contentStyle: { backgroundColor: 'transparent' },
+    }} 
+  />
         </Stack>
       </ImageBackground>
     </>

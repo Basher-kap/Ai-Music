@@ -1,5 +1,6 @@
 // app/(tabs)/songs.tsx
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { router } from 'expo-router';
 import { useTextTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
@@ -56,9 +57,10 @@ export default function Songs() {
                 <View style={[styles.songCard]}>
                   
                   <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
-                    onPress={() => {}}>
-                        <Text style={styles.songTitle}>{songItem.title}</Text>
-                        <Text style={styles.songArtist}>{songItem.artist}</Text>
+                    onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
+                  >
+                    <Text style={styles.songTitle}>{songItem.title}</Text>
+                    <Text style={styles.songArtist}>{songItem.artist}</Text>
                   </TouchableOpacity>
         
                 </View>
