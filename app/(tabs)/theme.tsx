@@ -139,6 +139,7 @@ export default function Theme() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   scroll: { flex: 1 },
   header: {

@@ -25,6 +25,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   header: {
     height: HEADER_HEIGHT,              

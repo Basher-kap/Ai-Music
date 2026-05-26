@@ -58,6 +58,7 @@ export default function Songs() {
                   
                   <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
                     onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
+
                   >
                     <Text style={styles.songTitle}>{songItem.title}</Text>
                     <Text style={styles.songArtist}>{songItem.artist}</Text>
@@ -74,6 +75,7 @@ export default function Songs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   header: {
     height: HEADER_HEIGHT,              
