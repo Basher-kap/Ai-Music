@@ -25,7 +25,7 @@ export default function Review() {
       </View>
 
       <View style={styles.actionRow}>
-        <TouchableOpacity style={styles.actionButton} onPress={() => router.replace('/(tabs)/songs')}>
+        <TouchableOpacity style={styles.actionButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -38,10 +38,12 @@ export default function Review() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.reviewContainer}>
-        <Text style={styles.reviewText}>{song?.review}</Text>
-      </ScrollView>
-
+        {/* For review, made standalone scrollview only for review */}
+        <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.reviewContainer}>
+                <Text style={styles.reviewText}>{song?.review}</Text>
+            </View>
+        </ScrollView>
 
 
     </View>
@@ -50,6 +52,7 @@ export default function Review() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: 'transparent',
   },
   header: {

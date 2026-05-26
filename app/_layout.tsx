@@ -50,11 +50,11 @@ function RootLayoutInner() {
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: 'transparent' },
-            animation: 'none',
+            animation: 'fade', //apply fade animation as default to all tabs in a Stack
           }}
         >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(songs)" options={{ headerShown: false}} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false,  animation: 'slide_from_left' }} />
+          <Stack.Screen name="(songs)" options={{ headerShown: false }} />
         </Stack>
       </ImageBackground>
     </>

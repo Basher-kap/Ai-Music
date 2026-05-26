@@ -51,6 +51,7 @@ export default function Songs() {
           data={filteredSongs} //get the filtered data
           keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
           contentContainerStyle={styles.listContent} //for managing the gap between items
+          showsVerticalScrollIndicator={false}
           style={styles.body}
           renderItem={({ item: songItem }) => { //now calls it with an object that has an item property
               return (
@@ -58,7 +59,6 @@ export default function Songs() {
                   
                   <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
                     onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
-
                   >
                     <Text style={styles.songTitle}>{songItem.title}</Text>
                     <Text style={styles.songArtist}>{songItem.artist}</Text>

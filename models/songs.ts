@@ -59,7 +59,10 @@ export const SONGS: Song[] = [
             Aimai na kokoro wo tokashite tsunaida
             Kono yoru ga tsudzuite hoshikatta`, 
 
-    review: `The song's lyrics and atmosphere often evoke a sense of summer, nostalgia, and a bittersweet longing. The visual spectacle of fireworks serves as a powerful symbol for moments of intense beauty that are, by their nature, transient. This transience mirrors the delicate and often unfulfilled emotional connections explored in the narrative.`
+    review: `The song's lyrics and atmosphere often evoke a sense of summer, nostalgia, and a bittersweet longing. 
+    The visual spectacle of fireworks serves as a powerful symbol for moments of intense beauty that are, by their nature, transient. 
+    This transience mirrors the delicate and often unfulfilled emotional connections explored in the narrative.
+    `
   },
   { id: '2', title: 'Haru no Hi', artist: 'Aimyon', lyrics: 'Lyrics for Haru no Hi', review: 'Review for Haru no Hi' },
   { id: '3', title: 'Suki Dakara', artist: 'Yuika', lyrics: 'Lyrics for Suki Dakara', review: 'Review for Suki Dakara' },
