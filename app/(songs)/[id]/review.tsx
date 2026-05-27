@@ -23,15 +23,15 @@ export default function Review() {
 
       <View style={styles.header}>
 
-        <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.headerBtn} onPress={() => router.replace('/(tabs)/songs')}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
           <View style={styles.titleRow}>
-            <Text style={ThemeTextStyles.appTitle}>{song?.title}</Text>
+            <Text style={ThemeTextStyles.appTitle} adjustsFontSizeToFit numberOfLines={1} >{song?.title}</Text>
           </View>
-          <Text style={ThemeTextStyles.tagline}>{song?.artist}</Text>
+          <Text style={ThemeTextStyles.tagline} adjustsFontSizeToFit numberOfLines={1} >{song?.artist}</Text>
         </View>
           
         <TouchableOpacity style={styles.headerBtn} onPress={() => setEditOpen(true)}>
@@ -71,13 +71,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     overflow: 'hidden',
-    backgroundColor: 'rgba(15, 15, 15, 0.26)',
-    paddingBottom: 10,
+    paddingBottom:10,
   },
   headerCenter: {
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: 8,
+    backgroundColor: 'rgba(15, 15, 15, 0.26)',
+    borderRadius: 80,
   },
   headerBtn: {
     padding: 6,
@@ -86,29 +87,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-  },
-  dropdown: {
-    position: 'absolute',
-    top: 40,
-    left: '50%',
-    backgroundColor: 'rgba(20, 20, 20, 0.95)',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    paddingVertical: 4,
-    minWidth: 130,
-    zIndex: 999,
-  },
-  dropdownItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-  },
-  dropdownText: {
-    color: '#FFFFFF',
-    fontSize: 14,
   },
   reviewContainer: {
     paddingHorizontal: 20,

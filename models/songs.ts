@@ -1,12 +1,10 @@
 // models/songs.ts
 
-import { AnimatableStringValue } from "react-native";
-
 export type Song = {
   id: string;
   title: string;
   artist: string;
-  mp4song: AnimatableStringValue;
+  mp4song: string;
   lyrics: string;
   review: string;
 };
