@@ -1,12 +1,12 @@
 // app/(songs)/[id]/lyrics.tsx
-import { useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams, router } from 'expo-router';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
 import { useTextTheme } from '@/context';
 import { SONGS } from '@/models/songs';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-
+import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
+import LyricsEditForm from '@/components/LyricsEditForm';
 
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();
@@ -15,35 +15,46 @@ export default function Lyrics() {
   // find the song based on id
   const song = SONGS.find(s => s.id === id);
 
+  const [editOpen, setEditOpen] = useState(false);
+
   return (
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <Text style={ThemeTextStyles.appTitle}>{song?.title}</Text>
-        <Text style={ThemeTextStyles.tagline}>{song?.artist}</Text>
+
+        <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        <View style={styles.headerCenter}>
+          <View style={styles.titleRow}>
+            <Text style={ThemeTextStyles.appTitle}>{song?.title}</Text>
+          </View>
+          <Text style={ThemeTextStyles.tagline}>{song?.artist}</Text>
+        </View>
+
+        <TouchableOpacity style={styles.headerBtn} onPress={() => setEditOpen(true)}>
+          <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
+
       </View>
 
-      <View style={styles.actionRow}>
-        <TouchableOpacity style={styles.actionButton} onPress={() => router.replace('/(tabs)/songs')}>
-            <Ionicons name="arrow-back" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
-            <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
-            <Ionicons name="trash-outline" size={20} color="#ff4444" />
-        </TouchableOpacity>
-      </View>
-
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
-            {/* split by lines and trim of whitespace for consistent centering */}
-          <Text style={styles.lyricsText} >{song?.lyrics.split('\n').map(line => line.trim()).join('\n')}</Text>
-        </ScrollView>
-
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
+        {/* split by lines and trim of whitespace for consistent centering */}
+        <Text style={styles.lyricsText}>{song?.lyrics.split('\n').map(line => line.trim()).join('\n')}</Text>
+      </ScrollView>
+      
+      <LyricsEditForm
+        visible={editOpen}
+        song={song} //gets the song from its id
+        onClose={() => setEditOpen(false)}
+        onSave={() => setEditOpen(false)}
+        onDelete={() => setEditOpen(false)}
+      />
     </View>
   );
+
+  
 }
 
 const styles = StyleSheet.create({
@@ -54,31 +65,49 @@ const styles = StyleSheet.create({
   header: {
     height: HEADER_HEIGHT,
     paddingTop: HEADER_PADDING_TOP,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
     overflow: 'hidden',
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
+    paddingBottom: 10,
   },
-  actionRow: {
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+  },
+  headerBtn: {
+    padding: 6,
+  },
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
     gap: 8,
-    },
-  actionButton: {
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 40,
+    left: '50%',
+    backgroundColor: 'rgba(20, 20, 20, 0.95)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    paddingVertical: 4,
+    minWidth: 130,
+  },
+  dropdownItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(15, 15, 15, 0.53)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 10,
-    paddingVertical: 8,
+    gap: 10,
+    paddingVertical: 10,
     paddingHorizontal: 14,
-    },
+  },
+  dropdownText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
   lyricsContainer: {
     flex: 1,
     paddingHorizontal: 20,
@@ -87,12 +116,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
     margin: 12,
-    },
+  },
   lyricsText: {
     fontSize: 16,
     color: '#FFFFFF',
     lineHeight: 24,
     textAlign: 'center',
-    width: '100%', //to use full width of container 
+    width: '100%', //to use full width of container
   },
 });
