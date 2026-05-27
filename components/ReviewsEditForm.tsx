@@ -31,10 +31,10 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
                  <Text style={styles.modalTitle}>Edit Review Song</Text>
        
                  {/* Song Title, not inputtable anymore */}
-                 <Text style={styles.label}> {song?.title} </Text>
+                 <Text style={styles.songModalTitle}> {song?.title} </Text>
        
                  {/* Artist Input, not inputtable */}
-                 <Text style={styles.label}> {song?.title} </Text>
+                 <Text style={styles.artistModalTitle}> {song?.artist} </Text>
        
                  {/* Review Input */}
                  <Text style={styles.label}>Review</Text>
@@ -67,8 +67,6 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
        
            </Modal>
     );
-
-
 }
 
 const styles = StyleSheet.create({
@@ -90,45 +88,53 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgba(20, 20, 20, 0.97)',
     borderRadius: 16,
-    padding: 24,
+    padding: 18,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.15)',
   },
   modalTitle: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
-    marginBottom: 20,
+    marginBottom: 14,
     textAlign: 'center',
   },
   label: {
     color: 'rgba(255,255,255,0.6)',
-    fontSize: 12,
-    marginBottom: 6,
-    marginTop: 12,
+    fontSize: 11,
+    marginBottom: 4,
+    marginTop: 8,
+  },
+  songModalTitle: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  artistModalTitle: {
+    color: '#FFFFFF',
+    fontSize: 10,
   },
   input: {
+    color: '#FFFFFF',
     backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.15)',
     borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    color: '#FFFFFF',
-    fontSize: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   reviewsInput: {
-    height: 120,
+    height: 180,
     paddingTop: 10,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 24,
+    gap: 8,
+    marginTop: 12,
   },
   cancelButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
@@ -140,7 +146,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 10,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
@@ -151,8 +157,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   deleteButton: {
-    marginTop: 12,
-    paddingVertical: 12,
+    marginTop: 10,
+    paddingVertical: 10,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ff4444',

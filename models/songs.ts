@@ -1,9 +1,12 @@
 // models/songs.ts
 
+import { AnimatableStringValue } from "react-native";
+
 export type Song = {
   id: string;
   title: string;
   artist: string;
+  mp4song: AnimatableStringValue;
   lyrics: string;
   review: string;
 };
@@ -13,6 +16,7 @@ export const SONGS: Song[] = [
     id: '1', 
     title: 'Fireworks', 
     artist: 'Daoko x Kenshi Yonezu', 
+    mp4song: ' ',
     lyrics: `Ano hi miwatashita nagisa wo
             Ima mo omoidasun da
             Suna no ue ni kizanda kotoba
@@ -64,12 +68,12 @@ export const SONGS: Song[] = [
     This transience mirrors the delicate and often unfulfilled emotional connections explored in the narrative.
     `
   },
-  { id: '2', title: 'Haru no Hi', artist: 'Aimyon', lyrics: 'Lyrics for Haru no Hi', review: 'Review for Haru no Hi' },
-  { id: '3', title: 'Suki Dakara', artist: 'Yuika', lyrics: 'Lyrics for Suki Dakara', review: 'Review for Suki Dakara' },
-  { id: '4', title: 'Hikari E', artist: 'miwa', lyrics: 'Lyrics for Hikari E', review: 'Review for Hikari E' },
-  { id: '5', title: 'Yume to Hazakura', artist: 'Wotamin', lyrics: 'Lyrics for Yume to Hazakura', review: 'Review for Yume to Hazakura' },
-  { id: '6', title: 'Lemon', artist: 'Kenshi Yonezu', lyrics: 'Lyrics for Lemon', review: 'Review for Lemon' },
-  { id: '7', title: 'Night Sky Patrol of Tomorrow', artist: 'Orangestar', lyrics: 'Lyrics for Night Sky Patrol of Tomorrow', review: 'Review for Night Sky Patrol of Tomorrow' },
-  { id: '8', title: 'The Beginning', artist: 'ONE OK ROCK', lyrics: 'Lyrics for The Beginning', review: 'Review for The Beginning' },
-  { id: '9', title: 'Usseewa', artist: 'Ado', lyrics: 'Lyrics for Usseewa', review: 'Review for Usseewa' },
+  { id: '2', title: 'Haru no Hi', artist: 'Aimyon', mp4song: '', lyrics: 'Lyrics for Haru no Hi', review: 'Review for Haru no Hi' },
+  { id: '3', title: 'Suki Dakara', artist: 'Yuika', mp4song: '',lyrics: 'Lyrics for Suki Dakara', review: 'Review for Suki Dakara' },
+  { id: '4', title: 'Hikari E', artist: 'miwa', mp4song: '',lyrics: 'Lyrics for Hikari E', review: 'Review for Hikari E' },
+  { id: '5', title: 'Yume to Hazakura', artist: 'Wotamin',mp4song: '', lyrics: 'Lyrics for Yume to Hazakura', review: 'Review for Yume to Hazakura' },
+  { id: '6', title: 'Lemon', artist: 'Kenshi Yonezu', mp4song: '',lyrics: 'Lyrics for Lemon', review: 'Review for Lemon' },
+  { id: '7', title: 'Night Sky Patrol of Tomorrow', artist: 'Orangestar', mp4song: '',lyrics: 'Lyrics for Night Sky Patrol of Tomorrow', review: 'Review for Night Sky Patrol of Tomorrow' },
+  { id: '8', title: 'The Beginning', artist: 'ONE OK ROCK', mp4song: '',lyrics: 'Lyrics for The Beginning', review: 'Review for The Beginning' },
+  { id: '9', title: 'Usseewa', artist: 'Ado', mp4song: '',lyrics: 'Lyrics for Usseewa', review: 'Review for Usseewa' },
 ];
