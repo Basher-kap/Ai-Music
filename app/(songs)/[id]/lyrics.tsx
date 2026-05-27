@@ -56,9 +56,9 @@ const styles = StyleSheet.create({
     paddingTop: HEADER_PADDING_TOP,
     paddingHorizontal: 20,
     alignItems: 'center',
+    justifyContent: 'flex-end',
     overflow: 'hidden',
-
-    justifyContent: 'center',
+    backgroundColor: 'rgba(15, 15, 15, 0.26)',
   },
   actionRow: {
     flexDirection: 'row',

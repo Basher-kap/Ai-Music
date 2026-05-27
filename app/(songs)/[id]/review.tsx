@@ -62,6 +62,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     overflow: 'hidden',
+    backgroundColor: 'rgba(15, 15, 15, 0.26)',
+
   },
   actionRow: {
     flexDirection: 'row',
