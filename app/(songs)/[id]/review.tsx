@@ -6,7 +6,7 @@ import { SONGS } from '@/models/songs';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import ReviewsEditForm from '@/components/ReviewsEditForm';
+import { ReviewsEditForm } from '@/components';
 
 export default function Review() {
   const { id } = useGlobalSearchParams();

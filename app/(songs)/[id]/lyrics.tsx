@@ -6,7 +6,7 @@ import { SONGS } from '@/models/songs';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import LyricsEditForm from '@/components/LyricsEditForm';
+import { LyricsEditForm } from '@/components';
 
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();
@@ -15,7 +15,7 @@ export default function Lyrics() {
   // find the song based on id
   const song = SONGS.find(s => s.id === id);
 
-  const [editOpen, setEditOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
 
   return (
     <View style={styles.container}>
@@ -45,9 +45,9 @@ export default function Lyrics() {
       </ScrollView>
       
       <LyricsEditForm
-        visible={editOpen}
+        visible={editOpen} //state to appear the form
         song={song} //gets the song from its id
-        onClose={() => setEditOpen(false)}
+        onClose={() => setEditOpen(false)} //when pressed, sets to false to make it not visible now
         onSave={() => setEditOpen(false)}
         onDelete={() => setEditOpen(false)}
       />
