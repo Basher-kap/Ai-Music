@@ -4,9 +4,10 @@ export type Song = {
   id: string;
   title: string;
   artist: string;
-  mp4song: string;
-  lyrics: string;
-  review: string;
+  mp4song?: string;
+  lyrics?: string;
+  review?: string;
+  songTheme: string[]; 
 };
 
 export const SONGS: Song[] = [
@@ -64,14 +65,15 @@ export const SONGS: Song[] = [
     review: `The song's lyrics and atmosphere often evoke a sense of summer, nostalgia, and a bittersweet longing. 
     The visual spectacle of fireworks serves as a powerful symbol for moments of intense beauty that are, by their nature, transient. 
     This transience mirrors the delicate and often unfulfilled emotional connections explored in the narrative.
-    `
+    `,
+    songTheme: ['nostalgia' , 'love']
   },
-  { id: '2', title: 'Haru no Hi', artist: 'Aimyon', mp4song: '', lyrics: 'Lyrics for Haru no Hi', review: 'Review for Haru no Hi' },
-  { id: '3', title: 'Suki Dakara', artist: 'Yuika', mp4song: '',lyrics: 'Lyrics for Suki Dakara', review: 'Review for Suki Dakara' },
-  { id: '4', title: 'Hikari E', artist: 'miwa', mp4song: '',lyrics: 'Lyrics for Hikari E', review: 'Review for Hikari E' },
-  { id: '5', title: 'Yume to Hazakura', artist: 'Wotamin',mp4song: '', lyrics: 'Lyrics for Yume to Hazakura', review: 'Review for Yume to Hazakura' },
-  { id: '6', title: 'Lemon', artist: 'Kenshi Yonezu', mp4song: '',lyrics: 'Lyrics for Lemon', review: 'Review for Lemon' },
-  { id: '7', title: 'Night Sky Patrol of Tomorrow', artist: 'Orangestar', mp4song: '',lyrics: 'Lyrics for Night Sky Patrol of Tomorrow', review: 'Review for Night Sky Patrol of Tomorrow' },
-  { id: '8', title: 'The Beginning', artist: 'ONE OK ROCK', mp4song: '',lyrics: 'Lyrics for The Beginning', review: 'Review for The Beginning' },
-  { id: '9', title: 'Usseewa', artist: 'Ado', mp4song: '',lyrics: 'Lyrics for Usseewa', review: 'Review for Usseewa' },
+  { id: '2', title: 'Haru no Hi', artist: 'Aimyon', mp4song: '', lyrics: '', review: 'Review for Haru no Hi', songTheme: ['refreshing'] },
+  { id: '3', title: 'Suki Dakara', artist: 'Yuika', mp4song: '',lyrics: 'Lyrics for Suki Dakara', review: '', songTheme: ['love' , 'refreshing'] },
+  { id: '4', title: 'Hikari E', artist: 'miwa', mp4song: '',lyrics: '', review: 'Review for Hikari E' , songTheme: ['cheerful'] },
+  { id: '5', title: 'Yume to Hazakura', artist: 'Wotamin',mp4song: '', lyrics: '', review: 'Review for Yume to Hazakura', songTheme:['love' , 'refreshing'] },
+  { id: '6', title: 'Lemon', artist: 'Kenshi Yonezu', mp4song: '',lyrics: 'Lyrics for Lemon', review: '' , songTheme: ['emo']},
+  { id: '7', title: 'Night Sky Patrol of Tomorrow', artist: 'Orangestar', mp4song: '',lyrics: '', review: 'Review for Night Sky Patrol of Tomorrow' , songTheme: ['aspire']},
+  { id: '8', title: 'The Beginning', artist: 'ONE OK ROCK', mp4song: '',lyrics: '', review: '', songTheme: ['determination'] },
+  { id: '9', title: 'Usseewa', artist: 'Ado', mp4song: '',lyrics: 'Lyrics for Usseewa', review: '' , songTheme: ['wrath']},
 ];

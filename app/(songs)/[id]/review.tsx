@@ -43,7 +43,7 @@ export default function Review() {
       {/* For review, made standalone scrollview only for review */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.reviewContainer}>
-          <Text style={styles.reviewText}>{song?.review}</Text>
+          <Text style={styles.reviewText}>{song?.review ?? 'No review added yet' }</Text>
         </View>
       </ScrollView>
 

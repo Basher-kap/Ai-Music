@@ -43,7 +43,7 @@ export default function Lyrics() {
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
         {/* split by lines and trim of whitespace for consistent centering */}
-        <Text style={styles.lyricsText}>{song?.lyrics.split('\n').map(line => line.trim()).join('\n')}</Text>
+        <Text style={styles.lyricsText}>{song?.lyrics ? song.lyrics.split('\n').map(line => line.trim()).join('\n') : 'No lyrics added yet' }</Text>
       </ScrollView>
       
       <LyricsEditForm

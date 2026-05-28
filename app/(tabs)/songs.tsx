@@ -8,6 +8,7 @@ import { SONGS } from '@/models/songs';
 
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { AddSongForm } from '@/components';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
@@ -17,6 +18,14 @@ export default function Songs() {
     song.title.toLowerCase().includes(search.toLowerCase()) ||
     song.artist.toLowerCase().includes(search.toLowerCase())
   );
+
+  const [editOpen, setEditOpen] = useState(false);
+  const handleSaveSong = (songData: any) => {
+    console.log('--- New Song Submitted ---');
+    console.log('Song title:', songData.title);
+    console.log('Artist:', songData.artist);
+    console.log('Themes:', songData.themes);
+  }
 
   return (
       <View style={styles.container}>
@@ -35,7 +44,7 @@ export default function Songs() {
               onChangeText={setSearch}
             />
           </View>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => setEditOpen(true)}>
             <LinearGradient
               colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
               start={{ x: 0, y: 0 }}
@@ -68,6 +77,13 @@ export default function Songs() {
               );
           }}
         />
+
+        <AddSongForm
+          visible={editOpen}
+          onClose={() => setEditOpen(false)} 
+          onSave={handleSaveSong}
+        />
+
       </View>
   );
 }
