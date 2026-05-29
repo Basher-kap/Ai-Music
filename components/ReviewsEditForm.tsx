@@ -1,16 +1,32 @@
+import { THEME_KEYS } from "@/constant";
 import { Song } from "@/models/songs";
+import { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 
 
 type Props = {
-    visible: boolean;
-    song: Song | undefined;
-    onClose: () => void;
-    onSave: () => void; 
-}
+  visible: boolean;
+  song: Song | undefined;
+  onClose: () => void;
+  onSave: () => void;
+};
 
 export default function ReviewsEditForm({ visible, song, onClose, onSave} : Props) {
-    return (
+  const [selectedThemes, setSelectedThemes] = useState<string[]>(song?.songTheme ?? []);
+  
+  const toggleTheme = (theme: string) => {
+    if (selectedThemes.includes(theme)) {
+      setSelectedThemes(selectedThemes.filter(t => t !== theme));
+    } else {
+      setSelectedThemes([...selectedThemes, theme]);
+    }
+  }; 
+
+  useEffect(() => {
+    setSelectedThemes(song?.songTheme ?? []);
+  }, [song]);
+  
+  return (
        <Modal
              visible={visible}
              transparent
@@ -36,6 +52,25 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
                  {/* Artist Input, not inputtable */}
                  <Text style={styles.artistModalTitle}> {song?.artist} </Text>
        
+                {/* Theme */}
+                <Text style={styles.label}>Themes</Text>
+                <View style={styles.themeRow}>
+                  {THEME_KEYS.map(theme => {
+                    const isSelected = selectedThemes.includes(theme);
+                    return (
+                      <TouchableOpacity
+                        key={theme}
+                        style={[styles.themeChip, isSelected && styles.themeChipSelected]}
+                        onPress={() => toggleTheme(theme)}
+                      >
+                        <Text style={[styles.themeChipText, isSelected && styles.themeChipTextSelected]}>
+                          {theme}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
                  {/* Review Input */}
                  <Text style={styles.label}>Review</Text>
                  <TextInput
@@ -122,6 +157,32 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 4,
+  },
+  themeChip: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+  themeChipSelected: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FFFFFF',
+  },
+  themeChipText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+  },
+  themeChipTextSelected: {
+    color: '#000000',
+    fontWeight: '600',
   },
   reviewsInput: {
     height: 180,
