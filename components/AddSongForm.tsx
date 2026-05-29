@@ -15,7 +15,6 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
 
     const themes = ['nostalgia', 'refreshing', 'love', 'cheerful', 'emo', 'aspire', 'determination', 'wrath'];
 
-    // Toggle theme selection
     const toggleTheme = (theme: string) => {
         if (selectedThemes.includes(theme)) {
             setSelectedThemes(selectedThemes.filter(t => t !== theme));
@@ -32,6 +31,7 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
         setTitle('');
         setArtist('');
         setSelectedThemes([]);
+        onClose();
     };
 
     return (

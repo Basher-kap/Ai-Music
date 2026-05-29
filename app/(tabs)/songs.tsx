@@ -20,7 +20,7 @@ export default function Songs() {
   );
 
   const [editOpen, setEditOpen] = useState(false);
-  const handleSaveSong = (songData: any) => {
+  const handleSaveSong = (songData: { title: string; artist: string; themes: string[] }) => {
     console.log('--- New Song Submitted ---');
     console.log('Song title:', songData.title);
     console.log('Artist:', songData.artist);
