@@ -1,10 +1,10 @@
 // app/(tabs)/songs.tsx
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useTextTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-import { SONGS } from '@/models/songs';
+import { useSongs } from '@/store';
 
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,10 +13,13 @@ import { AddSongForm } from '@/components';
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
 
+  const { songs, loading, error } = useSongs();
   const [search, setSearch] = useState('');
-  const filteredSongs = SONGS.filter(song =>
+
+  const filteredSongs = songs.filter(song =>
     song.title.toLowerCase().includes(search.toLowerCase()) ||
     song.artist.toLowerCase().includes(search.toLowerCase())
+  
   );
 
   const [editOpen, setEditOpen] = useState(false);
@@ -26,6 +29,18 @@ export default function Songs() {
     console.log('Artist:', songData.artist);
     console.log('Themes:', songData.themes);
   }
+
+  if (loading) return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ActivityIndicator size="large" color="#FFFFFF" />
+    </View>
+  );
+
+  if (error) return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: '#ff4444' }}>Failed to load songs.</Text>
+    </View>
+  );
 
   return (
       <View style={styles.container}>

@@ -17,6 +17,7 @@ import { MetalMania_400Regular } from '@expo-google-fonts/metal-mania';
 import { ActivityIndicator, View } from 'react-native';
 import { useEffect } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
+import { SongsProvider } from '@/store';
 
 
 function RootLayoutInner() {
@@ -64,7 +65,9 @@ function RootLayoutInner() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <RootLayoutInner />
+      <SongsProvider>
+        <RootLayoutInner/>
+      </SongsProvider>
     </ThemeProvider>
   );
 }
