@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function ReviewsEditForm({ visible, song, onClose, onSave} : Props) {
-  const [selectedThemes, setSelectedThemes] = useState<string[]>(song?.songTheme ?? []);
+  const [selectedThemes, setSelectedThemes] = useState<string[]>(song?.song_theme ?? []);
   
   const toggleTheme = (theme: string) => {
     if (selectedThemes.includes(theme)) {
@@ -23,7 +23,7 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
   }; 
 
   useEffect(() => {
-    setSelectedThemes(song?.songTheme ?? []);
+    setSelectedThemes(song?.song_theme ?? []);
   }, [song]);
   
   return (
