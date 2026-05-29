@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'r
 import { router } from 'expo-router';
 import { useTextTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { SONGS } from '@/models/songs';
 
 import { useState } from 'react';

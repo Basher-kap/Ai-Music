@@ -1,6 +1,6 @@
 // app/(songs)/[id]/review.tsx
 import { useGlobalSearchParams, router } from 'expo-router';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant/layout';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useTextTheme } from '@/context';
 import { SONGS } from '@/models/songs';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';

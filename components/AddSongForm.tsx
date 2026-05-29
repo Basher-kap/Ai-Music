@@ -1,6 +1,7 @@
 // components/AddSongForm.tsx
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { THEME_KEYS } from '@/constant';
 
 type Props = {
     visible: boolean;
@@ -12,8 +13,6 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
     const [title, setTitle] = useState('');
     const [artist, setArtist] = useState('');
     const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-
-    const themes = ['nostalgia', 'refreshing', 'love', 'cheerful', 'emo', 'aspire', 'determination', 'wrath'];
 
     const toggleTheme = (theme: string) => {
         if (selectedThemes.includes(theme)) {
@@ -77,7 +76,7 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
                     {/* Theme Input */}
                     <Text style={styles.label}>Themes</Text>
                     <View style={styles.themeRow}>
-                        {themes.map(theme => {
+                        {THEME_KEYS.map(theme => {
                             const isSelected = selectedThemes.includes(theme);
                             return (
                                 <TouchableOpacity 
