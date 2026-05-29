@@ -7,13 +7,15 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LyricsEditForm, MusicPlayer } from '@/components';
+import { useSongs } from '@/store';
 
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
 
-  // find the song based on id
-  const song = SONGS.find(s => s.id === id);
+  // fetches the songs from useSongs and find the song based on id
+  const { songs } = useSongs();
+  const song = songs.find(s => s.id === id);
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
 

@@ -7,13 +7,15 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ReviewsEditForm } from '@/components';
+import { useSongs } from '@/store';
 
 export default function Review() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
 
   // find the song based on id
-  const song = SONGS.find(s => s.id === id);
+  const { songs } = useSongs();
+  const song = songs.find(s => s.id === id);
 
     const [editOpen, setEditOpen] = useState(false);
 
