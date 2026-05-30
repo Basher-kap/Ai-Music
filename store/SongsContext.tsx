@@ -8,6 +8,8 @@ type SongsContextType = {
   songs: Song[]; // declares this as array
   loading: boolean; //notes if data being fetched?
   error: string | null; // either carries an error message string or none
+  refetch: () => void;
+  addSong: (title: string, artist: string, song_theme: string[]) => Promise<void>; 
 };
 
 // creates a container to hold data and share it across the app, that data is the built SongsContextType
@@ -16,6 +18,8 @@ const SongsContext = createContext<SongsContextType>({
   songs: [], //starts an empty list first
   loading: true,
   error: null,
+  refetch: () => {},
+  addSong: async () => {},
 });
 
 //fetching of data
@@ -29,16 +33,11 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         setLoading(true); //informs that is loading
         setError(null); //then sends no error yet
 
-        console.log('Fetching songs from Supabase...');
-
         const { data, error } = await supabase
         .from('songs') //get a table "songs"
         .select('*') //* means select all data in the 'songs'
         .order('created_at' , {ascending: false}); //newest at the top
         
-        console.log('data:', data);
-        console.log('error:', error);
-
         if (error) {
             setError(error.message);
         } else {
@@ -54,11 +53,25 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         fetchSongs();
     }, []);
 
+    const addSong = async (title: string, artist: string, song_theme: string[]) => {
+          console.log('Adding song:', title, artist, song_theme);
+
+        const { error } = await supabase
+            .from('songs')
+            .insert([{ title, artist, song_theme}]); //a query to add a song in a table
+
+        if ( error ) {
+            console.error('Error adding song:' , error.message)
+        } else {
+            await fetchSongs(); //fetching the songs after adding, usually updates
+        }
+    };
+
         
     return (
         //returns this broadcasts with the values to every component below in the tree
        // children - whatever wrapped inside the <SongProvider> in layout.tsx (RootLayoutInner contains entire app)
-       <SongsContext.Provider value={{songs, loading, error }}>
+       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong }}>
             {children} 
         </SongsContext.Provider>
     )

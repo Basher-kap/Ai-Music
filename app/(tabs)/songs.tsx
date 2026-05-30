@@ -13,21 +13,17 @@ import { AddSongForm } from '@/components';
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
 
-  const { songs, loading, error } = useSongs();
-  const [search, setSearch] = useState('');
+  const { songs, loading, error, addSong } = useSongs();
+  const [ search, setSearch] = useState('');
 
   const filteredSongs = songs.filter(song =>
     song.title.toLowerCase().includes(search.toLowerCase()) ||
     song.artist.toLowerCase().includes(search.toLowerCase())
-  
   );
 
   const [editOpen, setEditOpen] = useState(false);
-  const handleSaveSong = (songData: { title: string; artist: string; themes: string[] }) => {
-    console.log('--- New Song Submitted ---');
-    console.log('Song title:', songData.title);
-    console.log('Artist:', songData.artist);
-    console.log('Themes:', songData.themes);
+  const handleSaveSong = async ( title: string, artist: string, themes: string[]) => {
+    await addSong(title, artist, themes);
   }
 
   if (loading) return (
@@ -96,7 +92,11 @@ export default function Songs() {
         <AddSongForm
           visible={editOpen}
           onClose={() => setEditOpen(false)} 
-          onSave={handleSaveSong}
+          onSave={async (songData) => {
+            const { title, artist, themes } = songData;
+            await handleSaveSong(title, artist, themes);
+            setEditOpen(false);
+          }}
         />
 
       </View>
@@ -176,3 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+function addSong(title: string, artist: string, themes: string[]) {
+  throw new Error('Function not implemented.');
+}
