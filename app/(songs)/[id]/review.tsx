@@ -2,7 +2,6 @@
 import { useGlobalSearchParams, router } from 'expo-router';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useTextTheme } from '@/context';
-import { SONGS } from '@/models/songs';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -14,7 +13,7 @@ export default function Review() {
   const { ThemeTextStyles } = useTextTheme();
 
   // find the song based on id
-  const { songs } = useSongs();
+  const { songs, addReviews } = useSongs();
   const song = songs.find(s => s.id === id);
 
     const [editOpen, setEditOpen] = useState(false);
@@ -25,7 +24,7 @@ export default function Review() {
 
       <View style={styles.header}>
 
-        <TouchableOpacity style={styles.headerBtn} onPress={() => router.replace('/(tabs)/songs')}>
+        <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -53,7 +52,11 @@ export default function Review() {
         visible={editOpen}
         song={song}
         onClose={() => setEditOpen(false)}
-        onSave={() => setEditOpen(false)}
+        onSave={ async (songData) => {
+          const { song_theme, review} = songData;
+          await addReviews(id as string, song_theme, review);
+          setEditOpen(false)
+        }}
       />
 
     </View>

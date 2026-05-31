@@ -11,6 +11,7 @@ type SongsContextType = {
   refetch: () => void;
   addSong: (title: string, artist: string, song_theme: string[]) => Promise<void>; 
   addLyrics: (id: string, title: string, artist: string, lyrics: string) => Promise<void>;
+  addReviews: (id: string, song_theme: string[], review: string) => Promise<void>;
 };
 
 // creates a container to hold data and share it across the app, that data is the built SongsContextType
@@ -22,6 +23,7 @@ const SongsContext = createContext<SongsContextType>({
   refetch: () => {},
   addSong: async () => {},
   addLyrics: async () => {},
+  addReviews: async () => {}
 });
 
 //fetching of data
@@ -56,7 +58,6 @@ export function SongsProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
-          console.log('Adding song:', title, artist, song_theme);
 
         const { error } = await supabase
             .from('songs')
@@ -70,7 +71,6 @@ export function SongsProvider({ children }: { children: ReactNode }) {
     };
 
     const addLyrics = async (id: string, title: string, artist: string, lyrics: string ) => {
-          console.log('Adding lyrics:', id, title, artist, lyrics);
 
         const { error } = await supabase
             .from('songs')
@@ -83,11 +83,24 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const addReviews = async (id: string, song_theme: string[], review: string ) => {
+
+        const { error } = await supabase
+            .from('songs')
+            .update({ song_theme, review }).eq('id',id); 
+
+        if ( error ) {
+            throw error;
+        } else {
+            await fetchSongs(); 
+        }
+    };
+
         
     return (
         //returns this broadcasts with the values to every component below in the tree
        // children - whatever wrapped inside the <SongProvider> in layout.tsx (RootLayoutInner contains entire app)
-       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong, addLyrics }}>
+       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong, addLyrics, addReviews }}>
             {children} 
         </SongsContext.Provider>
     )

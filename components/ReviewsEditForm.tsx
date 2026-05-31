@@ -1,3 +1,4 @@
+// components/ReviewEditForm.tsx
 import { THEME_KEYS } from "@/constant";
 import { Song } from "@/models/songs";
 import { useEffect, useState } from "react";
@@ -8,12 +9,13 @@ type Props = {
   visible: boolean;
   song: Song | undefined;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (data: {song_theme: string[], review: string}) => void;
 };
 
 export default function ReviewsEditForm({ visible, song, onClose, onSave} : Props) {
   const [selectedThemes, setSelectedThemes] = useState<string[]>(song?.song_theme ?? []);
-  
+  const [review, setReview] = useState(song?.review || '');
+
   const toggleTheme = (theme: string) => {
     if (selectedThemes.includes(theme)) {
       setSelectedThemes(selectedThemes.filter(t => t !== theme));
@@ -23,6 +25,7 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
   }; 
 
   useEffect(() => {
+
     setSelectedThemes(song?.song_theme ?? []);
   }, [song]);
   
@@ -75,9 +78,10 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
                  <Text style={styles.label}>Review</Text>
                  <TextInput
                    style={[styles.input, styles.reviewsInput]}
-                   defaultValue={song?.review}
                    placeholderTextColor="rgba(255,255,255,0.4)"
                    placeholder="Enter your review..."
+                   value={review}
+                   onChangeText={setReview}
                    multiline
                    textAlignVertical="top"
                  />
@@ -91,7 +95,7 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
                    </TouchableOpacity>
        
                    {/* Save */}
-                   <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+                   <TouchableOpacity style={styles.saveButton} onPress= {() => onSave({ song_theme: selectedThemes, review })}>
                      <Text style={styles.saveText}>Save</Text>
                    </TouchableOpacity>
        
