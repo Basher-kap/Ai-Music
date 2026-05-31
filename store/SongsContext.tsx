@@ -12,6 +12,7 @@ type SongsContextType = {
   addSong: (title: string, artist: string, song_theme: string[]) => Promise<void>; 
   addLyrics: (id: string, title: string, artist: string, lyrics: string) => Promise<void>;
   addReviews: (id: string, song_theme: string[], review: string) => Promise<void>;
+  deleteSong: (id: string) => Promise<void>;
 };
 
 // creates a container to hold data and share it across the app, that data is the built SongsContextType
@@ -23,7 +24,8 @@ const SongsContext = createContext<SongsContextType>({
   refetch: () => {},
   addSong: async () => {},
   addLyrics: async () => {},
-  addReviews: async () => {}
+  addReviews: async () => {},
+  deleteSong: async () => {},
 });
 
 //fetching of data
@@ -96,11 +98,25 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const deleteSong = async (id: string) => {
+        console.log('Deleting song:', id);
+          
+        const { error } = await supabase
+        .from('songs')
+        .delete().eq('id', id);
+
+        if ( error ) {
+            throw error;
+        } else {
+            await fetchSongs(); 
+        }
+    }
+
         
     return (
         //returns this broadcasts with the values to every component below in the tree
        // children - whatever wrapped inside the <SongProvider> in layout.tsx (RootLayoutInner contains entire app)
-       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong, addLyrics, addReviews }}>
+       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong, addLyrics, addReviews, deleteSong }}>
             {children} 
         </SongsContext.Provider>
     )

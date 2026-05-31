@@ -14,10 +14,11 @@ export default function Lyrics() {
   const { ThemeTextStyles } = useTextTheme();
 
   // fetches the songs from useSongs and find the song based on id
-  const { songs, addLyrics } = useSongs();
+  const { songs, addLyrics, deleteSong } = useSongs();
   const song = songs.find(s => s.id === id);
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
+
 
   return (
     <View style={styles.container}>
@@ -57,7 +58,11 @@ export default function Lyrics() {
             await addLyrics(id as string, title, artist, lyrics);
             setEditOpen(false);
           }}
-        onDelete={() => setEditOpen(false)}
+        onDelete={async() => {
+          await deleteSong(id as string);
+          setEditOpen(false);
+          router.replace('/(tabs)/songs');
+        }}
       />
     </View>
   );
