@@ -14,7 +14,7 @@ export default function Lyrics() {
   const { ThemeTextStyles } = useTextTheme();
 
   // fetches the songs from useSongs and find the song based on id
-  const { songs } = useSongs();
+  const { songs, addLyrics } = useSongs();
   const song = songs.find(s => s.id === id);
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
@@ -52,7 +52,11 @@ export default function Lyrics() {
         visible={editOpen} //state to appear the form
         song={song} //gets the song from its id
         onClose={() => setEditOpen(false)} //when pressed, sets to false to make it not visible now
-        onSave={() => setEditOpen(false)}
+        onSave={async (songData) => {
+            const { title, artist, lyrics } = songData;
+            await addLyrics(id as string, title, artist, lyrics);
+            setEditOpen(false);
+          }}
         onDelete={() => setEditOpen(false)}
       />
     </View>

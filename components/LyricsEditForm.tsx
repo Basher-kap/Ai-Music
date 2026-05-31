@@ -1,16 +1,34 @@
 // components/LyricsEditForm.tsx
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { Song } from '@/models/songs';
+import { useEffect, useState } from 'react';
 
 type Props = {
   visible: boolean;
   song: Song | undefined;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (data: { title: string; artist: string; lyrics: string }) => void;
   onDelete: () => void;
 };
 
 export default function LyricsEditForm({ visible, song, onClose, onSave, onDelete }: Props) {
+  const [title, setTitle] = useState(song?.title || '');
+  const [artist, setArtist] = useState(song?.artist || '');
+  const [lyrics, setLyrics] = useState(song?.lyrics || '');
+
+  //reset state whenever the song changes or modal opens
+  useEffect(() => {
+    if (visible && song) {
+      setTitle(song.title);
+      setArtist(song.artist);
+      setLyrics(song.lyrics || '');
+    }
+  }, [visible, song]);
+
+  const handleSave = () => {
+    onSave({title, artist, lyrics });
+  }
+  
   return (
     <Modal
       visible={visible}
@@ -35,7 +53,8 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
           <Text style={styles.label}>Title</Text>
           <TextInput
             style={styles.input}
-            defaultValue={song?.title}
+            value={title}
+            onChangeText={setTitle}
             placeholderTextColor="rgba(255,255,255,0.4)"
             placeholder="Song title"
           />
@@ -44,7 +63,8 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
           <Text style={styles.label}>Artist</Text>
           <TextInput
             style={styles.input}
-            defaultValue={song?.artist}
+            value={artist}
+            onChangeText={setArtist}
             placeholderTextColor="rgba(255,255,255,0.4)"
             placeholder="Artist name"
           />
@@ -53,7 +73,8 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
           <Text style={styles.label}>Lyrics</Text>
           <TextInput
             style={[styles.input, styles.lyricsInput]}
-            defaultValue={song?.lyrics}
+            value={lyrics}
+            onChangeText={setLyrics}
             placeholderTextColor="rgba(255,255,255,0.4)"
             placeholder="Enter lyrics..."
             multiline
@@ -69,7 +90,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
             </TouchableOpacity>
 
             {/* Save */}
-            <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
               <Text style={styles.saveText}>Save</Text>
             </TouchableOpacity>
 

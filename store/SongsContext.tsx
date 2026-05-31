@@ -10,6 +10,7 @@ type SongsContextType = {
   error: string | null; // either carries an error message string or none
   refetch: () => void;
   addSong: (title: string, artist: string, song_theme: string[]) => Promise<void>; 
+  addLyrics: (id: string, title: string, artist: string, lyrics: string) => Promise<void>;
 };
 
 // creates a container to hold data and share it across the app, that data is the built SongsContextType
@@ -20,6 +21,7 @@ const SongsContext = createContext<SongsContextType>({
   error: null,
   refetch: () => {},
   addSong: async () => {},
+  addLyrics: async () => {},
 });
 
 //fetching of data
@@ -67,11 +69,25 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const addLyrics = async (id: string, title: string, artist: string, lyrics: string ) => {
+          console.log('Adding lyrics:', id, title, artist, lyrics);
+
+        const { error } = await supabase
+            .from('songs')
+            .update({ title, artist, lyrics }).eq('id',id); 
+
+        if ( error ) {
+            throw error;
+        } else {
+            await fetchSongs(); 
+        }
+    };
+
         
     return (
         //returns this broadcasts with the values to every component below in the tree
        // children - whatever wrapped inside the <SongProvider> in layout.tsx (RootLayoutInner contains entire app)
-       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong }}>
+       <SongsContext.Provider value={{songs, loading, error, refetch: fetchSongs, addSong, addLyrics }}>
             {children} 
         </SongsContext.Provider>
     )

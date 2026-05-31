@@ -22,9 +22,6 @@ export default function Songs() {
   );
 
   const [editOpen, setEditOpen] = useState(false);
-  const handleSaveSong = async ( title: string, artist: string, themes: string[]) => {
-    await addSong(title, artist, themes);
-  }
 
   if (loading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -94,7 +91,7 @@ export default function Songs() {
           onClose={() => setEditOpen(false)} 
           onSave={async (songData) => {
             const { title, artist, themes } = songData;
-            await handleSaveSong(title, artist, themes);
+            await addSong(title, artist, themes);
             setEditOpen(false);
           }}
         />
@@ -176,7 +173,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-function addSong(title: string, artist: string, themes: string[]) {
-  throw new Error('Function not implemented.');
-}
