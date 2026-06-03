@@ -1,16 +1,19 @@
 name: Create Production Builds
 
-
-on:
-  push:
-    branches: ['main'] # Trigger on push to the main branch
+#on:
+#  push:
+#    branches: ['main']
 
 jobs:
   build_android:
-    type: build # This job type creates a production build for Android
+    name: Build Android Production
+    type: build
     params:
       platform: android
+      profile: production
   build_ios:
-    type: build # This job type creates a production build for iOS
+    name: Build iOS Production
+    type: build
     params:
       platform: ios
+      profile: production

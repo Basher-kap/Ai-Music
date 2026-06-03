@@ -1,4 +1,4 @@
-name: Create development builds
+name: Create Development Builds
 
 jobs:
   android_development_build:
@@ -13,4 +13,3 @@ jobs:
     params:
       platform: ios
       profile: development
-
