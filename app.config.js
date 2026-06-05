@@ -15,6 +15,10 @@ module.exports = ({ config }) => {
   return {
     ...config,
     name: appName,
+    plugins: [
+      ...(config.plugins ?? []),
+      'expo-web-browser',
+    ],
     android: {
       ...config.android,
       package: androidPackage,
