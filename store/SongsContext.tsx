@@ -44,6 +44,8 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         .select('*') //* means select all data in the 'songs'
         .order('created_at' , {ascending: false}); //newest at the top
         
+        console.log('fetched order:', data?.map(s => s.title));
+        
         if (error) {
             setError(error.message);
         } else {
