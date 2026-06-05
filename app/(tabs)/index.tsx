@@ -1,8 +1,8 @@
 // app/(tabs)/index.tsx
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-
+import { router } from 'expo-router';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
@@ -17,6 +17,10 @@ export default function Index() {
       <View style={styles.body}>
         <Text style={[ThemeTextStyles.tagline]}>Home screen</Text>
       </View>
+
+      <TouchableOpacity onPress={() => router.push('/login')}>
+        <Text style={{ color: '#fff' }}>Go to Login</Text>
+      </TouchableOpacity>
 
     </View>
   );
