@@ -25,18 +25,24 @@ function RootLayoutInner() {
   const { session, loading: authLoading } = useAuth();
 
   useEffect(() => {
-     if (authLoading) return;
+    if (authLoading) return;
 
-    if (!session) {
-      // Because no session means user is not logged in
-      router.replace('/login');
-    } else {
-      // Because session exists means user is logged in
-      router.replace('/(tabs)');
-    }
+    console.log('[Route] session:', session?.user?.email ?? 'none', '| authLoading:', authLoading);
 
+    const timer = setTimeout(() => {
+      if (!session) {
+        router.replace('/login');
+      } else {
+        router.replace('/(tabs)');
+      }
+    }, 500); // ← small delay to let the stack mount first
+
+  return () => clearTimeout(timer);
+}, [session, authLoading]);
+
+  useEffect(() => {
     NavigationBar.setVisibilityAsync('hidden');
-  }, [session, authLoading]);
+  }, []);
 
   const [loadFonts] = useFonts(
     {
@@ -45,7 +51,7 @@ function RootLayoutInner() {
     }
   )
 
-  if (!loadFonts) return (
+  if (!loadFonts || authLoading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
       <ActivityIndicator size="large" color="#7EC8A0" />
     </View>
@@ -62,24 +68,16 @@ function RootLayoutInner() {
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: 'transparent' },
-            animation: 'fade', //apply fade animation as default to all tabs in a Stack
+            animation: 'fade',
           }}
         >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
+          <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'slide_from_right' }} />
           <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false,  animation: 'slide_from_left' }} />
-          <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation: 'slide_from_right' }} />
+          <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
         </Stack>
       </ImageBackground>
     </>
-  );
-}
-
-function ProvidersWrapper({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  return (
-    <SongsProvider userId={user?.id ?? null}>
-      {children}
-    </SongsProvider>
   );
 }
 
@@ -87,9 +85,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <ProvidersWrapper>
+        <SongsProvider>
           <RootLayoutInner/>
-        </ProvidersWrapper>
+        </SongsProvider>
       </AuthProvider>
     </ThemeProvider>
   );

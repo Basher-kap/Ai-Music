@@ -31,14 +31,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = React.useState(true);
 
     useEffect(() => {
-
-        // get current session on app load
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
-
         // listen for auth changes (e.g. sign in, sign out)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             (_event, session) => {
@@ -75,9 +67,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!data.url) throw new Error('No OAuth URL returned');
 
         const result = await WebBrowser.openAuthSessionAsync(
-        data.url,
-        redirectUrl,
-        { showInRecents: false }  
+            data.url,
+            redirectUrl,
+            { showInRecents: false }  
         );
 
         console.log('[Auth] Browser result type:', result.type);

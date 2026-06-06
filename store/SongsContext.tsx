@@ -29,7 +29,7 @@ const SongsContext = createContext<SongsContextType>({
 });
 
 //fetching of data
-export function SongsProvider({ children, userId }: { children: ReactNode; userId: string | null }) {
+export function SongsProvider({ children }: { children: ReactNode}) {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,10 +70,19 @@ export function SongsProvider({ children, userId }: { children: ReactNode; userI
         setLoading(false);
     };
         
-   //run this when the app renders (to avoid continuous running a fetch data)
     useEffect(() => {
-        fetchSongs();
-    }, [userId]); //if the userId changes, it will refetch the songs for the new user
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            fetchSongs();
+            } else if (event === 'SIGNED_OUT') {
+            setSongs([]);
+            setLoading(false);
+            console.log('[Songs] Cleared songs — signed out');
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
           console.log('Adding song:', title, artist, song_theme);
