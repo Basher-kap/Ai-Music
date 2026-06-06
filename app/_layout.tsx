@@ -22,10 +22,10 @@ import { router } from 'expo-router';
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
-  const { session, loading } = useAuth();
+  const { session, loading: authLoading } = useAuth();
 
   useEffect(() => {
-     if (loading) return;
+     if (authLoading) return;
 
     if (!session) {
       // Because no session means user is not logged in
@@ -36,7 +36,7 @@ function RootLayoutInner() {
     }
 
     NavigationBar.setVisibilityAsync('hidden');
-  }, [session, loading]);
+  }, [session, authLoading]);
 
   const [loadFonts] = useFonts(
     {
