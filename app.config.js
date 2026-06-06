@@ -14,7 +14,7 @@ module.exports = ({ config }) => {
 
   return {
     ...config,
-    name: appName,
+    name: 'aimusic',
     plugins: [
       ...(config.plugins ?? []),
       'expo-web-browser',
@@ -22,6 +22,20 @@ module.exports = ({ config }) => {
     android: {
       ...config.android,
       package: androidPackage,
+      intentFilters: [
+        {
+          action: 'VIEW',
+          autoVerify: true,
+          data: [
+            {
+              scheme: 'aimusic',
+              host: 'auth',
+              pathPrefix: '/callback',
+            },
+          ],
+          category: ['BROWSABLE', 'DEFAULT'],
+        }
+      ],
     },
   };
 };

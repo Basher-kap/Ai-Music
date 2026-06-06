@@ -2,13 +2,11 @@
 import { useTextTheme } from "@/context";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useAuth } from "@/store/AuthContext";
 
 export default function Login() {
   const { ThemeTextStyles } = useTextTheme();
-
-  const handleGoogleLogin = () => {
-    console.log('Logging in with Google...');
-  };
+  const { signInWithGoogle } = useAuth();
 
   return (
     <View style={styles.container}>
@@ -24,7 +22,7 @@ export default function Login() {
         <TouchableOpacity
           style={styles.googleButton}
           activeOpacity={0.85}
-          onPress={handleGoogleLogin}
+          onPress={signInWithGoogle}
         >
           <Ionicons name="logo-google" size={20} color="#000000" />
           <Text style={styles.googleButtonText}>Continue with Google</Text>
