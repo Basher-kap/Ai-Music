@@ -5,9 +5,11 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useAuth } from '@/store';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
+  const { signOut } = useAuth();
 
   const rotation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -79,7 +81,7 @@ export default function Index() {
 
       {/* Logout Button */}
       <View style={styles.logoutSection}>
-        <TouchableOpacity style={styles.logoutBtn} activeOpacity={0.8} onPress={() => router.push('/login')}>
+        <TouchableOpacity style={styles.logoutBtn} activeOpacity={0.8} onPress={signOut}>
           <Ionicons name="log-out-outline" size={16} color="rgba(255, 255, 255, 0.7)" />
           <Text style={styles.logoutBtnText}>Logout</Text>
         </TouchableOpacity>

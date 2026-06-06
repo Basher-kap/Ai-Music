@@ -39,16 +39,30 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         setLoading(true); //informs that is loading
         setError(null); //then sends no error yet
 
+        const { data: { user } } = await supabase.auth.getUser();
+
+        console.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
+
+        if (!user) {
+            setSongs([]);
+            setLoading(false);
+            return;
+        }
+
         const { data, error } = await supabase
         .from('songs') //get a table "songs"
         .select('*') //* means select all data in the 'songs'
+        .eq('user_id', user.id) //only fetch the user's songs
         .order('created_at' , {ascending: false}); //newest at the top
         
         console.log('fetched order:', data?.map(s => s.title));
         
         if (error) {
+            console.error('[Songs] Fetch error:', error.message);
             setError(error.message);
         } else {
+            console.log('[Songs] ✓ Fetched', data.length, 'songs for', user.email);
+            console.log('[Songs] Song titles:', data.map(s => s.title));
             //checks the data (which got from the supabase) if matches the Song[] (its strcuture)
             setSongs (data as Song[]);
         }
@@ -62,10 +76,19 @@ export function SongsProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
+          console.log('Adding song:', title, artist, song_theme);
 
+          //  need the current user's ID to associate the song
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            console.error('No user logged in. Cannot add song.');
+            return;
+        }
+        
         const { error } = await supabase
             .from('songs')
-            .insert([{ title, artist, song_theme}]); //a query to add a song in a table
+            .insert([{ title, artist, song_theme, user_id: user.id }]); //a query to add a song in a table
 
         if ( error ) {
             console.error('Error adding song:' , error.message)
