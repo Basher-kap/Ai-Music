@@ -74,13 +74,22 @@ function RootLayoutInner() {
   );
 }
 
+function ProvidersWrapper({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  return (
+    <SongsProvider userId={user?.id ?? null}>
+      {children}
+    </SongsProvider>
+  );
+}
+
 export default function RootLayout() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <SongsProvider>
+        <ProvidersWrapper>
           <RootLayoutInner/>
-        </SongsProvider>
+        </ProvidersWrapper>
       </AuthProvider>
     </ThemeProvider>
   );
