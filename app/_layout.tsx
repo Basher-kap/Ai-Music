@@ -17,15 +17,26 @@ import { MetalMania_400Regular } from '@expo-google-fonts/metal-mania';
 import { ActivityIndicator, View } from 'react-native';
 import { useEffect } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
-import { AuthProvider, SongsProvider } from '@/store';
-
+import { AuthProvider, SongsProvider, useAuth } from '@/store';
+import { router } from 'expo-router';
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
+  const { session, loading } = useAuth();
 
   useEffect(() => {
+     if (loading) return;
+
+    if (!session) {
+      // Because no session means user is not logged in
+      router.replace('/login');
+    } else {
+      // Because session exists means user is logged in
+      router.replace('/(tabs)');
+    }
+
     NavigationBar.setVisibilityAsync('hidden');
-  }, []);
+  }, [session, loading]);
 
   const [loadFonts] = useFonts(
     {

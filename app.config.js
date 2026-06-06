@@ -14,7 +14,7 @@ module.exports = ({ config }) => {
 
   return {
     ...config,
-    name: 'aimusic',
+    name: appName,
     plugins: [
       ...(config.plugins ?? []),
       'expo-web-browser',
