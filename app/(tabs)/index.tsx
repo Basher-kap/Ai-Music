@@ -6,10 +6,11 @@ import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '@/store';
+import { Image } from 'react-native';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
 
   const rotation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -79,12 +80,24 @@ export default function Index() {
 
       </View>
 
-      {/* Logout Button */}
-      <View style={styles.logoutSection}>
-        <TouchableOpacity style={styles.logoutBtn} activeOpacity={0.8} onPress={signOut}>
-          <Ionicons name="log-out-outline" size={16} color="rgba(255, 255, 255, 0.7)" />
-          <Text style={styles.logoutBtnText}>Logout</Text>
+      {/* Profile + Logout */}
+      <View style={styles.profileSection}>
+        {/* Logout button */}
+          <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
+            {/* Avatar */}
+          {user?.user_metadata?.avatar_url ? (
+            <Image
+              source={{ uri: user.user_metadata.avatar_url }}
+              style={styles.avatar}
+            />
+          ) : (
+            <View style={styles.avatarFallback}>
+              <Ionicons name="person" size={18} color="#FFFFFF" />
+            </View>
+          )}
+          <Ionicons name="log-out-outline" size={18} color="rgba(255,255,255,0.7)" />
         </TouchableOpacity>
+
       </View>
 
     </View>
@@ -210,22 +223,35 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     alignItems: 'flex-end',
   },
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    paddingTop: 12,
+  },
   logoutBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(74, 74, 74, 0.37)',
+    gap: 8,
+    padding: 6,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.22)',
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    gap: 7,
+    borderColor: 'rgba(255,255,255,0.15)',
   },
-  logoutBtnText: {
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.1,
+  avatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+  },
+  avatarFallback: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
