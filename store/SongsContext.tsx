@@ -73,6 +73,19 @@ export function SongsProvider({ children }: { children: ReactNode }) {
    //run this when the app renders (to avoid continuous running a fetch data)
     useEffect(() => {
         fetchSongs();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            console.log('[Songss] Auth state changed. Event:', event, '| User:', session?.user?.email ?? 'none');
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+                fetchSongs();
+            } else if (event === 'SIGNED_OUT') {
+                setSongs([]);
+                console.log('[Songs] User signed out, cleared songs.');
+            }
+        });
+
+        return () => subscription.unsubscribe();
+
     }, []);
 
     const addSong = async (title: string, artist: string, song_theme: string[]) => {

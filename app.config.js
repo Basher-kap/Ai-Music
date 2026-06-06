@@ -34,6 +34,16 @@ module.exports = ({ config }) => {
             },
           ],
           category: ['BROWSABLE', 'DEFAULT'],
+        },
+        {
+          action: 'VIEW',
+          autoVerify: true,
+          data: [
+            {
+              scheme: 'aimusic',
+            },
+          ],
+          category: ['BROWSABLE', 'DEFAULT'],
         }
       ],
     },
