@@ -52,65 +52,73 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
     
     const signInWithGoogle = async () => {
-        try {
-            console.log('[Auth] Starting Google Sign-In...');
+    try {
+        console.log('[Auth] Starting Google Sign-In...');
 
-            const redirectUrl = AuthSession.makeRedirectUri({
-                scheme: 'aimusic',
-                path: 'auth/callback',
-            });
-            console.log('[Auth] Redirect URL generated:', redirectUrl);
+        await WebBrowser.warmUpAsync();
 
-            const { data, error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: redirectUrl,
-                    skipBrowserRedirect: true,
-                },
-            });
+        const redirectUrl = AuthSession.makeRedirectUri({
+        scheme: 'aimusic',
+        path: 'auth/callback',
+        });
+        console.log('[Auth] Redirect URL:', redirectUrl);
 
-            if (error) throw error;
-            if (!data.url) throw new Error('No OAuth URL returned');
-            console.log('[Auth] OAuth URL received from Supabase, opening browser...');
+        const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: redirectUrl,
+            skipBrowserRedirect: true,
+        },
+        });
 
-            const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-            console.log('[Auth] Browser result:', JSON.stringify(result));
+        if (error) throw error;
+        if (!data.url) throw new Error('No OAuth URL returned');
 
-            //the result of the WebBrowser.openAuthSessionAsync 
-            if (result.type === 'success' && result.url) {
-                console.log('[Auth] Redirect successful, parsing tokens...');
+        const result = await WebBrowser.openAuthSessionAsync(
+        data.url,
+        redirectUrl,
+        { showInRecents: false }  
+        );
 
-                const url = new URL(result.url);
-                const hashParams = new URLSearchParams(url.hash.substring(1));
+        console.log('[Auth] Browser result type:', result.type);
 
-                const access_token = hashParams.get('access_token');
-                const refresh_token = hashParams.get('refresh_token');
+        if (result.type === 'success' && result.url) {
+        console.log('[Auth] Redirect successful, parsing tokens...');
 
-                if (!access_token || !refresh_token) {
-                    throw new Error('Missing tokens in redirect URL');
-                }
-                console.log('[Auth] Tokens extracted successfully');
+        const url = new URL(result.url);
+        const hashParams = new URLSearchParams(url.hash.substring(1));
 
-                const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-                    access_token,
-                    refresh_token,
-                });
+        const access_token = hashParams.get('access_token');
+        const refresh_token = hashParams.get('refresh_token');
 
-                if (sessionError) throw sessionError;
-                console.log('[Auth] Session set successfully');
-                console.log('[Auth] ✓ Logged in as:', sessionData.user?.email);
-                console.log('[Auth] ✓ User ID:', sessionData.user?.id);
-                console.log('[Auth] ✓ Provider:', sessionData.user?.app_metadata?.provider);
-                console.log('[Auth] ✓ Full name:', sessionData.user?.user_metadata?.full_name);
-
-            } else if (result.type === 'cancel') {
-                console.log('[Auth] User cancelled the sign-in.');
-            } else {
-                console.log('[Auth] Browser closed without completing sign-in. Result:', result.type);
-            }
-        } catch (error) {
-            console.error('[Auth] Google sign-in error:', error);
+        if (!access_token || !refresh_token) {
+            throw new Error('Missing tokens in redirect URL');
         }
+
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+        });
+
+        if (sessionError) throw sessionError;
+
+        console.log('[Auth] ✓ Session set successfully');
+        console.log('[Auth] ✓ Logged in as:', sessionData.user?.email);
+        console.log('[Auth] ✓ User ID:', sessionData.user?.id);
+        console.log('[Auth] ✓ Provider:', sessionData.user?.app_metadata?.provider);
+        console.log('[Auth] ✓ Full name:', sessionData.user?.user_metadata?.full_name);
+
+        } else if (result.type === 'cancel') {
+        console.log('[Auth] ✗ User cancelled.');
+        }
+
+    } catch (error) {
+        console.error('[Auth] Google sign-in error:', error);
+    } finally {
+        // Because cooldown must always run to release the browser
+        // regardless of success or failure
+        await WebBrowser.coolDownAsync();
+    }
     };
 
     const signOut = async () => {
