@@ -1,13 +1,28 @@
 // app/login.tsx
 import { useTextTheme } from "@/context";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from "@/store/AuthContext";
+import { useState } from "react";
 
 export default function Login() {
   const { ThemeTextStyles } = useTextTheme();
   const { signInWithGoogle } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [signingIn, setSigningIn] = useState(false);
 
+  const handleGoogleSignIn = async () => {
+    setError(null);
+    setSigningIn(true);
+
+    const errorMessage = await signInWithGoogle();
+
+    setSigningIn(false);
+
+    if (errorMessage) {
+      setError(errorMessage);
+    }
+  }
   return (
     <View style={styles.container}>
 
@@ -19,13 +34,28 @@ export default function Login() {
 
       {/* Actions */}
       <View style={styles.actionSection}>
+
+        {/* Error message */}
+        {error && (
+          <View style={styles.errorBox}>
+            <Ionicons name="alert-circle-outline" size={16} color="#ff4444" />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+
         <TouchableOpacity
           style={styles.googleButton}
           activeOpacity={0.85}
-          onPress={signInWithGoogle}
+          onPress={handleGoogleSignIn}
+          disabled={signingIn}
         >
-          <Ionicons name="logo-google" size={20} color="#000000" />
-          <Text style={styles.googleButtonText}>Continue with Google</Text>
+            {signingIn ? (
+              <ActivityIndicator size="small" color="#000000" />
+            ) : <>
+                <Ionicons name="logo-google" size={20} color="#000000" />
+                <Text style={styles.googleButtonText}>Continue with Google</Text>
+              </>
+          }
         </TouchableOpacity>
 
         <Text style={styles.termsText}>
@@ -74,4 +104,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
   },
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(255, 68, 68, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 68, 68, 0.3)',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    },
+    errorText: {
+    color: '#ff4444',
+    fontSize: 13,
+    flex: 1,
+    },
 });

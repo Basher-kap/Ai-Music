@@ -25,20 +25,20 @@ function RootLayoutInner() {
   const { session, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    if (authLoading) return;
+      if (authLoading) return;
 
-    console.log('[Route] session:', session?.user?.email ?? 'none', '| authLoading:', authLoading);
+      console.log('[Route] session:', session?.user?.email ?? 'none', '| authLoading:', authLoading);
 
-    const timer = setTimeout(() => {
-      if (!session) {
-        router.replace('/login');
-      } else {
-        router.replace('/(tabs)');
-      }
-    }, 500); // ← small delay to let the stack mount first
+      const timer = setTimeout(() => {
+        if (!session) {
+          router.replace('/login');
+        } else {
+          router.replace('/(tabs)');
+        }
+      }, 500); // ← small delay to let the stack mount first
 
-  return () => clearTimeout(timer);
-}, [session, authLoading]);
+    return () => clearTimeout(timer);
+  }, [session, authLoading]);
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync('hidden');
