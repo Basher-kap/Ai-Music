@@ -8,7 +8,7 @@ import { useSongs } from '@/store';
 
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { AddSongForm } from '@/components';
+import { AddSongForm, SongListSkeleton } from '@/components';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
@@ -22,12 +22,6 @@ export default function Songs() {
   );
 
   const [editOpen, setEditOpen] = useState(false);
-
-  if (loading) return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" color="#FFFFFF" />
-    </View>
-  );
 
   if (error) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -52,6 +46,7 @@ export default function Songs() {
               onChangeText={setSearch}
             />
           </View>
+          
           <TouchableOpacity onPress={() => setEditOpen(true)}>
             <LinearGradient
               colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
@@ -64,27 +59,31 @@ export default function Songs() {
           </TouchableOpacity>
         </View>
 
-        <FlatList 
-          data={filteredSongs} //get the filtered data
-          keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
-          contentContainerStyle={styles.listContent} //for managing the gap between items
-          showsVerticalScrollIndicator={false}
-          style={styles.body}
-          renderItem={({ item: songItem }) => { //now calls it with an object that has an item property
-              return (
-                <View style={[styles.songCard]}>
-                  
-                  <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
-                    onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
-                  >
-                    <Text style={styles.songTitle}>{songItem.title}</Text>
-                    <Text style={styles.songArtist}>{songItem.artist}</Text>
-                  </TouchableOpacity>
-        
-                </View>
-              );
-          }}
-        />
+        {/*while loading, show skeleton-like view */}
+        {loading ? <SongListSkeleton /> :
+
+          <FlatList 
+            data={filteredSongs} //get the filtered data
+            keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
+            contentContainerStyle={styles.listContent} //for managing the gap between items
+            showsVerticalScrollIndicator={false}
+            style={styles.body}
+            renderItem={({ item: songItem }) => { //now calls it with an object that has an item property
+                return (
+                  <View style={[styles.songCard]}>
+                    
+                    <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
+                      onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
+                    >
+                      <Text style={styles.songTitle}>{songItem.title}</Text>
+                      <Text style={styles.songArtist}>{songItem.artist}</Text>
+                    </TouchableOpacity>
+          
+                  </View>
+                );
+            }}
+          />
+        } 
 
         <AddSongForm
           visible={editOpen}
