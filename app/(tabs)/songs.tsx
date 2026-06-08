@@ -7,19 +7,28 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useSongs } from '@/store';
 
 import { useState } from 'react';
+import { RefreshControl } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
 
-  const { songs, loading, error, addSong } = useSongs();
+  const { songs, loading, error, addSong, refetch } = useSongs();
   const [ search, setSearch] = useState('');
 
   const filteredSongs = songs.filter(song =>
     song.title.toLowerCase().includes(search.toLowerCase()) ||
     song.artist.toLowerCase().includes(search.toLowerCase())
   );
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const [editOpen, setEditOpen] = useState(false);
 
@@ -78,6 +87,14 @@ export default function Songs() {
             contentContainerStyle={styles.listContent} //for managing the gap between items
             showsVerticalScrollIndicator={false}
             style={styles.body}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                tintColor="#FFFFFF"
+                colors={['#050505']}
+              />
+            }
             renderItem={({ item: songItem }) => { //now calls it with an object that has an item property
                 return (
                   <View style={[styles.songCard]}>

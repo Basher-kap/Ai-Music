@@ -9,7 +9,7 @@ type SongsContextType = {
   songs: Song[]; // declares this as array
   loading: boolean; //notes if data being fetched?
   error: string | null; // either carries an error message string or none
-  refetch: () => void;
+  refetch: () => Promise<void>;
   addSong: (title: string, artist: string, song_theme: string[]) => Promise<void>; 
   addLyrics: (id: string, title: string, artist: string, lyrics: string) => Promise<void>;
   addReviews: (id: string, song_theme: string[], review: string) => Promise<void>;
@@ -20,9 +20,9 @@ type SongsContextType = {
 const SongsContext = createContext<SongsContextType>({
   //these are the initial state
   songs: [], //starts an empty list first
-  loading: true,
+  loading: true, 
   error: null,
-  refetch: () => {},
+  refetch: async () => {},
   addSong: async () => {},
   addLyrics: async () => {},
   addReviews: async () => {},
