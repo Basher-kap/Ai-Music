@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, Activity
 import { router } from 'expo-router';
 import { useTextTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
 import { useSongs } from '@/store';
 
 import { useState } from 'react';
@@ -42,7 +42,7 @@ export default function Songs() {
       <View style={styles.container}>
       
         <View style={styles.header}>
-          <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+          <Text style={[ThemeTextStyles.appTitle]}>Your Songs</Text>
         </View>
 
         <View style={styles.actionRow}>
@@ -95,20 +95,35 @@ export default function Songs() {
                 colors={['#050505']}
               />
             }
-            renderItem={({ item: songItem }) => { //now calls it with an object that has an item property
-                return (
-                  <View style={[styles.songCard]}>
-                    
-                    <TouchableOpacity style={{ flexDirection: 'column', gap: 4, flex: 1 }}
-                      onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
-                    >
-                      <Text style={styles.songTitle}>{songItem.title}</Text>
-                      <Text style={styles.songArtist}>{songItem.artist}</Text>
-                    </TouchableOpacity>
-          
+            renderItem={({ item: songItem }) => (
+              <View style={styles.songCard}>
+                <TouchableOpacity
+                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
+                  onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
+                >
+                  {/* Left — title and artist */}
+                  <View style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
+                    <Text style={styles.songTitle}>{songItem.title}</Text>
+                    <Text style={styles.songArtist}>{songItem.artist}</Text>
                   </View>
-                );
-            }}
+
+                  {/* Right — theme chips */}
+                  {songItem.song_theme?.length > 0 && (
+                    <View style={styles.chipRow}>
+                      {songItem.song_theme.map(theme => (
+                        <View 
+                          key={theme} 
+                          style={[styles.chip, { backgroundColor: THEME_ACCENTS[theme as ThemeKey] }]}
+                        >
+                          <Text style={styles.chipText}>{theme}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+
+                </TouchableOpacity>
+              </View>
+            )}
           />
         } 
 
@@ -197,5 +212,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  chipRow: {
+    flexDirection: 'column',  
+    gap: 4,
+    alignItems: 'flex-end',
+    marginLeft: 8,
+  },
+  chip: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 20,
+  },
+  chipText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#000000',
+    textTransform: 'capitalize',
   },
 });
