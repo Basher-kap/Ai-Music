@@ -8,7 +8,7 @@ import { useSongs } from '@/store';
 
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { AddSongForm, SongListSkeleton } from '@/components';
+import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
@@ -61,7 +61,17 @@ export default function Songs() {
 
         {/*while loading, show skeleton-like view */}
         {loading ? <SongListSkeleton /> :
-
+          filteredSongs.length === 0 && search === ''
+          ? <EmptyState onAddSong={() => setEditOpen(true)} />
+            : filteredSongs.length === 0 && search !== ''
+              ? // diff message for Search empty state
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Ionicons name="search-outline" size={40} color="rgba(255,255,255,0.2)" />
+                  <Text style={{ color: 'rgba(255,255,255,0.4)', marginTop: 12, fontSize: 14 }}>
+                    No songs match "{search}"
+                  </Text>
+                </View>
+          :
           <FlatList 
             data={filteredSongs} //get the filtered data
             keyExtractor={(songItem) => songItem.id} //to track the data with unique id for use
