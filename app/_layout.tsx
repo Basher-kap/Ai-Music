@@ -2,8 +2,8 @@
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet } from 'react-native';
-import { useBgImg, ThemeProvider } from '@/context';
+import { Animated, ImageBackground, StyleSheet } from 'react-native';
+import { useBgImg, ThemeProvider, useTheme } from '@/context';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
@@ -15,14 +15,37 @@ import { RussoOne_400Regular } from '@expo-google-fonts/russo-one';
 import { MetalMania_400Regular } from '@expo-google-fonts/metal-mania'; 
 
 import { ActivityIndicator, View } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
 import { AuthProvider, SongsProvider, useAuth } from '@/store';
 import { router } from 'expo-router';
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
+  const { activeTheme } = useTheme();
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [currentImage, setCurrentImage] = useState(backgroundImage);
+  const [nextImage, setNextImage] = useState(backgroundImage);
   const { session, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    setNextImage(backgroundImage);
+
+    Animated.sequence([
+      Animated.timing(fadeAnim, {
+        toValue: 0, 
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1, 
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setCurrentImage(backgroundImage);
+    });
+  }), [activeTheme];
 
   useEffect(() => {
       if (authLoading) return;
@@ -64,6 +87,19 @@ function RootLayoutInner() {
         style={styles.background}
         resizeMode="cover"
       >
+        <Animated.View 
+          style={[
+            StyleSheet.absoluteFillObject,
+            { opacity: fadeAnim }
+          ]}
+        >
+          <ImageBackground
+            source={nextImage}
+            style={styles.background}
+            resizeMode="cover"
+          />
+        </Animated.View>
+        
         <Stack
           screenOptions={{
             headerShown: false,

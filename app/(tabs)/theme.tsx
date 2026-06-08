@@ -1,7 +1,70 @@
 // app/(tabs)/theme.tsx
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import { useRef } from 'react';
 import { useTheme, useTextTheme } from '@/context';
-import { THEMES, THEME_ACCENTS, THEME_KEYS} from '@/constant';
+import { THEMES, THEME_ACCENTS, ThemeInfo } from '@/constant/themes';
+import { ThemeKey } from '@/context/ThemeContext';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
+
+function ThemeCard({ theme, isActive, accent, onPress, ThemeTextStyles }: {
+  theme: ThemeInfo;
+  isActive: boolean;
+  accent: string;
+  onPress: () => void;
+  ThemeTextStyles: any;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    // Because a quick scale down then up gives tactile press feedback
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 0.97,
+        duration: 80,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: 80,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    onPress();
+  };
+
+  return (
+    <TouchableOpacity onPress={handlePress} activeOpacity={1}>
+      <Animated.View style={[
+        styles.card,
+        isActive && { borderColor: accent, backgroundColor: 'rgba(0,0,0,0.6)' },
+        isActive && { borderLeftWidth: 5, borderLeftColor: accent },
+        { transform: [{ scale }] },
+      ]}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.emoji}>{theme.emoji}</Text>
+          <View style={styles.nameRow}>
+            <Text style={[
+              styles.themeName,
+              isActive && { color: accent },
+            ]}>
+              {theme.name}
+            </Text>
+          </View>
+        </View>
+
+        <View style={isActive ? styles.descriptionWrapper : undefined}>
+          <Text style={[
+            styles.description,
+            isActive && ThemeTextStyles.description,
+          ]}>
+            {theme.description}
+          </Text>
+        </View>
+      </Animated.View>
+    </TouchableOpacity>
+  );
+}
 
 export default function Theme() {
   const { activeTheme, setActiveTheme } = useTheme();
@@ -11,12 +74,12 @@ export default function Theme() {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+        <Text style={ThemeTextStyles.appTitle}>Ai Music</Text>
       </View>
 
       <View style={styles.subHeader}>
-        <Text style={[ThemeTextStyles.tagline]}>
-          {THEMES.find(t => t.key === activeTheme)?.tagline }
+        <Text style={ThemeTextStyles.tagline}>
+          {THEMES.find(t => t.key === activeTheme)?.tagline}
         </Text>
       </View>
 
@@ -27,38 +90,14 @@ export default function Theme() {
           const accent = THEME_ACCENTS[theme.key];
 
           return (
-            <TouchableOpacity
+            <ThemeCard
               key={theme.key}
-              onPress={() => setActiveTheme(theme.key as any)} // this is where the theme changes on cards to press
-              activeOpacity={0.8}
-            >
-              <View style={[
-                styles.card,
-                isActive && { borderColor: accent, backgroundColor: 'rgba(0,0,0,0.6)' },
-                isActive && { borderLeftWidth: 5, borderLeftColor: accent }
-              ]}>
-                <View style={styles.cardHeader}>
-                  <Text style={styles.emoji}>{theme.emoji}</Text>
-                  <View style={styles.nameRow}>
-                    <Text style={[
-                      styles.themeName,
-                      isActive && { color: accent },
-                    ]}>
-                      {theme.name}
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={isActive ? styles.descriptionWrapper : undefined}>
-                  <Text style={[
-                    styles.description,
-                    isActive && ThemeTextStyles.description,
-                  ]}>
-                    {theme.description}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+              theme={theme}
+              isActive={isActive}
+              accent={accent}
+              onPress={() => setActiveTheme(theme.key as ThemeKey)}
+              ThemeTextStyles={ThemeTextStyles}
+            />
           );
         })}
       </ScrollView>
@@ -74,15 +113,15 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   header: {
-    height: 130,              
-    paddingTop: 50,           
+    height: HEADER_HEIGHT,
+    paddingTop: HEADER_PADDING_TOP,
     paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'flex-end', 
+    justifyContent: 'flex-end',
     overflow: 'hidden',
   },
   subHeader: {
-    height: 24,                        
+    height: 24,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
@@ -102,7 +141,7 @@ const styles = StyleSheet.create({
   },
   descriptionWrapper: {
     marginTop: 4,
-    paddingLeft: 4, 
+    paddingLeft: 4,
     opacity: 0.9,
   },
   cardHeader: {
