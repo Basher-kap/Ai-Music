@@ -182,5 +182,5 @@ const styles = StyleSheet.create({
 
 export function useTabTheme() {
   const { activeTheme } = useTheme();
-  return { tabStyles: tabThemeStyles[activeTheme] || tabThemeStyles.nostalgia };
+  return { tabStyles: tabThemeStyles[activeTheme] };
 }

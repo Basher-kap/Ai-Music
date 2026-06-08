@@ -1,7 +1,7 @@
 // app/(tabs)/songs.tsx
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import { useTextTheme, useTheme } from '@/context';
+import { useTextTheme, useTheme, useButtonTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
 import { useSongs } from '@/store';
@@ -11,9 +11,12 @@ import { RefreshControl } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
 
+import {ADD_BUTTON_GRADIENTS } from '@/context/ButtonContext';
+
 export default function Songs() {
-  const { ThemeTextStyles } = useTextTheme();
   const { activeTheme } = useTheme();
+  const { ThemeTextStyles } = useTextTheme();
+  const { ThemeButtonStyles } = useButtonTheme();
 
   const { songs, loading, error, addSong, refetch } = useSongs();
   const [ search, setSearch] = useState('');
@@ -61,17 +64,22 @@ export default function Songs() {
               onChangeText={setSearch}
             />
           </View>
-          
-          <TouchableOpacity onPress={() => setEditOpen(true)}>
+
+          <TouchableOpacity
+            onPress={() => setEditOpen(true)}
+            activeOpacity={0.8}
+            style={[styles.addButton, ThemeButtonStyles.addButton]}  // ← shadows here
+          >
             <LinearGradient
-              colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.addButton}
+              colors={ADD_BUTTON_GRADIENTS[activeTheme]}
+              start={{ x: 0, y: 0.15 }}
+              end={{ x: 1, y: 0.85 }}
+              style={[styles.addButton, ThemeButtonStyles.addButton]}
             >
-              <Ionicons name="add" size={28} color="#000000" />
+              <Ionicons name="add" size={26} color="#FFFFFF" />
             </LinearGradient>
           </TouchableOpacity>
+          
         </View>
 
         {/*while loading, show skeleton-like view */}
@@ -214,8 +222,6 @@ const styles = StyleSheet.create({
   addButton: {
     width: 40,
     height: 40,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
