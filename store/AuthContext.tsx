@@ -6,6 +6,7 @@ import React, { useContext, useEffect } from "react";
 import { createContext } from "react";
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
+import { logger } from "@/utils/logger";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -34,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // listen for auth changes (e.g. sign in, sign out)
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             (_event, session) => {
-                console.log('[Auth] Auth state changed. Event:', _event, '| User:', session?.user?.email ?? 'none');
+                logger.log('[Auth] Auth state changed. Event:', _event, '| User:', session?.user?.email ?? 'none');
                 setSession(session);
                 setUser(session?.user ?? null);
                 setLoading(false);
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     const signInWithGoogle = async (): Promise<string | null> => {
         try {
-            console.log('[Auth] Starting Google Sign-In...');
+            logger.log('[Auth] Starting Google Sign-In...');
 
             await WebBrowser.warmUpAsync();
 
@@ -53,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             scheme: 'aimusic',
             path: 'auth/callback',
         });
-            console.log('[Auth] Redirect URL:', redirectUrl);
+            logger.log('[Auth] Redirect URL:', redirectUrl);
 
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
@@ -72,10 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             { showInRecents: false }  
         );
 
-            console.log('[Auth] Browser result type:', result.type);
+            logger.log('[Auth] Browser result type:', result.type);
 
             if (result.type === 'success' && result.url) {
-            console.log('[Auth] Redirect successful, parsing tokens...');
+            logger.log('[Auth] Redirect successful, parsing tokens...');
 
         const url = new URL(result.url);
         const hashParams = new URLSearchParams(url.hash.substring(1));
@@ -94,14 +95,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             if (sessionError) throw sessionError;
 
-                console.log('[Auth] ✓ Session set successfully');
-                console.log('[Auth] ✓ Logged in as:', sessionData.user?.email);
-                console.log('[Auth] ✓ User ID:', sessionData.user?.id);
-                console.log('[Auth] ✓ Provider:', sessionData.user?.app_metadata?.provider);
-                console.log('[Auth] ✓ Full name:', sessionData.user?.user_metadata?.full_name);
+                logger.log('[Auth] ✓ Session set successfully');
+                logger.log('[Auth] ✓ Logged in as:', sessionData.user?.email);
+                logger.log('[Auth] ✓ User ID:', sessionData.user?.id);
+                logger.log('[Auth] ✓ Provider:', sessionData.user?.app_metadata?.provider);
+                logger.log('[Auth] ✓ Full name:', sessionData.user?.user_metadata?.full_name);
 
             } else if (result.type === 'cancel') {
-                console.log('[Auth] ✗ User cancelled.');
+                logger.log('[Auth] ✗ User cancelled.');
                 return 'Sign in was cancelled.'
             }
 

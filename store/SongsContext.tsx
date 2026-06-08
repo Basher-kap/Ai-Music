@@ -1,5 +1,6 @@
 // store/SongsContext.tsx
 import { Song } from '@/types/songs';
+import { logger } from '@/utils/logger';
 import { supabase } from '@/utils/supabase';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
@@ -41,7 +42,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
 
         const { data: { user } } = await supabase.auth.getUser();
 
-        console.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
+        logger.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
 
         if (!user) {
             setSongs([]);
@@ -55,14 +56,14 @@ export function SongsProvider({ children }: { children: ReactNode}) {
         .eq('user_id', user.id) //only fetch the user's songs
         .order('created_at' , {ascending: false}); //newest at the top
         
-        console.log('fetched order:', data?.map(s => s.title));
+        logger.log('fetched order:', data?.map(s => s.title));
         
         if (error) {
             console.error('[Songs] Fetch error:', error.message);
             setError(error.message);
         } else {
-            console.log('[Songs] ✓ Fetched', data.length, 'songs for', user.email);
-            console.log('[Songs] Song titles:', data.map(s => s.title));
+            logger.log('[Songs] ✓ Fetched', data.length, 'songs for', user.email);
+            logger.log('[Songs] Song titles:', data.map(s => s.title));
             //checks the data (which got from the supabase) if matches the Song[] (its strcuture)
             setSongs (data as Song[]);
         }
@@ -77,7 +78,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             } else if (event === 'SIGNED_OUT') {
             setSongs([]);
             setLoading(false);
-            console.log('[Songs] Cleared songs — signed out');
+            logger.log('[Songs] Cleared songs — signed out');
             }
         });
 
@@ -85,7 +86,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
     }, []);
 
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
-          console.log('Adding song:', title, artist, song_theme);
+          logger.log('Adding song:', title, artist, song_theme);
 
           //  need the current user's ID to associate the song
         const { data: { user } } = await supabase.auth.getUser();
@@ -134,7 +135,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
 
     const deleteSong = async (id: string) => {
         setSongs(prev => prev.filter(s => s.id !==  id)) //instant UI update
-        console.log('Deleting song:', id);
+        logger.log('Deleting song:', id);
           
         const { error } = await supabase
         .from('songs')
