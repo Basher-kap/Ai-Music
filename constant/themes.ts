@@ -1,5 +1,11 @@
 // constant/themes.ts
-import { ThemeKey } from '@/context/ThemeContext';
+
+export const THEME_KEYS = [
+  'nostalgia', 'refreshing', 'love', 'cheerful',
+  'emo', 'aspire', 'determination', 'wrath',
+] as const;
+
+export type ThemeKey = typeof THEME_KEYS[number];  // derived from the array above
 
 export type ThemeInfo = {
   key: ThemeKey;
@@ -78,6 +84,3 @@ export const THEME_ACCENTS: Record<ThemeKey, string> = {
   determination: '#FF6B35',
   wrath:         '#C0392B',
 };
-
-// keys only for AddSongForm theme chips
-export const THEME_KEYS: ThemeKey[] = THEMES.map(t => t.key);
