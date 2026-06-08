@@ -1,7 +1,7 @@
 // components/LyricsEditForm.tsx
-import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import { Song } from '@/models/songs';
+import { Song } from '@/types/songs';
 import { useEffect, useState } from 'react';
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 type Props = {
   visible: boolean;

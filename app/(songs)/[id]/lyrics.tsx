@@ -1,13 +1,12 @@
 // app/(songs)/[id]/lyrics.tsx
-import { useGlobalSearchParams, router } from 'expo-router';
+import { LyricsEditForm, MusicPlayer } from '@/components';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useTextTheme } from '@/context';
-import { SONGS } from '@/models/songs';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useState } from 'react';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { LyricsEditForm, MusicPlayer } from '@/components';
 import { useSongs } from '@/store';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { router, useGlobalSearchParams } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();

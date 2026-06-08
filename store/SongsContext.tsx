@@ -1,7 +1,7 @@
 // store/SongsContext.tsx
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { Song } from '@/models/songs';
+import { Song } from '@/types/songs';
 import { supabase } from '@/utils/supabase';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 // a strcuture of data that the fetching the songs will use
 type SongsContextType = {
@@ -100,7 +100,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             .insert([{ title, artist, song_theme, user_id: user.id }]); //a query to add a song in a table
 
         if ( error ) {
-            console.error('Error adding song:' , error.message)
+            throw error;
         } else {
             await fetchSongs(); //fetching the songs after adding, usually updates
         }
@@ -133,6 +133,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
     };
 
     const deleteSong = async (id: string) => {
+        setSongs(prev => prev.filter(s => s.id !==  id)) //instant UI update
         console.log('Deleting song:', id);
           
         const { error } = await supabase
@@ -140,6 +141,7 @@ export function SongsProvider({ children }: { children: ReactNode}) {
         .delete().eq('id', id);
 
         if ( error ) {
+            await fetchSongs(); //revert on failure
             throw error;
         } else {
             await fetchSongs(); 

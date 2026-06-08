@@ -12,6 +12,11 @@ module.exports = ({ config }) => {
     profile === 'preview' ? 'com.nagiiiqt.AiMusicPrev' :
     'com.nagiiiqt.AiMusic';
 
+  const iosBundleIdentifier =
+    profile === 'development' ? 'com.nagiiiqt.AiMusicDev' :
+    profile === 'preview' ? 'com.nagiiiqt.AiMusicPrev' :
+    'com.nagiiiqt.AiMusic';
+
   return {
     ...config,
     name: appName,
@@ -19,6 +24,10 @@ module.exports = ({ config }) => {
       ...(config.plugins ?? []),
       'expo-web-browser',
     ],
+    ios: {
+      ...config.ios,
+      bundleIdentifier: iosBundleIdentifier,
+    },
     android: {
       ...config.android,
       package: androidPackage,
