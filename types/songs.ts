@@ -1,4 +1,4 @@
-// models/songs.ts
+// types/songs.ts
 
 export type Song = {
   id: string;
