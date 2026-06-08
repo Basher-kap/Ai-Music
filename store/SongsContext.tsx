@@ -1,7 +1,8 @@
 // store/SongsContext.tsx
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { Song } from '@/models/songs';
+import { Song } from '@/types/songs';
+import { logger } from '@/utils/logger';
 import { supabase } from '@/utils/supabase';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 // a strcuture of data that the fetching the songs will use
 type SongsContextType = {
@@ -29,7 +30,7 @@ const SongsContext = createContext<SongsContextType>({
 });
 
 //fetching of data
-export function SongsProvider({ children }: { children: ReactNode }) {
+export function SongsProvider({ children }: { children: ReactNode}) {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,16 +40,30 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         setLoading(true); //informs that is loading
         setError(null); //then sends no error yet
 
+        const { data: { user } } = await supabase.auth.getUser();
+
+        logger.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
+
+        if (!user) {
+            setSongs([]);
+            setLoading(false);
+            return;
+        }
+
         const { data, error } = await supabase
         .from('songs') //get a table "songs"
         .select('*') //* means select all data in the 'songs'
+        .eq('user_id', user.id) //only fetch the user's songs
         .order('created_at' , {ascending: false}); //newest at the top
         
-        console.log('fetched order:', data?.map(s => s.title));
+        logger.log('fetched order:', data?.map(s => s.title));
         
         if (error) {
+            console.error('[Songs] Fetch error:', error.message);
             setError(error.message);
         } else {
+            logger.log('[Songs] ✓ Fetched', data.length, 'songs for', user.email);
+            logger.log('[Songs] Song titles:', data.map(s => s.title));
             //checks the data (which got from the supabase) if matches the Song[] (its strcuture)
             setSongs (data as Song[]);
         }
@@ -56,19 +71,37 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         setLoading(false);
     };
         
-   //run this when the app renders (to avoid continuous running a fetch data)
     useEffect(() => {
-        fetchSongs();
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            fetchSongs();
+            } else if (event === 'SIGNED_OUT') {
+            setSongs([]);
+            setLoading(false);
+            logger.log('[Songs] Cleared songs — signed out');
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
+          logger.log('Adding song:', title, artist, song_theme);
 
+          //  need the current user's ID to associate the song
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            console.error('No user logged in. Cannot add song.');
+            return;
+        }
+        
         const { error } = await supabase
             .from('songs')
-            .insert([{ title, artist, song_theme}]); //a query to add a song in a table
+            .insert([{ title, artist, song_theme, user_id: user.id }]); //a query to add a song in a table
 
         if ( error ) {
-            console.error('Error adding song:' , error.message)
+            throw error;
         } else {
             await fetchSongs(); //fetching the songs after adding, usually updates
         }
@@ -101,13 +134,15 @@ export function SongsProvider({ children }: { children: ReactNode }) {
     };
 
     const deleteSong = async (id: string) => {
-        console.log('Deleting song:', id);
+        setSongs(prev => prev.filter(s => s.id !==  id)) //instant UI update
+        logger.log('Deleting song:', id);
           
         const { error } = await supabase
         .from('songs')
         .delete().eq('id', id);
 
         if ( error ) {
+            await fetchSongs(); //revert on failure
             throw error;
         } else {
             await fetchSongs(); 

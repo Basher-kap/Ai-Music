@@ -17,11 +17,28 @@ import { MetalMania_400Regular } from '@expo-google-fonts/metal-mania';
 import { ActivityIndicator, View } from 'react-native';
 import { useEffect } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
-import { SongsProvider } from '@/store';
-
+import { AuthProvider, SongsProvider, useAuth } from '@/store';
+import { router } from 'expo-router';
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
+  const { session, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+      if (authLoading) return;
+
+      console.log('[Route] session:', session?.user?.email ?? 'none', '| authLoading:', authLoading);
+
+      const timer = setTimeout(() => {
+        if (!session) {
+          router.replace('/login');
+        } else {
+          router.replace('/(tabs)');
+        }
+      }, 500); // ← small delay to let the stack mount first
+
+    return () => clearTimeout(timer);
+  }, [session, authLoading]);
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync('hidden');
@@ -34,7 +51,7 @@ function RootLayoutInner() {
     }
   )
 
-  if (!loadFonts) return (
+  if (!loadFonts || authLoading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
       <ActivityIndicator size="large" color="#7EC8A0" />
     </View>
@@ -51,11 +68,13 @@ function RootLayoutInner() {
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: 'transparent' },
-            animation: 'fade', //apply fade animation as default to all tabs in a Stack
+            animation: 'fade',
           }}
         >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false,  animation: 'slide_from_left' }} />
-          <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
+          <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'slide_from_right' }} />
+          <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
+          <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
         </Stack>
       </ImageBackground>
     </>
@@ -65,9 +84,11 @@ function RootLayoutInner() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <SongsProvider>
-        <RootLayoutInner/>
-      </SongsProvider>
+      <AuthProvider>
+        <SongsProvider>
+          <RootLayoutInner/>
+        </SongsProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
