@@ -1,7 +1,7 @@
 // app/(tabs)/songs.tsx
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import { useTextTheme } from '@/context';
+import { useTextTheme, useTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
 import { useSongs } from '@/store';
@@ -13,14 +13,20 @@ import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
+  const { activeTheme } = useTheme();
 
   const { songs, loading, error, addSong, refetch } = useSongs();
   const [ search, setSearch] = useState('');
 
-  const filteredSongs = songs.filter(song =>
-    song.title.toLowerCase().includes(search.toLowerCase()) ||
-    song.artist.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredSongs = songs.filter(song => {
+    const matchesSearch = 
+      song.title.toLowerCase().includes(search.toLowerCase()) ||
+      song.artist.toLowerCase().includes(search.toLowerCase());
+
+    const matchesTheme = song.song_theme?.includes(activeTheme);
+
+    return matchesSearch && matchesTheme;
+  });
 
   const [refreshing, setRefreshing] = useState(false);
 
