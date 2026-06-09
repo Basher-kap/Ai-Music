@@ -1,5 +1,5 @@
 // app/generate-lyrics-format.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Clipboard } from 'react-native';
 import { router } from 'expo-router';
 import { useTextTheme } from '@/context';
@@ -7,7 +7,14 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+// Define the response type matching our schema
+interface LyricGroup {
+  kanji: string;
+  romaji: string;
+  english: string;
+}
 
 export default function GenerateLyricsFormat() {
   const { ThemeTextStyles } = useTextTheme();
@@ -78,8 +85,28 @@ ${english}
             },
           ],
           generationConfig: {
-            temperature: 0.1,  // Because low temperature = more consistent formatting output
-            maxOutputTokens: 2048,
+            temperature: 0.1,
+            maxOutputTokens: 4096,
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "OBJECT",
+              properties: {
+                lyricGroups: {
+                  type: "ARRAY",
+                  description: "List of matched lyric rows grouped by timeline order.",
+                  items: {
+                    type: "OBJECT",
+                    properties: {
+                      kanji: { type: "STRING" },
+                      english: { type: "STRING" },
+                      romaji: { type: "STRING" }
+                    },
+                    required: ["kanji", "english", "romaji"]
+                  }
+                }
+              },
+              required: ["lyricGroups"]
+            }
           },
         }),
       });
@@ -90,15 +117,28 @@ ${english}
         throw new Error(data?.error?.message ?? 'Gemini API error');
       }
 
-      const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!result) {
-        throw new Error('No output received from Gemini');
+      const rawJsonString = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawJsonString) {
+        throw new Error('No format payload returned from Gemini.');
       }
 
-      setOutput(result.trim());
+      // Parse the enforced structured JSON output
+      const parsedData = JSON.parse(rawJsonString);
+      const groups: LyricGroup[] = parsedData?.lyricGroups ?? [];
+
+      if (groups.length === 0) {
+        throw new Error('No structured lyric pairs could be configured.');
+      }
+
+      // Format clean multi-line block text structure locally
+      const formattedOutput = groups
+        .map(group => `${group.kanji.trim()}\n${group.english.trim()}\n${group.romaji.trim()}`)
+        .join('\n\n');
+
+      setOutput(formattedOutput);
 
     } catch (err: any) {
+      console.error('[Gemini] Error:', err.message ?? err);
       setError(err.message ?? 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -195,19 +235,19 @@ ${english}
           disabled={loading}
           activeOpacity={0.85}
         >
-          {loading
-            ? <ActivityIndicator size="small" color="#000000" />
-            : <>
-                <Ionicons name="sparkles" size={18} color="#000000" />
-                <Text style={styles.generateButtonText}>Generate Format</Text>
-              </>
-          }
+          {loading ? (
+            <ActivityIndicator size="small" color="#000000" />
+          ) : (
+            <>
+              <Ionicons name="sparkles" size={18} color="#000000" />
+              <Text style={styles.generateButtonText}>Generate Format</Text>
+            </>
+          )}
         </TouchableOpacity>
 
         {/* Output */}
         {output !== '' && (
           <View style={styles.outputContainer}>
-
             <View style={styles.outputHeader}>
               <Text style={styles.outputLabel}>Formatted Output</Text>
               <TouchableOpacity style={styles.copyButton} onPress={handleCopy}>
@@ -223,12 +263,10 @@ ${english}
             </View>
 
             <Text style={styles.outputText}>{output}</Text>
-
           </View>
         )}
 
       </ScrollView>
-
     </View>
   );
 }
