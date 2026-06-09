@@ -63,8 +63,8 @@ export default function Index() {
             <Ionicons name="sparkles" size={20} color="#E8D5FF" />
           </View>
           <View style={styles.featureText}>
-            <Text style={styles.featureTitle}>Generate Lyrics</Text>
-            <Text style={styles.featureSubtitle}>Automates lyrics format (Kanji, Romaji, English)</Text>
+            <Text style={[styles.featureTitle, ThemeTextStyles.h3]}>Generate Lyrics</Text>
+            <Text style={[styles.description, ThemeTextStyles.description]}>Automates lyrics format (Kanji, Romaji, English)</Text>
           </View>
         </TouchableOpacity>
 
@@ -73,8 +73,8 @@ export default function Index() {
             <Ionicons name="newspaper" size={20} color="#A8F0D8" />
           </View>
           <View style={styles.featureText}>
-            <Text style={styles.featureTitle}>News Feed</Text>
-            <Text style={styles.featureSubtitle}>Check latest updates in J-music industry</Text>
+            <Text style={[styles.featureTitle, ThemeTextStyles.h3]}>News Feed</Text>
+            <Text style={[styles.description, ThemeTextStyles.description]}>Check latest updates in J-music industry</Text>
           </View>
         </TouchableOpacity>
 
@@ -207,12 +207,9 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   featureTitle: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '700',
     letterSpacing: -0.2,
   },
-  featureSubtitle: {
+  description: {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 12,
     lineHeight: 16,

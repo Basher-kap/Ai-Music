@@ -22,8 +22,8 @@ export default function EmptyState({ onAddSong }: Props) {
         <Ionicons name="musical-notes-outline" size={48} color="rgba(255,255,255,0.2)" />
       </View>
 
-      <Text style={[styles.title, ThemeTextStyles.emptyTitle]}>No songs yet</Text>
-      <Text style={[styles.subtitle, ThemeTextStyles.emptySubtitle]}>
+      <Text style={[styles.h2Title]}>No songs yet</Text>
+      <Text style={[styles.subtitle, ThemeTextStyles.subtitle]}>
         Start building your personal music collection
       </Text>
 
@@ -63,9 +63,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 8,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
+  h2Title: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: 'rgb(255, 255, 255)',
   },
   subtitle: {
     fontSize: 13,

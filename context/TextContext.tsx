@@ -6,8 +6,8 @@ interface ThemeTextStyle {
   appTitle: TextStyle;
   tagline: TextStyle;
   description?: TextStyle;  // only some themes define this
-  emptyTitle: TextStyle;
-  emptySubtitle: TextStyle
+  h3: TextStyle;
+  subtitle: TextStyle
 }
 
 export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
@@ -31,7 +31,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'Marcellus_400Regular',
       fontSize: 20,
       color: '#c8ecd4',
@@ -39,9 +39,13 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 8,
     },
-    emptySubtitle: {
+    subtitle: {
       fontFamily: 'Marcellus_400Regular',
-      fontSize: 13,
+      fontSize: 12,
+    },
+    description: {
+      fontFamily: 'Marcellus_400Regular',
+      fontSize: 12,
     },
   },
   refreshing: {
@@ -63,7 +67,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
     },   
-    emptyTitle: {
+    h3: {
       fontFamily: 'PlaywriteGBS_400Regular',
       fontSize: 18,
       color: '#d0f8ff',
@@ -71,7 +75,11 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 10,
     },
-    emptySubtitle: {
+    subtitle: {
+      fontFamily: 'PlaywriteGBS_400Regular',
+      fontSize: 12,
+    },
+    description: {
       fontFamily: 'PlaywriteGBS_400Regular',
       fontSize: 12,
     },
@@ -94,7 +102,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'DancingScript_600SemiBold',
       fontSize: 22,
       color: '#ffcce0',
@@ -102,9 +110,13 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 8,
     },
-    emptySubtitle: {
+    subtitle: {
       fontFamily: 'DancingScript_600SemiBold',
       fontSize: 14,
+    },
+    description: {
+      fontFamily: 'DancingScript_600SemiBold',
+      fontSize: 12,
     },
   },
   cheerful: {
@@ -125,7 +137,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'Fredoka_600SemiBold',
       fontSize: 22,
       color: '#fff3b0',
@@ -133,9 +145,13 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 8,
     },
-    emptySubtitle: {
+    subtitle: {
       fontFamily: 'Fredoka_600SemiBold',
       fontSize: 14,
+    },
+    description: {
+      fontFamily: 'Fredoka_600SemiBold',
+      fontSize: 12,
     },
   },
   emo: {
@@ -156,7 +172,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 10,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'MedievalSharp_400Regular',
       fontSize: 18,
       color: '#9e9e9e',
@@ -164,8 +180,12 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 4,
     },
-    emptySubtitle: {
+    subtitle: {
       fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 12,
+    },
+    description: {
+      fontFamily: 'AlmendraDisplay_400Regular',
       fontSize: 12,
     },
   },
@@ -189,7 +209,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 18,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'Syne_700Bold',
       fontSize: 20,
       color: '#d0eeff',
@@ -197,9 +217,13 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 12,
     },
-    emptySubtitle: {
+    subtitle: {
       fontFamily: 'Syne_700Bold',
       fontSize: 13,
+    },
+    description: {
+      fontFamily: 'Syne_700Bold',
+      fontSize: 12,
     },
   },
   determination: { 
@@ -221,7 +245,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 3, height: 4 },
       textShadowRadius: 15,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'RussoOne_400Regular',
       fontSize: 20,
       color: '#eddad4',
@@ -229,7 +253,11 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 2, height: 3 },
       textShadowRadius: 8,
     },
-    emptySubtitle: {
+    subtitle: {
+      fontFamily: 'RussoOne_400Regular',
+      fontSize: 12,
+    },
+    description: {
       fontFamily: 'RussoOne_400Regular',
       fontSize: 12,
     },
@@ -253,7 +281,7 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 3, height: 1 },
       textShadowRadius: 1,
     },
-    emptyTitle: {
+    h3: {
       fontFamily: 'MetalMania_400Regular',
       fontSize: 22,
       color: '#cc2222',
@@ -261,9 +289,13 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 2, height: 3 },
       textShadowRadius: 4,
     },
-    emptySubtitle: {
+    subtitle: {
       fontFamily: 'MetalMania_400Regular',
       fontSize: 13,
+    },
+    description: {
+      fontFamily: 'MetalMania_400Regular',
+      fontSize: 12,
     },
   },
 };
