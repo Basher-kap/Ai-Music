@@ -4,6 +4,7 @@ import { ViewStyle } from 'react-native';
 
 interface ThemeButtonStyle {
   addButton: ViewStyle;
+  addButtonLong: ViewStyle;
 }
 
 export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
@@ -18,6 +19,9 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 8,
     },
+    addButtonLong: {
+      borderRadius: 20,
+    }
   },
 
   refreshing: {
@@ -31,6 +35,11 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 6,
     },
+    addButtonLong:{
+      borderRadius: 15, 
+      borderColor: 'rgba(170, 224, 234, 0.69)', 
+      borderWidth: 1.5,
+    }
   },
 
   love: {
@@ -47,6 +56,14 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 10,
     },
+    addButtonLong:{
+      borderTopLeftRadius: 29,
+      borderTopRightRadius: 29,
+      borderBottomRightRadius: 29,
+      borderBottomLeftRadius: 5,
+      borderColor: '#fff0f6', 
+      borderWidth: 2,
+    }
   },
 
   cheerful: {
@@ -60,6 +77,11 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 12,
     },
+    addButtonLong: {
+      borderRadius: 10,
+      borderColor: '#fff176',
+      borderWidth: 2,
+    }
   },
 
   emo: {
@@ -74,6 +96,12 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 4,
     },
+    addButtonLong: {
+      borderRadius: 4,
+      borderColor: '#484848',
+      borderWidth: 1,
+      backgroundColor: 'transparent',
+    }
   },
 
   aspire: {
@@ -87,6 +115,12 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
         shadowOpacity: 0.85,
         elevation: 12,
     },
+    addButtonLong:{
+      borderRadius: 30, 
+        borderColor: '#a0f1ff1e', 
+        borderWidth: 1.5,
+        shadowColor: '#00d2ff', 
+    }
   },
 
   determination: {
@@ -104,6 +138,15 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 10,
     },
+    addButtonLong: {
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 8,
+      borderBottomLeftRadius: 18,
+      borderBottomRightRadius: 18,
+      borderColor: '#ff9060',
+      borderWidth: 1.5,
+      borderTopWidth: 2.5,
+    }
   },
 
   wrath: {
@@ -118,6 +161,12 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 10,
     },
+    addButtonLong: {
+      borderRadius: 0,
+      borderColor: '#8b0000',
+      borderWidth: 1,
+      borderLeftWidth: 1,
+    }
   },
 };
 

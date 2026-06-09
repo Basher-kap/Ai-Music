@@ -68,7 +68,7 @@ export default function Songs() {
           <TouchableOpacity
             onPress={() => setEditOpen(true)}
             activeOpacity={0.8}
-            style={[styles.addButton, ThemeButtonStyles.addButton]}  // ← shadows here
+            style={[styles.addButton, ThemeButtonStyles.addButton]}
           >
             <LinearGradient
               colors={ADD_BUTTON_GRADIENTS[activeTheme]}
