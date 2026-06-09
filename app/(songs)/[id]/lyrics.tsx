@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   lyricsText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#FFFFFF',
     lineHeight: 24,
     textAlign: 'center',
