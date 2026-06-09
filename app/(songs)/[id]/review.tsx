@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
-    margin: 12,
+    marginTop: 60,
+    margin: 20,
   },
   reviewText: {
     fontSize: 16,

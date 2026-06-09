@@ -19,7 +19,7 @@ export default function EmptyState({ onAddSong }: Props) {
     <View style={styles.container}>
 
       <View style={styles.iconWrapper}>
-        <Ionicons name="musical-notes-outline" size={48} color="rgba(255,255,255,0.2)" />
+        <Ionicons name="musical-notes-outline" size={48} color="rgba(255, 255, 255, 0.67)" />
       </View>
 
       <Text style={[styles.h2Title]}>No songs yet</Text>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
