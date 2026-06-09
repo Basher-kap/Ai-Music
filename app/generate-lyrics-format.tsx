@@ -84,17 +84,19 @@ ${english}
               parts: [{ text: prompt }],
             },
           ],
-          generationConfig: {
+          generationConfig: { //object containing settings that fine-tune how the AI generates its response.
             temperature: 0.1,
             maxOutputTokens: 4096,
             responseMimeType: "application/json",
             responseSchema: {
               type: "OBJECT",
               properties: {
+                //structuring the array
                 lyricGroups: {
                   type: "ARRAY",
                   description: "List of matched lyric rows grouped by timeline order.",
                   items: {
+                    //formatting the line
                     type: "OBJECT",
                     properties: {
                       kanji: { type: "STRING" },
@@ -139,7 +141,12 @@ ${english}
 
     } catch (err: any) {
       console.error('[Gemini] Error:', err.message ?? err);
-      setError(err.message ?? 'Something went wrong. Please try again.');
+      const errorMsg = err.message ?? '';
+        if (errorMsg.includes('high demand') || errorMsg.includes('quota')) {
+            setError('Google servers are busy right now. Please wait a few seconds and try again!');
+        } else {
+            setError(errorMsg || 'Something went wrong. Please try again.');
+        }
     } finally {
       setLoading(false);
     }
