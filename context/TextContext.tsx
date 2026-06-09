@@ -6,6 +6,8 @@ interface ThemeTextStyle {
   appTitle: TextStyle;
   tagline: TextStyle;
   description?: TextStyle;  // only some themes define this
+  emptyTitle: TextStyle;
+  emptySubtitle: TextStyle
 }
 
 export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
@@ -29,6 +31,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
     },
+    emptyTitle: {
+      fontFamily: 'Marcellus_400Regular',
+      fontSize: 20,
+      color: '#c8ecd4',
+      textShadowColor: 'rgba(27, 48, 34, 0.6)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 8,
+    },
+    emptySubtitle: {
+      fontFamily: 'Marcellus_400Regular',
+      fontSize: 13,
+    },
   },
   refreshing: {
     appTitle: {
@@ -48,7 +62,19 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowColor: 'rgba(38, 222, 225, 0.82)',
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
-    },    
+    },   
+    emptyTitle: {
+      fontFamily: 'PlaywriteGBS_400Regular',
+      fontSize: 18,
+      color: '#d0f8ff',
+      textShadowColor: 'rgba(38, 222, 225, 0.6)',
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 10,
+    },
+    emptySubtitle: {
+      fontFamily: 'PlaywriteGBS_400Regular',
+      fontSize: 12,
+    },
   },
   love: {
     appTitle: {
@@ -67,6 +93,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowColor: 'rgba(232, 160, 180, 0.8)',
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
+    },
+    emptyTitle: {
+      fontFamily: 'DancingScript_600SemiBold',
+      fontSize: 22,
+      color: '#ffcce0',
+      textShadowColor: 'rgba(232, 160, 180, 0.6)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 8,
+    },
+    emptySubtitle: {
+      fontFamily: 'DancingScript_600SemiBold',
+      fontSize: 14,
     },
   },
   cheerful: {
@@ -87,6 +125,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 2 },
       textShadowRadius: 10,
     },
+    emptyTitle: {
+      fontFamily: 'Fredoka_600SemiBold',
+      fontSize: 22,
+      color: '#fff3b0',
+      textShadowColor: 'rgba(255, 160, 0, 0.6)',
+      textShadowOffset: { width: 0, height: 2 },
+      textShadowRadius: 8,
+    },
+    emptySubtitle: {
+      fontFamily: 'Fredoka_600SemiBold',
+      fontSize: 14,
+    },
   },
   emo: {
     appTitle: {
@@ -105,6 +155,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowColor: 'rgba(0, 0, 0, 0.9)',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 10,
+    },
+    emptyTitle: {
+      fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 18,
+      color: '#9e9e9e',
+      textShadowColor: 'rgba(0, 0, 0, 0.9)',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 4,
+    },
+    emptySubtitle: {
+      fontFamily: 'MedievalSharp_400Regular',
+      fontSize: 12,
     },
   },
   aspire: {
@@ -127,6 +189,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 18,
     },
+    emptyTitle: {
+      fontFamily: 'Syne_700Bold',
+      fontSize: 20,
+      color: '#d0eeff',
+      textShadowColor: 'rgba(176, 106, 179, 0.7)',
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 12,
+    },
+    emptySubtitle: {
+      fontFamily: 'Syne_700Bold',
+      fontSize: 13,
+    },
   },
   determination: { 
     appTitle: {
@@ -147,6 +221,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowOffset: { width: 3, height: 4 },
       textShadowRadius: 15,
     },
+    emptyTitle: {
+      fontFamily: 'RussoOne_400Regular',
+      fontSize: 20,
+      color: '#eddad4',
+      textShadowColor: 'rgba(240, 101, 46, 0.7)',
+      textShadowOffset: { width: 2, height: 3 },
+      textShadowRadius: 8,
+    },
+    emptySubtitle: {
+      fontFamily: 'RussoOne_400Regular',
+      fontSize: 12,
+    },
   },
   wrath: { 
     appTitle: {
@@ -166,6 +252,18 @@ export const themeTextStyles: Record<ThemeKey, ThemeTextStyle> = {
       textShadowColor: 'rgba(20, 3, 3, 0.9)',
       textShadowOffset: { width: 3, height: 1 },
       textShadowRadius: 1,
+    },
+    emptyTitle: {
+      fontFamily: 'MetalMania_400Regular',
+      fontSize: 22,
+      color: '#cc2222',
+      textShadowColor: 'rgba(20, 3, 3, 0.9)',
+      textShadowOffset: { width: 2, height: 3 },
+      textShadowRadius: 4,
+    },
+    emptySubtitle: {
+      fontFamily: 'MetalMania_400Regular',
+      fontSize: 13,
     },
   },
 };

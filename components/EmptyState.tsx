@@ -2,7 +2,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { useButtonTheme } from '@/context';
+import { useButtonTheme, useTextTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ADD_BUTTON_GRADIENTS } from '@/context/ButtonContext';
 import { THEME_ACCENTS } from '@/constant';
@@ -13,6 +13,7 @@ type Props = {
 
 export default function EmptyState({ onAddSong }: Props) {
   const { ThemeButtonStyles, activeTheme } = useButtonTheme();
+  const { ThemeTextStyles } = useTextTheme();
 
   return (
     <View style={styles.container}>
@@ -21,8 +22,10 @@ export default function EmptyState({ onAddSong }: Props) {
         <Ionicons name="musical-notes-outline" size={48} color="rgba(255,255,255,0.2)" />
       </View>
 
-      <Text style={styles.title}>No songs yet</Text>
-      <Text style={styles.subtitle}>Start building your personal music collection</Text>
+      <Text style={[styles.title, ThemeTextStyles.emptyTitle]}>No songs yet</Text>
+      <Text style={[styles.subtitle, ThemeTextStyles.emptySubtitle]}>
+        Start building your personal music collection
+      </Text>
 
       <TouchableOpacity style={[styles.addButtonLong]} onPress={onAddSong} activeOpacity={0.8}>
         <LinearGradient
@@ -61,15 +64,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '600',
   },
   subtitle: {
-    color: 'rgba(255,255,255,0.45)',
     fontSize: 13,
     textAlign: 'center',
     lineHeight: 18,
+    color: 'rgb(255, 255, 255)',
   },
   addButtonLong: {
     flexDirection: 'row',
