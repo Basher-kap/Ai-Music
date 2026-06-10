@@ -13,7 +13,7 @@ export default function Lyrics() {
   const { ThemeTextStyles } = useTextTheme();
 
   // fetches the songs from useSongs and find the song based on id
-  const { songs, addLyrics, deleteSong } = useSongs();
+  const { songs, addLyrics, deleteSong, uploadAudio } = useSongs();
   const song = songs.find(s => s.id === id);
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
@@ -61,6 +61,9 @@ export default function Lyrics() {
           await deleteSong(id as string);
           setEditOpen(false);
           router.replace('/(tabs)/songs');
+        }}
+        onUploadAudio={async (fileUri, fileName) => {
+          await uploadAudio(id as string, fileUri, fileName);
         }}
       />
     </View>

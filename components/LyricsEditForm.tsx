@@ -1,7 +1,10 @@
 // components/LyricsEditForm.tsx
 import { Song } from '@/types/songs';
 import { useEffect, useState } from 'react';
-import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 type Props = {
   visible: boolean;
@@ -9,12 +12,14 @@ type Props = {
   onClose: () => void;
   onSave: (data: { title: string; artist: string; lyrics: string }) => void;
   onDelete: () => void;
+  onUploadAudio?: (fileUri: string, fileName: string) => Promise<void>;
 };
 
 export default function LyricsEditForm({ visible, song, onClose, onSave, onDelete }: Props) {
   const [title, setTitle] = useState(song?.title || '');
   const [artist, setArtist] = useState(song?.artist || '');
   const [lyrics, setLyrics] = useState(song?.lyrics || '');
+  const [uploading, setUploading] = useState(false);
 
   //reset state whenever the song changes or modal opens
   useEffect(() => {
@@ -27,6 +32,20 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
 
   const handleSave = () => {
     onSave({title, artist, lyrics });
+  }
+
+  const handlePickAudio = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: 'audio/mpeg',
+      copyToCacheDirectory: true,
+    });
+
+    if (result.canceled) return;
+
+    const file = result.assets[0];
+    setUploading(true);
+    await onUploadAudio?.(file.uri, file.name);
+    setUploading(false);
   }
   
   return (
@@ -68,6 +87,23 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
             placeholderTextColor="rgba(255,255,255,0.4)"
             placeholder="Artist name"
           />
+
+          <Text style={styles.label}>Audio File</Text>
+          <TouchableOpacity 
+            style={styles.uploadButton} 
+            onPress={handlePickAudio}
+            disabled={uploading}
+          >
+            {uploading 
+              ? <ActivityIndicator size="small" color="#FFFFFF" />
+              : <>
+                  <Ionicons name="musical-note-outline" size={18} color="#FFFFFF" />
+                  <Text style={styles.uploadText}>
+                    {song?.mp4song ? 'Replace Audio File' : 'Upload MP3'}
+                  </Text>
+                </>
+            }
+          </TouchableOpacity>
 
           {/* Lyrics Input */}
           <Text style={styles.label}>Lyrics</Text>
@@ -199,4 +235,23 @@ const styles = StyleSheet.create({
     color: '#ff4444',
     fontSize: 14,
   },
+  uploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  uploadText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+  },
 });
+
+function onUploadAudio(uri: string, name: string) {
+  throw new Error('Function not implemented.');
+}
