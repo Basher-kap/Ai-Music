@@ -1,14 +1,84 @@
 // components/MusicPlayer.tsx
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useEffect, useRef, useState } from 'react';
+import { Audio } from 'expo-av';
 
-export default function MusicPlayer() {
+type Props = {
+  uri: string | null | undefined;
+}
+
+export default function MusicPlayer({uri}: Props) {
+  const soundRef = useRef<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    let sound: Audio.Sound;
+
+    const loadAudio = async () => {
+      if (!uri) return;
+
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
+      }
+
+      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true});
+
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        {uri}, {shouldPlay: false}, (status) => {
+          if (!status.isLoaded) return;
+          setPosition(status.positionMillis);
+          setDuration(status.durationMillis ?? 0);
+          if (status.didJustFinish) {
+            setIsPlaying(false);
+            setPosition(0);
+          }
+        }
+      );
+
+      soundRef.current = newSound;
+      sound = newSound;
+    };
+
+    loadAudio();
+
+    return () => {
+      sound?.unloadAsync();
+    };
+  },[uri]);
+
+  const handlePlayPause = async () => {
+    if (!soundRef.current) return;
+
+    if (isPlaying) {
+      await soundRef.current.pauseAsync();
+      setIsPlaying(false);
+    } else {
+      await soundRef.current.playAsync();
+      setIsPlaying(true);
+    }
+  };
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const progress = duration > 0 ? position / duration : 0;
+
+  if (!uri) return null; // hide player if no audio uploaded yet
+  
   return (
     <View style={styles.container}>
 
       {/* Play/Pause Button */}
-      <TouchableOpacity onPress={() => {}}>
-        <Ionicons name="play-circle" size={36} color="#FFFFFF" />
+      <TouchableOpacity onPress={handlePlayPause}>
+        <Ionicons name={isPlaying ? 'pause-circle' : 'play-circle' } size={36} color="#FFFFFF" />
       </TouchableOpacity>
 
       {/* Progress Bar + Time */}
@@ -16,14 +86,14 @@ export default function MusicPlayer() {
 
         {/* Progress Bar */}
         <View style={styles.progressBar}>
-          <View style={styles.progressFill} />
+          <View style={[styles.progressFill, {width: `${progress * 100}%`}]} />
           <View style={styles.progressThumb} />
         </View>
 
         {/* Time */}
         <View style={styles.timeRow}>
-          <Text style={styles.timeText}>0:32</Text>
-          <Text style={styles.timeText}>3:45</Text>
+          <Text style={styles.timeText}>{formatTime(position)}</Text>
+          <Text style={styles.timeText}>{formatTime(duration)}</Text>
         </View>
 
       </View>

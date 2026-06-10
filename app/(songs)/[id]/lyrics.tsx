@@ -41,7 +41,7 @@ export default function Lyrics() {
 
       </View>
 
-      <MusicPlayer/>
+      <MusicPlayer uri={song?.mp4song}/>
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
         {/* split by lines and trim of whitespace for consistent centering */}
