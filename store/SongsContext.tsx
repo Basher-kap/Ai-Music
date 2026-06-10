@@ -4,7 +4,7 @@ import { logger } from '@/utils/logger';
 import { supabase } from '@/utils/supabase';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 // a strcuture of data that the fetching the songs will use
 type SongsContextType = {
@@ -160,58 +160,65 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('No user logged in');
 
-            // Because we need to read the file as base64 to upload it
-            const base64 = await FileSystem.readAsStringAsync(fileUri, {
-                encoding: 'base64', 
-            });
+            console.log('[Audio] Starting upload...');
+            console.log('[Audio] Song ID:', songId);
+            console.log('[Audio] File name:', fileName);
+            console.log('[Audio] File URI:', fileUri);
 
-            // Because Supabase storage needs a Uint8Array not base64
+            const base64 = await FileSystem.readAsStringAsync(fileUri, {
+            encoding: 'base64',
+            });
+            console.log('[Audio] ✓ File read as base64, length:', base64.length);
+
             const binaryString = atob(base64);
             const bytes = new Uint8Array(binaryString.length);
             for (let i = 0; i < binaryString.length; i++) {
             bytes[i] = binaryString.charCodeAt(i);
             }
+            console.log('[Audio] ✓ Converted to bytes, size:', bytes.length, 'bytes');
 
-            // Store as userId/songId.mp3 to keep files organized per user
             const filePath = `${user.id}/${songId}.mp3`;
+            console.log('[Audio] Uploading to path:', filePath);
 
             const { error: uploadError } = await supabase.storage
             .from('songs-audio')
             .upload(filePath, bytes, {
                 contentType: 'audio/mpeg',
-                upsert: true, // Because re-uploading replaces the old file
+                upsert: true,
             });
 
             if (uploadError) throw uploadError;
+            console.log('[Audio] ✓ File uploaded to Supabase Storage');
 
-            // Get the public URL
             const { data } = supabase.storage
             .from('songs-audio')
             .getPublicUrl(filePath);
 
-            // Save URL to song record
+            console.log('[Audio] ✓ Public URL generated:', data.publicUrl);
+
             const { error: updateError } = await supabase
             .from('songs')
             .update({ mp4song: data.publicUrl })
             .eq('id', songId);
 
             if (updateError) throw updateError;
+            console.log('[Audio] ✓ mp4song field updated in songs table');
 
-            // Update local state
             setSongs(prev => prev.map(song =>
             song.id === songId
                 ? { ...song, mp4song: data.publicUrl }
                 : song
             ));
+            console.log('[Audio] ✓ Local state updated');
+            console.log('[Audio] ✓ Upload complete for song:', songId);
 
-            console.log('[Audio] ✓ Uploaded:', data.publicUrl);
             return data.publicUrl;
 
         } catch (err: any) {
-            console.error('[Audio] Upload error:', err.message);
+            console.error('[Audio] ✗ Upload failed:', err.message);
             return null;
         }
-    };
+        };
 
 
         

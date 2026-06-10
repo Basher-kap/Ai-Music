@@ -15,7 +15,7 @@ type Props = {
   onUploadAudio?: (fileUri: string, fileName: string) => Promise<void>;
 };
 
-export default function LyricsEditForm({ visible, song, onClose, onSave, onDelete }: Props) {
+export default function LyricsEditForm({ visible, song, onClose, onSave, onDelete, onUploadAudio }: Props) {
   const [title, setTitle] = useState(song?.title || '');
   const [artist, setArtist] = useState(song?.artist || '');
   const [lyrics, setLyrics] = useState(song?.lyrics || '');
@@ -252,6 +252,3 @@ const styles = StyleSheet.create({
   },
 });
 
-function onUploadAudio(uri: string, name: string) {
-  throw new Error('Function not implemented.');
-}
