@@ -1,3 +1,4 @@
+// components/MusicPlayer.tsx
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
