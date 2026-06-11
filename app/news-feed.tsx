@@ -11,6 +11,8 @@ import { XMLParser } from 'fast-xml-parser'; // Native parser dependency
 import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, NewsSource } from '@/constant';
 import { supabase } from '@/utils/supabase';
+import { useCallback, memo } from 'react';
+
 
 type NewsItem = {
   title: string;
@@ -177,45 +179,54 @@ export default function NewsFeed() {
     });
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return 'Recent';
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
-
-  const renderItem = ({ item }: { item: NewsItem }) => (
+    // Extract card as a memoized component
+    const NewsCard = memo(({ item, onPress }: { item: NewsItem; onPress: () => void }) => (
     <TouchableOpacity
-      style={styles.card}
-      activeOpacity={0.8}
-      onPress={() => handleOpenArticle(item.link)}
+        style={styles.card}
+        activeOpacity={0.8}
+        onPress={onPress}
     >
-      {item.thumbnail ? (
+        {item.thumbnail ? (
         <Image
-          source={{ uri: item.thumbnail }}
-          style={styles.thumbnail}
-          resizeMode="cover"
+            source={{ uri: item.thumbnail }}
+            style={styles.thumbnail}
+            resizeMode="cover"
         />
-      ) : (
+        ) : (
         <View style={styles.thumbnailFallback}>
-          <Ionicons name="newspaper-outline" size={28} color="rgba(255,255,255,0.2)" />
+            <Ionicons name="newspaper-outline" size={28} color="rgba(255,255,255,0.2)" />
         </View>
-      )}
+        )}
 
-      <View style={styles.cardContent}>
+        <View style={styles.cardContent}>
         <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
         <Text style={styles.cardDescription} numberOfLines={2}>{item.description}</Text>
 
         <View style={styles.cardMeta}>
-          <Text style={styles.cardSource}>{item.author}</Text>
-          <Text style={styles.cardDate}>{formatDate(item.pubDate)}</Text>
+            <Text style={styles.cardSource}>{item.author}</Text>
+            <Text style={styles.cardDate}>{formatDate(item.pubDate)}</Text>
         </View>
-      </View>
+        </View>
     </TouchableOpacity>
-  );
+    ));
+
+    // Move formatDate outside the component — because it's a pure function
+    const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return 'Recent';
+    return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
+    };
+
+  const renderItem = useCallback(({ item }: { item: NewsItem }) => (
+    <NewsCard
+        item={item}
+        onPress={() => handleOpenArticle(item.link)}
+    />
+    ), []);
 
   return (
     <View style={styles.container}>
@@ -260,6 +271,11 @@ export default function NewsFeed() {
           data={news}
           keyExtractor={(item, index) => item.link + index}
           renderItem={renderItem}
+          getItemLayout={(_, index) => ({
+            length: 114,      
+            offset: 114 * index,
+            index,
+        })}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
           refreshControl={
