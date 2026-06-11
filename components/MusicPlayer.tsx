@@ -8,6 +8,7 @@ type Props = {
 };
 
 const SKIP_MS = 4000;
+const PLAY_BTN = 38;
 
 export default function MusicPlayer({ uri }: Props) {
   const soundRef = useRef<Audio.Sound | null>(null);
@@ -134,57 +135,58 @@ export default function MusicPlayer({ uri }: Props) {
   return (
     <View style={styles.container}>
 
-      {/* ── Progress section with overlapping controls ── */}
-      <View style={styles.progressWrapper}>
+      {/* Progress bar */}
+      <View
+        style={styles.progressBar}
+        onLayout={(e) => { barWidth.current = e.nativeEvent.layout.width; }}
+        {...panResponder.panHandlers}
+      >
+        <View style={styles.track} />
+        <View style={[styles.progressFill, { width: `${visualProgress * 100}%` }]} />
+        <View style={[styles.progressThumb, { left: `${visualProgress * 100}%` }]} />
+      </View>
 
-        {/* The draggable track */}
-        <View
-          style={styles.progressBar}
-          onLayout={(e) => { barWidth.current = e.nativeEvent.layout.width; }}
-          {...panResponder.panHandlers}
-        >
-          <View style={styles.track} />
-          <View style={[styles.progressFill, { width: `${visualProgress * 100}%` }]} />
-          <View style={[styles.progressThumb, { left: `${visualProgress * 100}%` }]} />
+      {/* Bottom row: time left — play controls — time right */}
+      <View style={styles.bottomRow}>
 
-          {/* Controls float in the center of the bar */}
-          <View style={styles.controlsOverlay} pointerEvents="box-none">
+        <Text style={styles.timeText}>
+          {formatTime(isScrubbing.current ? scrubRatio.current * duration : position)}
+        </Text>
 
-            <TouchableOpacity
-              style={styles.skipBtn}
-              onPress={handleSkipBack}
-              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            >
-              <Ionicons name="play-back" size={15} color="rgba(255,255,255,0.85)" />
-            </TouchableOpacity>
+        <View style={styles.controls}>
+          <TouchableOpacity
+            style={styles.skipBtn}
+            onPress={handleSkipBack}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="play-back" size={15} color="rgba(255,255,255,0.85)" />
+          </TouchableOpacity>
 
-            <TouchableOpacity style={styles.playBtn} onPress={handlePlayPause}>
-              <Ionicons
-                name={isPlaying ? 'pause' : 'play'}
-                size={20}
-                color="#000"
-                style={!isPlaying ? { marginLeft: 2 } : undefined}
-              />
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.playBtn} onPress={handlePlayPause}>
+            <Ionicons
+              name={isPlaying ? 'pause' : 'play'}
+              size={20}
+              color="#000"
+              style={!isPlaying ? { marginLeft: 2 } : undefined}
+            />
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.skipBtn}
-              onPress={handleSkipForward}
-              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            >
-              <Ionicons name="play-forward" size={15} color="rgba(255,255,255,0.85)" />
-            </TouchableOpacity>
-
-          </View>
+          <TouchableOpacity
+            style={styles.skipBtn}
+            onPress={handleSkipForward}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+          >
+            <Ionicons name="play-forward" size={15} color="rgba(255,255,255,0.85)" />
+          </TouchableOpacity>
         </View>
+
+        <Text style={styles.timeText}>{formatTime(duration)}</Text>
 
       </View>
 
     </View>
   );
 }
-
-const PLAY_BTN = 38;
 
 const styles = StyleSheet.create({
   container: {
@@ -196,14 +198,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.12)',
     borderRadius: 16,
     paddingHorizontal: 18,
-    paddingVertical: 8,
+    paddingTop: 14,
+    paddingBottom: 10,
+    gap: 2,           // tight gap so controls sit close to the bar
   },
-  progressWrapper: {
-    gap: 6,
-  },
-  // Bar tall enough to contain the floating play button
   progressBar: {
-    height: PLAY_BTN + 8,
+    height: 20,
     justifyContent: 'center',
     position: 'relative',
   },
@@ -232,23 +232,29 @@ const styles = StyleSheet.create({
     top: '50%',
     marginTop: -6,
   },
-  controlsOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
+
+  // Single row: [time] [skip | play | skip] [time]
+  bottomRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 1,
+    justifyContent: 'space-between',
+  },
+  timeText: {
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: 10,
+    width: 32,        // fixed width so times don't shift the center buttons
+  },
+  controls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   skipBtn: {
-    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgb(0, 0, 0)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: 20,
   },
   playBtn: {
