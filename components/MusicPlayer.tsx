@@ -1,4 +1,3 @@
-// components/MusicPlayer.tsx
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -7,6 +6,8 @@ import { Audio } from 'expo-av';
 type Props = {
   uri: string | null | undefined;
 };
+
+const SKIP_MS = 4000;
 
 export default function MusicPlayer({ uri }: Props) {
   const soundRef = useRef<Audio.Sound | null>(null);
@@ -42,7 +43,6 @@ export default function MusicPlayer({ uri }: Props) {
         { shouldPlay: false },
         (status) => {
           if (!status.isLoaded) return;
-          // Block stale updates while scrubbing or seeking
           if (!isScrubbing.current && !seekingRef.current) {
             setPosition(status.positionMillis);
             setVisualProgress(
@@ -63,10 +63,31 @@ export default function MusicPlayer({ uri }: Props) {
     };
 
     loadAudio();
-    return () => {
-      sound?.unloadAsync();
-    };
+    return () => { sound?.unloadAsync(); };
   }, [uri]);
+
+  const seekTo = async (ms: number) => {
+    if (!soundRef.current) return;
+    seekingRef.current = true;
+    await soundRef.current.setPositionAsync(ms);
+    setPosition(ms);
+    setVisualProgress(duration > 0 ? ms / duration : 0);
+    setTimeout(() => { seekingRef.current = false; }, 300);
+  };
+
+  const handlePlayPause = async () => {
+    if (!soundRef.current) return;
+    if (isPlaying) {
+      await soundRef.current.pauseAsync();
+      setIsPlaying(false);
+    } else {
+      await soundRef.current.playAsync();
+      setIsPlaying(true);
+    }
+  };
+
+  const handleSkipBack = () => seekTo(Math.max(0, position - SKIP_MS));
+  const handleSkipForward = () => seekTo(Math.min(duration, position + SKIP_MS));
 
   const panResponder = useRef(
     PanResponder.create({
@@ -89,39 +110,17 @@ export default function MusicPlayer({ uri }: Props) {
       onPanResponderRelease: async () => {
         isScrubbing.current = false;
         if (!soundRef.current) return;
-
         seekingRef.current = true;
-
-        // Read duration directly from sound to avoid stale closure
         const status = await soundRef.current.getStatusAsync();
-        if (!status.isLoaded) {
-          seekingRef.current = false;
-          return;
-        }
-
+        if (!status.isLoaded) { seekingRef.current = false; return; }
         const seekMs = scrubRatio.current * (status.durationMillis ?? 0);
         await soundRef.current.setPositionAsync(seekMs);
         setPosition(seekMs);
         setVisualProgress(scrubRatio.current);
-
-        // Give the audio engine time to settle before re-enabling status updates
-        setTimeout(() => {
-          seekingRef.current = false;
-        }, 300);
+        setTimeout(() => { seekingRef.current = false; }, 300);
       },
     })
   ).current;
-
-  const handlePlayPause = async () => {
-    if (!soundRef.current) return;
-    if (isPlaying) {
-      await soundRef.current.pauseAsync();
-      setIsPlaying(false);
-    } else {
-      await soundRef.current.playAsync();
-      setIsPlaying(true);
-    }
-  };
 
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -135,16 +134,10 @@ export default function MusicPlayer({ uri }: Props) {
   return (
     <View style={styles.container}>
 
-      <TouchableOpacity onPress={handlePlayPause}>
-        <Ionicons
-          name={isPlaying ? 'pause-circle' : 'play-circle'}
-          size={36}
-          color="#FFFFFF"
-        />
-      </TouchableOpacity>
+      {/* ── Progress section with overlapping controls ── */}
+      <View style={styles.progressWrapper}>
 
-      <View style={styles.progressSection}>
-
+        {/* The draggable track */}
         <View
           style={styles.progressBar}
           onLayout={(e) => { barWidth.current = e.nativeEvent.layout.width; }}
@@ -153,40 +146,64 @@ export default function MusicPlayer({ uri }: Props) {
           <View style={styles.track} />
           <View style={[styles.progressFill, { width: `${visualProgress * 100}%` }]} />
           <View style={[styles.progressThumb, { left: `${visualProgress * 100}%` }]} />
-        </View>
 
-        <View style={styles.timeRow}>
-          <Text style={styles.timeText}>
-            {formatTime(isScrubbing.current ? scrubRatio.current * duration : position)}
-          </Text>
-          <Text style={styles.timeText}>{formatTime(duration)}</Text>
+          {/* Controls float in the center of the bar */}
+          <View style={styles.controlsOverlay} pointerEvents="box-none">
+
+            <TouchableOpacity
+              style={styles.skipBtn}
+              onPress={handleSkipBack}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            >
+              <Ionicons name="play-back" size={15} color="rgba(255,255,255,0.85)" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.playBtn} onPress={handlePlayPause}>
+              <Ionicons
+                name={isPlaying ? 'pause' : 'play'}
+                size={20}
+                color="#000"
+                style={!isPlaying ? { marginLeft: 2 } : undefined}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.skipBtn}
+              onPress={handleSkipForward}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            >
+              <Ionicons name="play-forward" size={15} color="rgba(255,255,255,0.85)" />
+            </TouchableOpacity>
+
+          </View>
         </View>
 
       </View>
+
     </View>
   );
 }
 
+const PLAY_BTN = 38;
+
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginHorizontal: 12,
+    marginTop: 8,
     marginBottom: 8,
-    backgroundColor: 'rgba(15, 15, 15, 0.53)',
+    backgroundColor: 'rgba(15, 15, 15, 0.6)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    gap: 12,
+    borderColor: 'rgba(255,255,255,0.12)',
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 8,
   },
-  progressSection: {
-    flex: 1,
-    gap: 4,
+  progressWrapper: {
+    gap: 6,
   },
+  // Bar tall enough to contain the floating play button
   progressBar: {
-    height: 20,
+    height: PLAY_BTN + 8,
     justifyContent: 'center',
     position: 'relative',
   },
@@ -195,7 +212,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 3,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.18)',
     borderRadius: 2,
   },
   progressFill: {
@@ -215,12 +232,31 @@ const styles = StyleSheet.create({
     top: '50%',
     marginTop: -6,
   },
-  timeRow: {
+  controlsOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1,
   },
-  timeText: {
-    color: 'rgba(255,255,255,0.5)',
-    fontSize: 10,
+  skipBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgb(0, 0, 0)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  playBtn: {
+    width: PLAY_BTN,
+    height: PLAY_BTN,
+    borderRadius: PLAY_BTN / 2,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
