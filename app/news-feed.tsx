@@ -11,7 +11,7 @@ import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 
 const RSS_URL = 'https://www.animenewsnetwork.com/all/rss.xml?ann-edition=us';
-const RSS2JSON_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}&count=20`;
+const RSS2JSON_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
 
 type NewsItem = {
   title: string;
@@ -32,13 +32,19 @@ export default function NewsFeed() {
   const fetchNews = async () => {
     setError(null);
     try {
-      console.log('[News] Fetching news feed...');
-      const response = await fetch(RSS2JSON_URL);
-      const data = await response.json();
+        console.log('[News] Fetching from URL:', RSS2JSON_URL);
+        const response = await fetch(RSS2JSON_URL);
+        
+        console.log('[News] Response status:', response.status);
+        
+        const data = await response.json();
+        console.log('[News] Response data status:', data.status);
+        console.log('[News] Response message:', data.message ?? 'none');
+        console.log('[News] Items count:', data.items?.length ?? 0);
 
-      if (data.status !== 'ok') {
-        throw new Error('Failed to fetch news feed');
-      }
+        if (data.status !== 'ok') {
+            throw new Error(data.message ?? 'Failed to fetch news feed');
+        }
 
       // Because description contains HTML tags — strip them for clean display
       const cleaned = data.items.map((item: any) => ({
