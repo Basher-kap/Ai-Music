@@ -111,6 +111,7 @@ function RootLayoutInner() {
           <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'slide_from_right' }} />
           <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
           <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+          <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
         </Stack>
       </ImageBackground>
     </>

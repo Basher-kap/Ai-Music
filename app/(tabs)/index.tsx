@@ -58,7 +58,7 @@ export default function Index() {
       {/* Features */}
       <View style={styles.featuresSection}>
 
-        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => {}}>
+        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => router.push('/generate-lyrics-format')}>
           <View style={styles.iconContainer}>
             <Ionicons name="sparkles" size={20} color="#E8D5FF" />
           </View>

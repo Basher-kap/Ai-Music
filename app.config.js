@@ -23,6 +23,7 @@ module.exports = ({ config }) => {
     plugins: [
       ...(config.plugins ?? []),
       'expo-web-browser',
+      'expo-av'
     ],
     ios: {
       ...config.ios,
