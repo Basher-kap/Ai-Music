@@ -68,7 +68,7 @@ export default function Index() {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => {}}>
+        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => router.push('/news-feed')}>
           <View style={[styles.iconContainer, styles.iconContainer]}>
             <Ionicons name="newspaper" size={20} color="#A8F0D8" />
           </View>
