@@ -8,9 +8,9 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTextTheme } from '@/context';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP, NEWS_SOURCES } from '@/constant';
 
-const RSS_URL = 'https://www.animenewsnetwork.com/all/rss.xml?ann-edition=us';
+const RSS_URL = 'https://jrocknews.com/feed';
 const RSS2JSON_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
 
 type NewsItem = {
@@ -32,38 +32,49 @@ export default function NewsFeed() {
   const fetchNews = async () => {
     setError(null);
     try {
-        console.log('[News] Fetching from URL:', RSS2JSON_URL);
-        const response = await fetch(RSS2JSON_URL);
-        
-        console.log('[News] Response status:', response.status);
-        
-        const data = await response.json();
-        console.log('[News] Response data status:', data.status);
-        console.log('[News] Response message:', data.message ?? 'none');
-        console.log('[News] Items count:', data.items?.length ?? 0);
+        console.log('[News] Fetching from', NEWS_SOURCES.length, 'sources...');
 
-        if (data.status !== 'ok') {
-            throw new Error(data.message ?? 'Failed to fetch news feed');
-        }
+        //fetch all sources 
+        const responses = await Promise.all(
+            NEWS_SOURCES.map(source => fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`)
+            .then(res => res.json())
+            .then (data => ({ data, sourceName: source.name}))
+            .catch(err => {
+                console.warn(`[NEWS] Failed to fetch ${source.name}:`, err.message);
+                return { data: { status: 'error', items: [] }, sourceName: source.name};
+            })
+          )
+        );
 
-      // Because description contains HTML tags — strip them for clean display
-      const cleaned = data.items.map((item: any) => ({
-        title: item.title,
-        link: item.link,
-        pubDate: item.pubDate,
-        author: item.author || 'Anime News Network',
-        thumbnail: item.thumbnail || item.enclosure?.link || '',
-        description: item.description
-          .replace(/<[^>]*>/g, '')  // strip HTML tags
-          .replace(/&nbsp;/g, ' ')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .trim()
-          .slice(0, 120) + '...',  // truncate to 120 chars
-      }));
+        // Helper function to extract image from HTML description
+        const extractImageFromDescription = (description: string): string => {
+        const imgMatch = description.match(/<img[^>]+src="([^">]+)"/);
+            return imgMatch ? imgMatch[1] : '';
+        };
 
-      setNews(cleaned);
-      console.log('[News] ✓ Fetched', cleaned.length, 'articles');
+        const allItems = responses.flatMap (( { data, sourceName}) => {
+            if (data.status !== 'ok') return [];
+
+            return data.items.map((item:any) => ({
+                title: item.title,
+                link: item.link,
+                pubDate: item.pubDate,
+                author: sourceName,
+                thumbnail: item.thumbnail || item.enclosure?.link || extractImageFromDescription(item.description) || '',
+                description: item.description
+                .replace(/<[^>]*>/g, '')  // strip HTML tags
+                .replace(/&nbsp;/g, ' ')
+                .replace(/&amp;/g, '&')
+                .replace(/&quot;/g, '"')
+                .trim()
+                .slice(0, 120) + '...',  // truncate to 120 chars
+            }));
+        });
+
+        allItems.sort((a, b) => new Date(b.pubdate).getTime() - new Date(a.pubDate).getTime());
+
+        setNews(allItems);
+        console.log('[News] ✓ Fetched', allItems.length, 'total articles from', NEWS_SOURCES.length, 'sources');
 
     } catch (err: any) {
       console.error('[News] Error:', err.message);
@@ -152,7 +163,7 @@ export default function NewsFeed() {
       {/* Source label */}
       <View style={styles.sourceBar}>
         <Ionicons name="globe-outline" size={12} color="rgba(255,255,255,0.4)" />
-        <Text style={styles.sourceLabel}>Anime News Network</Text>
+        <Text style={styles.sourceLabel}>JROCK News</Text>
       </View>
 
       {/* Content */}
