@@ -7,11 +7,10 @@ import {
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { XMLParser } from 'fast-xml-parser'; // Native parser dependency
 import { useTextTheme } from '@/context';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP, NEWS_SOURCES } from '@/constant';
-
-const RSS_URL = 'https://jrocknews.com/feed';
-const RSS2JSON_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
+import { HEADER_HEIGHT, HEADER_PADDING_TOP, NewsSource } from '@/constant';
+import { supabase } from '@/utils/supabase';
 
 type NewsItem = {
   title: string;
@@ -28,57 +27,134 @@ export default function NewsFeed() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sources, setSources] = useState<NewsSource[]>([]);
+
+  const fetchSources = async (): Promise<NewsSource[]> => {
+    const { data, error } = await supabase
+      .from('news_sources')
+      .select('name, url')
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('[News] Failed to fetch sources:', error.message);
+      return [];
+    }
+
+    console.log('[News] ✓ Loaded', data.length, 'sources from Supabase');
+    return data;
+  };
 
   const fetchNews = async () => {
     setError(null);
     try {
-        console.log('[News] Fetching from', NEWS_SOURCES.length, 'sources...');
+      const loadedSources = await fetchSources();
+      setSources(loadedSources);
 
-        //fetch all sources 
-        const responses = await Promise.all(
-            NEWS_SOURCES.map(source => fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`)
-            .then(res => res.json())
-            .then (data => ({ data, sourceName: source.name}))
+      if (loadedSources.length === 0) {
+        setError('No news sources available.');
+        return;
+      }
+
+      console.log('[News] Fetching natively from', loadedSources.length, 'sources...');
+
+      // 1. Fetch RAW XML streams straight from the primary domains
+      const responses = await Promise.all(
+        loadedSources.map(source =>
+          fetch(source.url)
+            .then(res => res.text()) // Get raw string text data instead of JSON
+            .then(xmlData => ({ xmlData, sourceName: source.name }))
             .catch(err => {
-                console.warn(`[NEWS] Failed to fetch ${source.name}:`, err.message);
-                return { data: { status: 'error', items: [] }, sourceName: source.name};
+              console.warn(`[NEWS] Network failure fetching ${source.name}:`, err.message);
+              return { xmlData: '', sourceName: source.name };
             })
-          )
-        );
+        )
+      );
 
-        // Helper function to extract image from HTML description
-        const extractImageFromDescription = (description: string): string => {
-        const imgMatch = description.match(/<img[^>]+src="([^">]+)"/);
-            return imgMatch ? imgMatch[1] : '';
-        };
+      const extractImageFromText = (text: string): string => {
+        if (!text) return '';
+        const imgMatch = text.match(/<img[^>]+src="([^">]+)"/);
+        return imgMatch ? imgMatch[1] : '';
+      };
 
-        const allItems = responses.flatMap (( { data, sourceName}) => {
-            if (data.status !== 'ok') return [];
+      // Instantiate native parser engine
+      const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "" });
 
-            return data.items.map((item:any) => ({
-                title: item.title,
-                link: item.link,
-                pubDate: item.pubDate,
-                author: sourceName,
-                thumbnail: item.thumbnail || item.enclosure?.link || extractImageFromDescription(item.description) || '',
-                description: item.description
-                .replace(/<[^>]*>/g, '')  // strip HTML tags
-                .replace(/&nbsp;/g, ' ')
-                .replace(/&amp;/g, '&')
-                .replace(/&quot;/g, '"')
-                .trim()
-                .slice(0, 120) + '...',  // truncate to 120 chars
-            }));
-        });
+      const allItems = responses.flatMap(({ xmlData, sourceName }) => {
+        if (!xmlData) return [];
 
-        allItems.sort((a, b) => new Date(b.pubdate).getTime() - new Date(a.pubDate).getTime());
+        try {
+          const jsonObj = parser.parse(xmlData);
+          let rawItems = jsonObj?.rss?.channel?.item || jsonObj?.feed?.entry || [];
+          
+          if (!Array.isArray(rawItems)) {
+            rawItems = [rawItems];
+          }
 
-        setNews(allItems);
-        console.log('[News] ✓ Fetched', allItems.length, 'total articles from', NEWS_SOURCES.length, 'sources');
+          return rawItems.map((item: any) => {
+            // Target the raw text description blocks
+            const rawDescription = item.description || item.summary || '';
+            const rawContent = item['content:encoded'] || item.content || '';
+            
+            // Clean up text preview summaries
+            const cleanDescription = typeof rawDescription === 'string' 
+              ? rawDescription.replace(/<[^>]*>/g, '').trim()
+              : '';
+
+            const finalLink = typeof item.link === 'string' 
+              ? item.link 
+              : item.link?.href || '';
+
+            let finalThumbnail = '';
+
+            // 1. Check for standard structural media parameters
+            if (item['media:content']) {
+              finalThumbnail = Array.isArray(item['media:content'])
+                ? item['media:content'][0]?.url
+                : item['media:content']?.url;
+            } else if (item['media:thumbnail']) {
+              finalThumbnail = item['media:thumbnail']?.url;
+            }
+
+            // 2. Look for featured attachment items inside WordPress extensions
+            if (!finalThumbnail && item['wp:attachment_url']) {
+              finalThumbnail = item['wp:attachment_url'];
+            }
+
+            // 3. Fallback: Parse raw HTML text tags inside the rich main body text
+            if (!finalThumbnail && typeof rawContent === 'string') {
+              finalThumbnail = extractImageFromText(rawContent);
+            }
+            if (!finalThumbnail && typeof rawDescription === 'string') {
+              finalThumbnail = extractImageFromText(rawDescription);
+            }
+
+            return {
+              title: item.title || 'No Title',
+              link: finalLink,
+              pubDate: item.pubDate || item.published || item.updated || new Date().toISOString(),
+              author: sourceName,
+              thumbnail: finalThumbnail || '', // Passes the active asset image right to your image container
+              description: cleanDescription.length > 120 
+                ? cleanDescription.slice(0, 120) + '...' 
+                : cleanDescription || 'View full industry coverage...',
+            };
+          });
+        } catch (parseErr) {
+          console.warn(`[News] XML parsing error on source ${sourceName}`);
+          return [];
+        }
+      });
+
+      // Filter empty objects & sort chronologically
+      const validItems = allItems.filter(item => item.link !== '');
+      validItems.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+
+      setNews(validItems);
+      console.log('[News] ✓ Successfully Fetched', validItems.length, 'total articles natively!');
 
     } catch (err: any) {
-      console.error('[News] Error:', err.message);
-      setError('Failed to load news. Please try again.');
+      console.error('[News] Global Error:', err.message);
+      setError('Failed to load news feeds.');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -95,6 +171,7 @@ export default function NewsFeed() {
   };
 
   const handleOpenArticle = async (url: string) => {
+    if (!url) return;
     await WebBrowser.openBrowserAsync(url, {
       presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
     });
@@ -102,6 +179,7 @@ export default function NewsFeed() {
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return 'Recent';
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -115,7 +193,6 @@ export default function NewsFeed() {
       activeOpacity={0.8}
       onPress={() => handleOpenArticle(item.link)}
     >
-      {/* Thumbnail */}
       {item.thumbnail ? (
         <Image
           source={{ uri: item.thumbnail }}
@@ -128,7 +205,6 @@ export default function NewsFeed() {
         </View>
       )}
 
-      {/* Content */}
       <View style={styles.cardContent}>
         <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
         <Text style={styles.cardDescription} numberOfLines={2}>{item.description}</Text>
@@ -138,14 +214,11 @@ export default function NewsFeed() {
           <Text style={styles.cardDate}>{formatDate(item.pubDate)}</Text>
         </View>
       </View>
-
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
@@ -160,13 +233,15 @@ export default function NewsFeed() {
         </TouchableOpacity>
       </View>
 
-      {/* Source label */}
-      <View style={styles.sourceBar}>
-        <Ionicons name="globe-outline" size={12} color="rgba(255,255,255,0.4)" />
-        <Text style={styles.sourceLabel}>JROCK News</Text>
-      </View>
+      {sources.length > 0 && (
+        <View style={styles.sourceBar}>
+          <Ionicons name="globe-outline" size={12} color="rgba(255,255,255,0.4)" />
+          <Text style={styles.sourceLabel}>
+            {sources.map(s => s.name).join('  •  ')}
+          </Text>
+        </View>
+      )}
 
-      {/* Content */}
       {loading ? (
         <View style={styles.centered}>
           <ActivityIndicator size="large" color="#FFFFFF" />
@@ -183,7 +258,7 @@ export default function NewsFeed() {
       ) : (
         <FlatList
           data={news}
-          keyExtractor={(item) => item.link}
+          keyExtractor={(item, index) => item.link + index}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
@@ -197,16 +272,12 @@ export default function NewsFeed() {
           }
         />
       )}
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'transparent',
-  },
+  container: { flex: 1, backgroundColor: 'transparent' },
   header: {
     height: HEADER_HEIGHT,
     paddingTop: HEADER_PADDING_TOP,
@@ -217,14 +288,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
   },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 8,
-  },
-  headerBtn: {
-    padding: 6,
-  },
+  headerCenter: { flex: 1, alignItems: 'center', paddingHorizontal: 8 },
+  headerBtn: { padding: 6 },
   sourceBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -234,93 +299,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.08)',
   },
-  sourceLabel: {
-    color: 'rgba(255,255,255,0.4)',
-    fontSize: 11,
-  },
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
-  },
-  loadingText: {
-    color: 'rgba(255,255,255,0.5)',
-    fontSize: 13,
-    marginTop: 8,
-  },
-  errorText: {
-    color: 'rgba(255,255,255,0.5)',
-    fontSize: 13,
-    textAlign: 'center',
-    paddingHorizontal: 40,
-  },
-  retryButton: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    marginTop: 4,
-  },
-  retryText: {
-    color: '#000000',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  listContent: {
-    padding: 16,
-    gap: 12,
-    paddingBottom: 40,
-  },
-  card: {
-    backgroundColor: 'rgba(15, 15, 15, 0.53)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 14,
-    overflow: 'hidden',
-    flexDirection: 'row',
-  },
-  thumbnail: {
-    width: 90,
-    height: 90,
-  },
-  thumbnailFallback: {
-    width: 90,
-    height: 90,
-    backgroundColor: 'rgba(255,255,255,0.05)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardContent: {
-    flex: 1,
-    padding: 12,
-    gap: 4,
-    justifyContent: 'space-between',
-  },
-  cardTitle: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '600',
-    lineHeight: 18,
-  },
-  cardDescription: {
-    color: 'rgba(255,255,255,0.45)',
-    fontSize: 11,
-    lineHeight: 16,
-  },
-  cardMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  cardSource: {
-    color: 'rgba(255,255,255,0.35)',
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  cardDate: {
-    color: 'rgba(255,255,255,0.3)',
-    fontSize: 10,
-  },
+  sourceLabel: { color: 'rgba(255,255,255,0.4)', fontSize: 11 },
+  centered: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
+  loadingText: { color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 8 },
+  errorText: { color: 'rgba(255,255,255,0.5)', fontSize: 13, textAlign: 'center', paddingHorizontal: 40 },
+  retryButton: { backgroundColor: '#FFFFFF', borderRadius: 10, paddingVertical: 10, paddingHorizontal: 24, marginTop: 4 },
+  retryText: { color: '#000000', fontSize: 14, fontWeight: '700' },
+  listContent: { padding: 16, gap: 12, paddingBottom: 40 },
+  card: { backgroundColor: 'rgba(15, 15, 15, 0.53)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 14, overflow: 'hidden', flexDirection: 'row' },
+  thumbnail: { width: 90, height: 90 },
+  thumbnailFallback: { width: 90, height: 90, backgroundColor: 'rgba(255,255,255,0.05)', alignItems: 'center', justifyContent: 'center' },
+  cardContent: { flex: 1, padding: 12, gap: 4, justifyContent: 'space-between' },
+  cardTitle: { color: '#FFFFFF', fontSize: 13, fontWeight: '600', lineHeight: 18 },
+  cardDescription: { color: 'rgba(255,255,255,0.45)', fontSize: 11, lineHeight: 16 },
+  cardMeta: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
+  cardSource: { color: 'rgba(255,255,255,0.35)', fontSize: 10, fontWeight: '600' },
+  cardDate: { color: 'rgba(255,255,255,0.3)', fontSize: 10 },
 });
