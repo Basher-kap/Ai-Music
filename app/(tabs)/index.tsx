@@ -38,7 +38,9 @@ export default function Index() {
 
       {/* Vinyl */}
       <View style={styles.vinylSection}>
-        <TouchableOpacity activeOpacity={0.9} onPress={() => {}}>
+        <TouchableOpacity activeOpacity={0.9} onPress={() => {}} onLongPress={() => { console.log('[Admin] Long press detected');
+        router.navigate('/private/admin');
+      }}>
           {/* Glassmorphic Vinyl Shadow Backdrop Ring */}
           <View style={styles.vinylGlowBackdrop}>
             <Animated.View style={[styles.vinyl, { transform: [{ rotate }] }]}>
