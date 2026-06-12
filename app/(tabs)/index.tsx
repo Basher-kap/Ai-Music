@@ -15,6 +15,9 @@ type DailySong = {
   daily_song_title: string | null;
   daily_song_artist: string | null;
   daily_song_url: string | null;
+  daily_song_image: string | null;
+  daily_song_theme: string | null;
+  updated_at: string | null;
 };
 
 export default function Index() {
@@ -32,7 +35,7 @@ export default function Index() {
     const fetchDailySong = async () => {
       const { data, error } = await supabase
         .from('settings')
-        .select('daily_song_title, daily_song_artist, daily_song_url')
+        .select('daily_song_title, daily_song_artist, daily_song_url, daily_song_image, daily_song_theme, updated_at')
         .eq('id', 1)
         .single();
 
