@@ -60,8 +60,8 @@ export default function Admin() {
 
   const handlePickAndUpload = async () => {
     const result = await DocumentPicker.getDocumentAsync({
-      type: 'audio/mpeg',
-      copyToCacheDirectory: true,
+        type: 'audio/mpeg',
+        copyToCacheDirectory: true,
     });
 
     if (result.canceled) return;
@@ -70,56 +70,68 @@ export default function Admin() {
     setUploading(true);
 
     try {
-      console.log('[Admin] Uploading daily song:', file.name);
+        console.log('[Admin] Uploading daily song:', file.name);
 
-      const base64 = await FileSystem.readAsStringAsync(file.uri, {
+        const base64 = await FileSystem.readAsStringAsync(file.uri, {
         encoding: 'base64',
-      });
-
-      const binaryString = atob(base64);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-
-      // Because daily song lives in its own folder in storage
-      const filePath = `daily/daily_song.mp3`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('songs-audio')
-        .upload(filePath, bytes, {
-          contentType: 'audio/mpeg',
-          upsert: true,
         });
 
-      if (uploadError) throw uploadError;
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+        }
 
-      const { data } = supabase.storage
+        // Step 1 — Delete old files first
+        const { data: existingFiles } = await supabase.storage
+        .from('songs-audio')
+        .list('daily');
+
+        if (existingFiles && existingFiles.length > 0) {
+        const filesToDelete = existingFiles.map(f => `daily/${f.name}`);
+        await supabase.storage
+            .from('songs-audio')
+            .remove(filesToDelete);
+        console.log('[Admin] ✓ Old daily song deleted');
+        }
+
+        // Step 2 — Upload new file
+        const filePath = `daily/daily_song.mp3`;
+        const { error: uploadError } = await supabase.storage
+        .from('songs-audio')
+        .upload(filePath, bytes, {
+            contentType: 'audio/mpeg',
+            upsert: true,
+        });
+
+        if (uploadError) throw uploadError;
+
+        // Step 3 — Get public URL
+        const { data } = supabase.storage
         .from('songs-audio')
         .getPublicUrl(filePath);
 
-      console.log('[Admin] ✓ Daily song uploaded:', data.publicUrl);
+        console.log('[Admin] ✓ Daily song uploaded:', data.publicUrl);
 
-      // Save URL to settings table immediately
-      const { error: updateError } = await supabase
+        // Step 4 — Save URL to settings table
+        const { error: updateError } = await supabase
         .from('settings')
         .update({ daily_song_url: data.publicUrl, updated_at: new Date().toISOString() })
         .eq('id', 1);
 
-      if (updateError) throw updateError;
+        if (updateError) throw updateError;
 
-      setCurrentSong(prev => prev ? { ...prev, daily_song_url: data.publicUrl } : null);
-      console.log('[Admin] ✓ Daily song URL saved to settings');
-      Alert.alert('Success', 'Audio uploaded successfully!');
+        setCurrentSong(prev => prev ? { ...prev, daily_song_url: data.publicUrl } : null);
+        console.log('[Admin] ✓ Daily song URL saved to settings');
+        Alert.alert('Success', 'Audio uploaded successfully!');
 
     } catch (err: any) {
-      console.error('[Admin] Upload error:', err.message);
-      Alert.alert('Error', 'Failed to upload audio. Please try again.');
+        console.error('[Admin] Upload error:', err.message);
+        Alert.alert('Error', 'Failed to upload audio. Please try again.');
     } finally {
-      setUploading(false);
+        setUploading(false);
     }
-  };
-
+    };
   const handleSave = async () => {
     if (!title.trim() || !artist.trim()) {
       Alert.alert('Error', 'Please fill in both title and artist.');
@@ -155,12 +167,14 @@ export default function Admin() {
       setSaving(false);
     }
   };
+  
 
   if (loading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ActivityIndicator size="large" color="#FFFFFF" />
     </View>
   );
+  
 
   return (
     <View style={styles.container}>
