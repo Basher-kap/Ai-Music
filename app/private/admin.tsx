@@ -1,6 +1,6 @@
 // app/private/admin.tsx
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView, Image, useWindowDimensions } from 'react-native';
 import { router } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -24,6 +24,7 @@ type DailySong = {
 export default function Admin() {
   const { ThemeTextStyles } = useTextTheme();
   const { user } = useAuth();
+  const { width } = useWindowDimensions();
 
   const [title, setTitle] = useState('');
   const [artist, setArtist] = useState('');
@@ -35,6 +36,8 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [previewImageUri, setPreviewImageUri] = useState<string | null>(null);
   const [previewAudioName, setPreviewAudioName] = useState<string | null>(null);
+
+  const previewImageWidth = (width - 40) * 0.45; // ~45% of available content width
 
   useEffect(() => {
     if (user && user.id !== ADMIN_USER_ID) {
@@ -60,7 +63,7 @@ export default function Admin() {
       setSelectedTheme(data.daily_song_theme ?? '');
       setPreviewImageUri(data.daily_song_image ?? null);
     }
-    setLoading(false);
+    if (loading) setLoading(false);
   };
 
   const handlePickAndUpload = async () => {
@@ -87,7 +90,6 @@ export default function Admin() {
         bytes[i] = binaryString.charCodeAt(i);
       }
 
-      // Delete old files first
       const { data: existingFiles } = await supabase.storage
         .from('songs-audio')
         .list('daily');
@@ -174,15 +176,17 @@ export default function Admin() {
         .from('songs-audio')
         .getPublicUrl(filePath);
 
+      const cacheBustedUrl = `${data.publicUrl}?t=${Date.now()}`;
+
       const { error: updateError } = await supabase
         .from('settings')
-        .update({ daily_song_image: data.publicUrl })
+        .update({ daily_song_image: cacheBustedUrl })
         .eq('id', 1);
 
       if (updateError) throw updateError;
 
-      setCurrentSong(prev => prev ? { ...prev, daily_song_image: data.publicUrl } : null);
-      setPreviewImageUri(data.publicUrl);
+      setCurrentSong(prev => prev ? { ...prev, daily_song_image: cacheBustedUrl  } : null);
+      setPreviewImageUri(cacheBustedUrl);
       console.log('[Admin] ✓ Image uploaded:', data.publicUrl);
       Alert.alert('Success', 'Image uploaded successfully!');
 
@@ -217,6 +221,8 @@ export default function Admin() {
         .eq('id', 1);
 
       if (error) throw error;
+
+      await fetchCurrentSong(); //re-fetch after save instantly
       console.log('[Admin] ✓ Daily song info saved');
       Alert.alert('Success', 'Daily song updated successfully!');
 
@@ -236,7 +242,6 @@ export default function Admin() {
 
   return (
     <View style={styles.container}>
-
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
@@ -256,7 +261,6 @@ export default function Admin() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-
         {/* Current Daily Song */}
         {currentSong?.daily_song_title && (
           <View style={styles.currentCard}>
@@ -302,20 +306,26 @@ export default function Admin() {
         {/* Cover Image */}
         <Text style={styles.label}>Cover Image</Text>
         {previewImageUri ? (
-          <TouchableOpacity onPress={handlePickImage} disabled={uploadingImage}>
-            <Image
-              source={{ uri: previewImageUri }}
-              style={styles.imagePreview}
-              resizeMode="cover"
-            />
-            {uploadingImage && (
-              <View style={styles.imageOverlay}>
-                <ActivityIndicator size="large" color="#FFFFFF" />
+          <TouchableOpacity 
+            onPress={handlePickImage} 
+            disabled={uploadingImage}
+            style={[styles.imageWrapper, { width: previewImageWidth }]} 
+          >
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: previewImageUri }}
+                style={styles.imagePreview}
+                resizeMode="cover"
+              />
+              {uploadingImage && (
+                <View style={styles.imageOverlay}>
+                  <ActivityIndicator size="large" color="#FFFFFF" />
+                </View>
+              )}
+              <View style={styles.imageReplaceHint}>
+                <Ionicons name="camera-outline" size={14} color="#FFFFFF" />
+                <Text style={styles.imageReplaceText}>Tap to replace</Text>
               </View>
-            )}
-            <View style={styles.imageReplaceHint}>
-              <Ionicons name="camera-outline" size={14} color="#FFFFFF" />
-              <Text style={styles.imageReplaceText}>Tap to replace</Text>
             </View>
           </TouchableOpacity>
         ) : (
@@ -324,13 +334,14 @@ export default function Admin() {
             onPress={handlePickImage}
             disabled={uploadingImage}
           >
-            {uploadingImage
-              ? <ActivityIndicator size="small" color="#FFFFFF" />
-              : <>
-                  <Ionicons name="image-outline" size={18} color="#FFFFFF" />
-                  <Text style={styles.uploadText}>Upload Image</Text>
-                </>
-            }
+            {uploadingImage ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <>
+                <Ionicons name="image-outline" size={18} color="#FFFFFF" />
+                <Text style={styles.uploadText}>Upload Image</Text>
+              </>
+            )}
           </TouchableOpacity>
         )}
 
@@ -342,16 +353,17 @@ export default function Admin() {
             onPress={handlePickAndUpload}
             disabled={uploading}
           >
-            {uploading
-              ? <ActivityIndicator size="small" color="#FFFFFF" />
-              : <>
-                  <Ionicons name="musical-note" size={18} color="#7EC8A0" />
-                  <Text style={styles.audioPreviewText} numberOfLines={1}>
-                    {previewAudioName ?? 'Audio uploaded ✓'}
-                  </Text>
-                  <Text style={styles.replaceText}>Replace</Text>
-                </>
-            }
+            {uploading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <>
+                <Ionicons name="musical-note" size={18} color="#7EC8A0" />
+                <Text style={styles.audioPreviewText} numberOfLines={1}>
+                  {previewAudioName ?? 'Audio uploaded ✓'}
+                </Text>
+                <Text style={styles.replaceText}>Replace</Text>
+              </>
+            )}
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -359,13 +371,14 @@ export default function Admin() {
             onPress={handlePickAndUpload}
             disabled={uploading}
           >
-            {uploading
-              ? <ActivityIndicator size="small" color="#FFFFFF" />
-              : <>
-                  <Ionicons name="musical-note-outline" size={18} color="#FFFFFF" />
-                  <Text style={styles.uploadText}>Upload MP3</Text>
-                </>
-            }
+            {uploading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <>
+                <Ionicons name="musical-note-outline" size={18} color="#FFFFFF" />
+                <Text style={styles.uploadText}>Upload MP3</Text>
+              </>
+            )}
           </TouchableOpacity>
         )}
 
@@ -401,15 +414,15 @@ export default function Admin() {
           onPress={handleSave}
           disabled={saving}
         >
-          {saving
-            ? <ActivityIndicator size="small" color="#000000" />
-            : <>
-                <Ionicons name="checkmark-outline" size={18} color="#000000" />
-                <Text style={styles.saveText}>Save Daily Song</Text>
-              </>
-          }
+          {saving ? (
+            <ActivityIndicator size="small" color="#000000" />
+          ) : (
+            <>
+              <Ionicons name="checkmark-outline" size={18} color="#000000" />
+              <Text style={styles.saveText}>Save Daily Song</Text>
+            </>
+          )}
         </TouchableOpacity>
-
       </ScrollView>
     </View>
   );
@@ -506,9 +519,20 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
   },
+  imageWrapper: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+  },
+  imageContainer: {
+    width: '100%',
+    position: 'relative',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
   imagePreview: {
-    width: '50%',
-    height: 100,
+    width: '100%',
+    aspectRatio: 1,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.15)',
@@ -526,8 +550,8 @@ const styles = StyleSheet.create({
   },
   imageReplaceHint: {
     position: 'absolute',
-    bottom: 10,
-    right: 12,
+    bottom: 8,
+    right: 8,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,

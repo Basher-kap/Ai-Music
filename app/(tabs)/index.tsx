@@ -2,8 +2,8 @@
 import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated, AppState } from 'react-native';
 import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '@/store';
 import { Image } from 'react-native';
@@ -31,22 +31,24 @@ export default function Index() {
   const rotation = useRef(new Animated.Value(0)).current;
 
   // Fetch daily song from settings table
-  useEffect(() => {
-    const fetchDailySong = async () => {
-      const { data, error } = await supabase
-        .from('settings')
-        .select('daily_song_title, daily_song_artist, daily_song_url, daily_song_image, daily_song_theme, updated_at')
-        .eq('id', 1)
-        .single();
+  useFocusEffect(
+    useCallback(() => {
+      const fetchDailySong = async () => {
+        const { data, error } = await supabase
+          .from('settings')
+          .select('daily_song_title, daily_song_artist, daily_song_url, daily_song_image, daily_song_theme, updated_at')
+          .eq('id', 1)
+          .single();
 
-      if (!error && data) {
-        console.log('[Home] Daily song:', data.daily_song_title);
-        setDailySong(data);
-      }
-    };
+        if (!error && data) {
+          console.log('[Home] Daily song:', data.daily_song_title);
+          setDailySong(data);
+        }
+      };
 
-    fetchDailySong();
-  }, []);
+      fetchDailySong();
+    }, [])
+  );
 
 
   const handleVinylPress = async () => {
