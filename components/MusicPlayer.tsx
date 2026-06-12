@@ -37,7 +37,8 @@ export default function MusicPlayer({ uri }: Props) {
         setVisualProgress(0);
       }
 
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false, shouldDuckAndroid: false});
+
 
       const { sound: newSound } = await Audio.Sound.createAsync(
         { uri },

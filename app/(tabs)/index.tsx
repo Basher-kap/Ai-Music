@@ -1,33 +1,137 @@
 // app/(tabs)/index.tsx
-import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated, AppState } from 'react-native';
 import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { router } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '@/store';
 import { Image } from 'react-native';
 
+import { supabase } from '@/utils/supabase';
+import { Audio } from 'expo-av';
+
+type DailySong = {
+  daily_song_title: string | null;
+  daily_song_artist: string | null;
+  daily_song_url: string | null;
+};
+
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
-  const { signOut, user } = useAuth();
+  const { signOut, user, session } = useAuth();
+
+  const [dailySong, setDailySong] = useState<DailySong | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const soundRef = useRef<Audio.Sound | null>(null);
 
   const rotation = useRef(new Animated.Value(0)).current;
+
+  // Fetch daily song from settings table
   useEffect(() => {
-    Animated.loop(
-      Animated.timing(rotation, {
+    const fetchDailySong = async () => {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('daily_song_title, daily_song_artist, daily_song_url')
+        .eq('id', 1)
+        .single();
+
+      if (!error && data) {
+        console.log('[Home] Daily song:', data.daily_song_title);
+        setDailySong(data);
+      }
+    };
+
+    fetchDailySong();
+  }, []);
+
+
+  const handleVinylPress = async () => {
+    if (!dailySong?.daily_song_url) return;
+
+    try {
+      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+
+      if (isPlaying) {
+        // Stop and unload
+        await soundRef.current?.stopAsync();
+        await soundRef.current?.unloadAsync();
+        soundRef.current = null;
+        setIsPlaying(false);
+        console.log('[Home] Music Stopped')
+      } else {
+          // start fresh music
+          const { sound } = await Audio.Sound.createAsync({ uri: dailySong.daily_song_url },{ shouldPlay : true });
+          soundRef.current = sound;
+          setIsPlaying(true);
+          console.log('[Home] Playing:', dailySong.daily_song_title);
+
+          sound.setOnPlaybackStatusUpdate((status) => {
+            if (status.isLoaded && status.didJustFinish) {
+              soundRef.current?.unloadAsync();
+              soundRef.current = null;
+              setIsPlaying(false);
+              console.log('[Home] Finished')
+            }
+          });
+      }
+    } catch (err: any) {
+      console.error('[Home] Playback error:', err.message);
+    }
+  };
+
+  const animationRef = useRef<Animated.CompositeAnimation | null>(null);
+
+  useEffect(() => {
+    if (isPlaying){
+      animationRef.current = Animated.loop(
+        Animated.timing(rotation, {
         toValue: 1,
         duration: 4000,
         easing: Easing.linear,
         useNativeDriver: true,
       })
-    ).start();
-  }, []);
+    );
+      animationRef.current.start();
+    } else {
+      animationRef.current?.stop();
+      rotation.setValue(0);
+    }
+  }, [isPlaying]);
 
   const rotate = rotation.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
+
+  // stop music when app is on background
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async (nextState) => {
+      if (nextState === 'background' || nextState === 'inactive') {
+        if (soundRef.current){
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+          setIsPlaying(false);
+          console.log('[Home] Stopped - app backgrounded');
+        }
+      }
+    });
+    return () => subscription.remove();
+  }, []);
+
+  // stop music when user signed out
+  useEffect(() => {
+    if(!session && soundRef.current) {
+      soundRef.current.stopAsync().then(() => {
+        soundRef.current?.unloadAsync();
+        soundRef.current = null;
+        setIsPlaying(false);
+        console.log('[Home] Stopped - signed out');
+      });
+    }
+  }, [session]);
+
 
   return (
     <View style={styles.container}>
@@ -38,7 +142,7 @@ export default function Index() {
 
       {/* Vinyl */}
       <View style={styles.vinylSection}>
-        <TouchableOpacity activeOpacity={0.9} onPress={() => {}} onLongPress={() => { console.log('[Admin] Long press detected');
+        <TouchableOpacity activeOpacity={0.9} onPress={handleVinylPress} onLongPress={() => { console.log('[Admin] Long press detected');
         router.navigate('/private/admin');
       }}>
           {/* Glassmorphic Vinyl Shadow Backdrop Ring */}
@@ -55,6 +159,14 @@ export default function Index() {
             </Animated.View>
           </View>
         </TouchableOpacity>
+
+        {/* Daily song info below vinyl */}
+        {dailySong?.daily_song_title && (
+          <View style={styles.dailySongInfo}>
+            <Text style={styles.dailySongTitle}>{dailySong.daily_song_title}</Text>
+            <Text style={styles.dailySongArtist}>{dailySong.daily_song_artist}</Text>
+          </View>
+        )}
       </View>
 
       {/* Features */}
@@ -179,6 +291,20 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(19, 18, 18, 0.4)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
+  },
+  dailySongInfo: {
+    alignItems: 'center',
+    marginTop: 16,
+    gap: 4,
+  },
+  dailySongTitle: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  dailySongArtist: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 12,
   },
   featuresSection: {
     paddingHorizontal: 20,

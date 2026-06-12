@@ -4,8 +4,9 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useTextTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router, useGlobalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { Audio } from 'expo-av';
+import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lyrics() {
@@ -18,6 +19,17 @@ export default function Lyrics() {
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
 
+  useFocusEffect(
+    useCallback(() => {
+      const stopAllAudio = async () => {
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false, shouldDuckAndroid: false});
+      };
+      stopAllAudio();
+      return() => {
+
+      };
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
