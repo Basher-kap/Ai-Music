@@ -62,7 +62,7 @@ export default function Index() {
     try {
       await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
-      //get the theme key of the daily song
+      //get the theme key of the daily song and pass it to the setActiveTheme in context
       if (dailySong?.daily_song_theme){
         setActiveTheme(dailySong.daily_song_theme as ThemeKey);
       }
@@ -111,7 +111,7 @@ export default function Index() {
       animationRef.current = Animated.loop(
         Animated.timing(rotation, {
         toValue: 1,
-        duration: 4000,
+        duration: 12000,
         easing: Easing.linear,
         useNativeDriver: true,
       })
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 70,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.15)',  // ← slightly more visible
+    borderColor: 'rgba(255, 255, 255, 0.15)',  // slightly more visible
   },
   vinylInnerRing: {
     position: 'absolute',
