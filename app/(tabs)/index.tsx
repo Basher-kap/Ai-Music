@@ -10,6 +10,7 @@ import { Image } from 'react-native';
 
 import { supabase } from '@/utils/supabase';
 import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type DailySong = {
   daily_song_title: string | null;
@@ -36,18 +37,36 @@ export default function Index() {
   useFocusEffect(
     useCallback(() => {
       const fetchDailySong = async () => {
-        const { data, error } = await supabase
-          .from('settings')
-          .select('daily_song_title, daily_song_artist, daily_song_url, daily_song_image, daily_song_theme, updated_at')
-          .eq('id', 1)
-          .single();
+        //load from cache first
+        try {
+          const cached = await AsyncStorage.getItem('daily_song');
+          if (cached) {
+            setDailySong(JSON.parse(cached));
+            console.log('[Home] Daily song loaded from cache');
+          }
+        }catch {
+          console.log('[Home] No daily song cache')
+        }
 
-        if (!error && data) {
-          console.log('[Home] Daily song:', data.daily_song_title);
-          setDailySong(data);
+        //fetch from database
+        try{
+          const { data, error } = await supabase
+            .from('settings')
+            .select('daily_song_title, daily_song_artist, daily_song_url, daily_song_image, daily_song_theme, updated_at')
+            .eq('id', 1)
+            .single();
+
+          if (!error && data) {
+            setDailySong(data);
+            // update cache
+            await AsyncStorage.setItem('daily_song', JSON.stringify(data));
+            console.log('[Home] Daily song synced from:', data.daily_song_title);          
+          }
+        } catch (err: any) {
+          console.log('[Home] Daily song fetch failed - using cache')
         }
       };
-
+        
       fetchDailySong();
     }, [])
   );

@@ -3,7 +3,7 @@ import { Song } from '@/types/songs';
 import { logger } from '@/utils/logger';
 import { supabase } from '@/utils/supabase';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system/legacy';
 
 // a strcuture of data that the fetching the songs will use
@@ -41,9 +41,56 @@ export function SongsProvider({ children }: { children: ReactNode}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+    //LOCAL-FIRST CHACHING
+    //you need the user ID to namesapce the cache key so different users dont share the same cached songs
+    const getCacheKey = async (): Promise<string | null> => {
+        const { data: { user }} = await supabase.auth.getUser();
+        return user ? `songs_${user.id}` : null;
+    };
+
+    //now save songs to AsyncStorage
+    const saveToCache = async (data: Song[]) => {
+        try {
+            const key = await getCacheKey();
+            if (key) {
+                await AsyncStorage.setItem(key, JSON.stringify(data));
+                console.log('[Songs] Cache Updated');
+                }
+            } catch {
+                console.log('[Songs] Cache saved failed')
+            }
+    };
+
+    //load songs from AsyncStorage
+    const loadFromCache = async (): Promise<Song[]> => {
+        try {
+            const key = await getCacheKey();
+            if (!key) return [];
+            const cached = await AsyncStorage.getItem(key);
+            return cached? JSON.parse(cached) : [];
+        } catch {
+            console.log('[Songs] Cache load failed')
+            return [];
+        }
+    };
+
+    //clear cache (your songs) on sign out
+    const clearCache = async () => {
+        try {
+            const key = await getCacheKey();
+            if (key) {
+                await AsyncStorage.removeItem(key);
+                console.log('[Songs] Cache cleared');
+            }
+        } catch {
+            console.log('[Songs] Cache clear failed');
+        }
+    };
+
+    //FETCH SONGS - LOCAL-FIRST then sybc with Supabase in the background
+
     //function to get the data
     const fetchSongs = async () => {
-        setLoading(true); //informs that is loading
         setError(null); //then sends no error yet
 
         const { data: { user } } = await supabase.auth.getUser();
@@ -56,41 +103,56 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             return;
         }
 
-        const { data, error } = await supabase
-        .from('songs') //get a table "songs"
-        .select('*') //* means select all data in the 'songs'
-        .eq('user_id', user.id) //only fetch the user's songs
-        .order('created_at' , {ascending: false}); //newest at the top
-        
-        logger.log('fetched order:', data?.map(s => s.title));
-        
-        if (error) {
-            console.error('[Songs] Fetch error:', error.message);
-            setError(error.message);
+        //Step 1 Load From cache first for instant display
+        const cached = await loadFromCache();
+        if (cached.length > 0) {
+            setSongs(cached);
+            setLoading(false); // this shows cached data immediately
+            console.log('[Songs] ✓ Loaded', cached.length, 'songs from cache');
         } else {
-            logger.log('[Songs] ✓ Fetched', data.length, 'songs for', user.email);
-            logger.log('[Songs] Song titles:', data.map(s => s.title));
-            //checks the data (which got from the supabase) if matches the Song[] (its strcuture)
-            setSongs (data as Song[]);
+            setLoading(true); // if no chache, show spinner until Supabase responds
         }
 
-        setLoading(false);
+        //Step 2 feth fresh data from supabase
+        try {
+            const { data, error } = await supabase
+            .from('songs') //get a table "songs"
+            .select('*') //* means select all data in the 'songs'
+            .eq('user_id', user.id) //only fetch the user's songs
+            .order('created_at' , {ascending: false}); //newest at the top
+            
+            if (error) throw error;
+
+            setSongs(data as Song[]);
+            await saveToCache(data as Song[]); //update cache with fresh data
+            console.log('[Songs] ✓ Fetched', data.length, 'songs from Supabase');
+        } catch (err: any) {
+            console.error('[Songs] Fetch error:', err.message);
+            if (cached.length === 0) {
+                setError (err.message);
+            }
+        } finally {
+            setLoading(false);
+        }
     };
         
+    // AUTH LISTENER
     useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
             if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
             fetchSongs();
             } else if (event === 'SIGNED_OUT') {
+            await clearCache(); //clear cache on signout
             setSongs([]);
             setLoading(false);
-            logger.log('[Songs] Cleared songs — signed out');
+            logger.log('[Songs] Cleared songs on signed out');
             }
         });
 
         return () => subscription.unsubscribe();
     }, []);
 
+    // WRITE OPERATIONS - updates Supabase then update local state and cache
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
           logger.log('Adding song:', title, artist, song_theme);
 
@@ -102,15 +164,22 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             return;
         }
         
-        const { error } = await supabase
+        const { data, error } = await supabase
             .from('songs')
-            .insert([{ title, artist, song_theme, user_id: user.id }]); //a query to add a song in a table
+            .insert([{ title, artist, song_theme, user_id: user.id }]) //a query to add a song in a table
+            .select()
+            .single();
 
-        if ( error ) {
-            throw error;
-        } else {
-            await fetchSongs(); //fetching the songs after adding, usually updates
-        }
+            if (error) {
+                console.error('[Songs] Error adding song:', error.message);
+                return;
+            }
+
+            // we have the new row — update local state and cache directly
+            const updated = [ data as Song, ...songs];
+            setSongs(updated);
+            await saveToCache(updated);
+            console.log('[Songs] Song added and cache updated');
     };
 
     const addLyrics = async (id: string, title: string, artist: string, lyrics: string ) => {
@@ -119,11 +188,13 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             .from('songs')
             .update({ title, artist, lyrics }).eq('id',id); 
 
-        if ( error ) {
-            throw error;
-        } else {
-            await fetchSongs(); 
-        }
+        if ( error ) throw error;
+
+        // we onlye update the changed song in local state
+        const updated = songs.map(song => song.id === id ? {...song, title, artist, lyrics } : song);
+        setSongs(updated);
+        await saveToCache(updated);
+        console.log('[Songs] Lyrics added and cache updated');
     };
 
     const addReviews = async (id: string, song_theme: string[], review: string ) => {
@@ -132,11 +203,13 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             .from('songs')
             .update({ song_theme, review }).eq('id',id); 
 
-        if ( error ) {
-            throw error;
-        } else {
-            await fetchSongs(); 
-        }
+        if ( error ) throw error;
+
+        // same as lyrics
+        const updated = songs.map( song => song.id === id ? { ...song, song_theme, review } : song );
+        setSongs(updated);
+        await saveToCache(updated);
+        console.log('[Songs] Review updated and cached updated');
     };
 
     const deleteSong = async (id: string) => {
@@ -147,13 +220,13 @@ export function SongsProvider({ children }: { children: ReactNode}) {
         .from('songs')
         .delete().eq('id', id);
 
-        if ( error ) {
-            await fetchSongs(); //revert on failure
-            throw error;
-        } else {
-            await fetchSongs(); 
-        }
-    }
+        if ( error ) throw error;
+
+        const updated = songs.filter(song => song.id !== id);
+        setSongs(updated);
+        await saveToCache(updated);
+        console.log('[Songs] Song deleted and cache updated');
+    };
 
     const uploadAudio = async (songId: string, fileUri: string, fileName: string): Promise<string | null> => {
         try {
@@ -204,18 +277,15 @@ export function SongsProvider({ children }: { children: ReactNode}) {
             if (updateError) throw updateError;
             console.log('[Audio] ✓ mp4song field updated in songs table');
 
-            setSongs(prev => prev.map(song =>
-            song.id === songId
-                ? { ...song, mp4song: data.publicUrl }
-                : song
-            ));
-            console.log('[Audio] ✓ Local state updated');
-            console.log('[Audio] ✓ Upload complete for song:', songId);
+            const updated = songs.map(song => song.id === songId ? {...song, mp4song: data.publicUrl} : song);
+            setSongs(updated)
+            await saveToCache(updated);
+            console.log('[Audio] Local state and cache updated');
 
             return data.publicUrl;
 
         } catch (err: any) {
-            console.error('[Audio] ✗ Upload failed:', err.message);
+            console.error('[Audio] Upload failed:', err.message);
             return null;
         }
         };
