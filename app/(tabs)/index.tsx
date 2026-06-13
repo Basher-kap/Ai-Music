@@ -1,7 +1,7 @@
 // app/(tabs)/index.tsx
 import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated, AppState } from 'react-native';
-import { useTextTheme } from '@/context';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
+import { useTextTheme, useTheme } from '@/context';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -29,6 +29,8 @@ export default function Index() {
   const soundRef = useRef<Audio.Sound | null>(null);
 
   const rotation = useRef(new Animated.Value(0)).current;
+
+  const { setActiveTheme } = useTheme();
 
   // Fetch daily song from settings table
   useFocusEffect(
@@ -59,6 +61,11 @@ export default function Index() {
 
     try {
       await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+
+      //get the theme key of the daily song
+      if (dailySong?.daily_song_theme){
+        setActiveTheme(dailySong.daily_song_theme as ThemeKey);
+      }
 
       if (isPlaying) {
         // Stop and unload
@@ -166,12 +173,19 @@ export default function Index() {
           <View style={styles.vinylGlowBackdrop}>
             <Animated.View style={[styles.vinyl, { transform: [{ rotate }] }]}>
               {/* Outer ring */}
+              {dailySong?. daily_song_image ? (
+                <Image source={{ uri: dailySong.daily_song_image }}
+                  style={[StyleSheet.absoluteFillObject, {borderRadius: 95}]}
+                  resizeMode="cover"
+                />
+              ) : null}
+  
               <View style={styles.vinylRing} />
               {/* Secondary audio micro-groove ring for high-fidelity design depth */}
               <View style={styles.vinylInnerRing} />
               {/* Center hole */}
               <View style={styles.vinylCenter}>
-                <Ionicons name="musical-note" size={24} color="#FFFFFF" style={styles.centerIconGlow} />
+                <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#FFFFFF" style={styles.centerIconGlow} />
               </View>
             </Animated.View>
           </View>
@@ -279,7 +293,7 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 70,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.04)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',  // ← slightly more visible
   },
   vinylInnerRing: {
     position: 'absolute',
@@ -287,22 +301,18 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.02)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   vinylCenter: {
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',   // ← darker so icon is readable over image
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#FFFFFF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
+},
   centerIconGlow: {
     opacity: 0.95,
     textShadowColor: 'rgba(19, 18, 18, 0.4)',
