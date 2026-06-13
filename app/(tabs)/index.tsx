@@ -50,21 +50,31 @@ export default function Index() {
     }, [])
   );
 
+  const isProcessingRef = useRef(false);
 
   const handleVinylPress = async () => {
     if (!dailySong?.daily_song_url) return;
+    if (isProcessingRef.current) return; //resolve rapid taps
+    isProcessingRef.current = true;
 
     try {
       await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
       if (isPlaying) {
         // Stop and unload
-        await soundRef.current?.stopAsync();
-        await soundRef.current?.unloadAsync();
-        soundRef.current = null;
+        if(soundRef.current) {
+          await soundRef.current?.stopAsync();
+          await soundRef.current?.unloadAsync();
+          soundRef.current = null;
+        }
         setIsPlaying(false);
         console.log('[Home] Music Stopped')
       } else {
+        //make sure no leftover sound exists before creating a new one
+        if(soundRef.current){
+          await soundRef.current?.unloadAsync();
+          soundRef.current = null;
+        }
           // start fresh music
           const { sound } = await Audio.Sound.createAsync({ uri: dailySong.daily_song_url },{ shouldPlay : true });
           soundRef.current = sound;
@@ -82,6 +92,8 @@ export default function Index() {
       }
     } catch (err: any) {
       console.error('[Home] Playback error:', err.message);
+    } finally {
+      isProcessingRef.current = false;
     }
   };
 
