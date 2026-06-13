@@ -93,7 +93,8 @@ export function SongsProvider({ children }: { children: ReactNode}) {
     const fetchSongs = async () => {
         setError(null); //then sends no error yet
 
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { session } } = await supabase.auth.getSession();
+        const user = session?.user ?? null;
 
         logger.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
 
@@ -157,7 +158,8 @@ export function SongsProvider({ children }: { children: ReactNode}) {
           logger.log('Adding song:', title, artist, song_theme);
 
           //  need the current user's ID to associate the song
-        const { data: { user } } = await supabase.auth.getUser();
+         const { data: { session } } = await supabase.auth.getSession();
+         const user = session?.user ?? null;
 
         if (!user) {
             console.error('No user logged in. Cannot add song.');
@@ -230,7 +232,8 @@ export function SongsProvider({ children }: { children: ReactNode}) {
 
     const uploadAudio = async (songId: string, fileUri: string, fileName: string): Promise<string | null> => {
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { session } } = await supabase.auth.getSession();
+            const user = session?.user ?? null;
             if (!user) throw new Error('No user logged in');
 
             console.log('[Audio] Starting upload...');

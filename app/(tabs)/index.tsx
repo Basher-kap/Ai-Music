@@ -1,5 +1,5 @@
 // app/(tabs)/index.tsx
-import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated, AppState } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated, AppState, Alert } from 'react-native';
 import { useTextTheme, useTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
 import { router, useFocusEffect } from 'expo-router';
@@ -75,34 +75,35 @@ export default function Index() {
 
   const handleVinylPress = async () => {
     if (!dailySong?.daily_song_url) return;
-    if (isProcessingRef.current) return; //resolve rapid taps
+    if (isProcessingRef.current) return;
     isProcessingRef.current = true;
 
     try {
       await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
-      //get the theme key of the daily song and pass it to the setActiveTheme in context
-      if (dailySong?.daily_song_theme){
+      if (dailySong?.daily_song_theme) {
         setActiveTheme(dailySong.daily_song_theme as ThemeKey);
       }
 
       if (isPlaying) {
-        // Stop and unload
-        if(soundRef.current) {
-          await soundRef.current?.stopAsync();
-          await soundRef.current?.unloadAsync();
+        if (soundRef.current) {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
           soundRef.current = null;
         }
         setIsPlaying(false);
-        console.log('[Home] Music Stopped')
+        console.log('[Home] Music Stopped');
       } else {
-        //make sure no leftover sound exists before creating a new one
-        if(soundRef.current){
-          await soundRef.current?.unloadAsync();
+        if (soundRef.current) {
+          await soundRef.current.unloadAsync();
           soundRef.current = null;
         }
-          // start fresh music
-          const { sound } = await Audio.Sound.createAsync({ uri: dailySong.daily_song_url },{ shouldPlay : true });
+
+        try {
+          const { sound } = await Audio.Sound.createAsync(
+            { uri: dailySong.daily_song_url },
+            { shouldPlay: true }
+          );
           soundRef.current = sound;
           setIsPlaying(true);
           console.log('[Home] Playing:', dailySong.daily_song_title);
@@ -112,9 +113,18 @@ export default function Index() {
               soundRef.current?.unloadAsync();
               soundRef.current = null;
               setIsPlaying(false);
-              console.log('[Home] Finished')
+              console.log('[Home] Finished');
             }
           });
+        } catch {
+          // Because audio requires internet — show friendly message
+          console.log('[Home] Cannot play — no internet connection');
+          Alert.alert(
+            'No Internet',
+            'Daily song requires an internet connection to play.',
+            [{ text: 'OK' }]
+          );
+        }
       }
     } catch (err: any) {
       console.error('[Home] Playback error:', err.message);
