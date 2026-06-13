@@ -172,24 +172,28 @@ export default function Index() {
           {/* Glassmorphic Vinyl Shadow Backdrop Ring */}
           <View style={styles.vinylGlowBackdrop}>
             <Animated.View style={[styles.vinyl, { transform: [{ rotate }] }]}>
+
               {/* Outer ring */}
-              {dailySong?. daily_song_image ? (
-                <Image source={{ uri: dailySong.daily_song_image }}
-                  style={[StyleSheet.absoluteFillObject, {borderRadius: 95}]}
-                  resizeMode="cover"
-                />
-              ) : null}
-  
               <View style={styles.vinylRing} />
-              {/* Secondary audio micro-groove ring for high-fidelity design depth */}
+              {/* Inner ring */}
               <View style={styles.vinylInnerRing} />
-              {/* Center hole */}
+
+              {/* Daily song image */}
               <View style={styles.vinylCenter}>
-                <Ionicons name={isPlaying ? 'pause' : 'play'} size={24} color="#FFFFFF" style={styles.centerIconGlow} />
+                {dailySong?.daily_song_image ? (
+                  <Image
+                    source={{ uri: dailySong.daily_song_image }}
+                    style={styles.vinylCenterImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Ionicons name="musical-note" size={24} color="#FFFFFF" style={styles.centerIconGlow} />
+                )}
               </View>
+
             </Animated.View>
           </View>
-        </TouchableOpacity>
+    </TouchableOpacity>
 
         {/* Daily song info below vinyl */}
         {dailySong?.daily_song_title && (
@@ -304,15 +308,21 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   vinylCenter: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',   // ← darker so icon is readable over image
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-},
+    overflow: 'hidden',  // clips image to circle
+  },
+  vinylCenterImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 35,
+  },
   centerIconGlow: {
     opacity: 0.95,
     textShadowColor: 'rgba(19, 18, 18, 0.4)',
