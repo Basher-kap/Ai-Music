@@ -32,8 +32,13 @@ export default function Songs() {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
+      try {
+        await refetch();
+      } catch {
+        console.log('[Songs] Refresh failed — offline');
+      } finally {
+        setRefreshing(false);
+      }
   };
 
   const [editOpen, setEditOpen] = useState(false);

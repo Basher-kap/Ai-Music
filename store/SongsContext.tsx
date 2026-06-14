@@ -97,54 +97,63 @@ export function SongsProvider({ children }: { children: ReactNode}) {
 
         //function to get the data
     const fetchSongs = async () => {
-    setError(null);
+        setError(null);
 
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user ?? null;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const user = session?.user ?? null;
 
-    console.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
+            console.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
 
-    if (!user) {
-        setSongs([]);
-        setLoading(false);
-        return;
-    }
+            if (!user) {
+                setSongs([]);
+                setLoading(false);
+                return;
+            }
 
-    // Step 1 — Load from cache first
-    const cached = await loadFromCache();
-    if (cached.length > 0) {
-        setSongs(cached);
-        setLoading(false);
-        console.log('[Songs] ✓ Loaded', cached.length, 'songs from cache');
-    } else {
-        setLoading(true);
-    }
+            // Step 1 — Load from cache FIRST — always
+            const cached = await loadFromCache();
+                if (cached.length > 0) {
+                setSongs(cached);
+                setLoading(false);
+                console.log('[Songs] ✓ Loaded', cached.length, 'songs from cache');
+            } else {
+                setLoading(true);
+            }
 
-    // Step 2 — Try Supabase
-    try {
-        const { data, error } = await supabase
-        .from('songs')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+            // Step 2 — Try Supabase in background
+            try {
+                const { data, error } = await supabase
+                    .from('songs')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('created_at', { ascending: false });
 
-        if (error) throw error;
+                if (error) throw error;
 
-        setSongs(data as Song[]);
-        await saveToCache(data as Song[]);
-        console.log('[Songs] ✓ Fetched', data.length, 'songs from Supabase');
+                setSongs(data as Song[]);
+                await saveToCache(data as Song[]);
+                console.log('[Songs] ✓ Synced from Supabase');
 
-    } catch (err: any) {
-        if (isNetworkError(err)) {
-        console.log('[Songs] Offline — using cached data');
-        // Because we already loaded cache — no error shown to user
-        } else {
-        console.error('[Songs] Fetch error:', err.message);
-        if (cached.length === 0) setError(err.message);
+            } catch (err: any) {
+                if (isNetworkError(err)) {
+                    console.log('[Songs] Offline — showing cached data');
+                } else {
+                console.error('[Songs] Fetch error:', err.message);
+                if (!cached.length) setError(err.message);
+            }
+            }
+
+        } catch (err: any) {
+            console.log('[Songs] Session error — trying cache:', err.message);
+            const cached = await loadFromCache();
+                if (cached.length > 0) {
+                setSongs(cached);
+                console.log('[Songs] ✓ Fallback to cache:', cached.length, 'songs');
+            }
+        } finally {
+            setLoading(false);
         }
-    } finally {
-        setLoading(false);
-    }
     };
         
     // AUTH LISTENER
