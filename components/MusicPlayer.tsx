@@ -1,3 +1,4 @@
+// components/MusicPlayer.tsx
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -22,12 +23,15 @@ export default function MusicPlayer({ uri }: Props) {
   const scrubRatio = useRef(0);
   const [visualProgress, setVisualProgress] = useState(0);
 
+  // ─── Load / reload audio whenever uri changes ─────────────────────────────
+
   useEffect(() => {
     let sound: Audio.Sound;
 
     const loadAudio = async () => {
       if (!uri) return;
 
+      // Unload any previous sound first
       if (soundRef.current) {
         await soundRef.current.unloadAsync();
         soundRef.current = null;
@@ -37,8 +41,11 @@ export default function MusicPlayer({ uri }: Props) {
         setVisualProgress(0);
       }
 
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false, shouldDuckAndroid: false});
-
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: false,
+      });
 
       const { sound: newSound } = await Audio.Sound.createAsync(
         { uri },
@@ -65,8 +72,13 @@ export default function MusicPlayer({ uri }: Props) {
     };
 
     loadAudio();
-    return () => { sound?.unloadAsync(); };
+
+    return () => {
+      sound?.unloadAsync();
+    };
   }, [uri]);
+
+  // ─── Controls ─────────────────────────────────────────────────────────────
 
   const seekTo = async (ms: number) => {
     if (!soundRef.current) return;
@@ -90,6 +102,8 @@ export default function MusicPlayer({ uri }: Props) {
 
   const handleSkipBack = () => seekTo(Math.max(0, position - SKIP_MS));
   const handleSkipForward = () => seekTo(Math.min(duration, position + SKIP_MS));
+
+  // ─── Scrub bar pan responder ──────────────────────────────────────────────
 
   const panResponder = useRef(
     PanResponder.create({
@@ -124,6 +138,8 @@ export default function MusicPlayer({ uri }: Props) {
     })
   ).current;
 
+  // ─── Helpers ──────────────────────────────────────────────────────────────
+
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -132,6 +148,8 @@ export default function MusicPlayer({ uri }: Props) {
   };
 
   if (!uri) return null;
+
+  // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
     <View style={styles.container}>
@@ -147,7 +165,7 @@ export default function MusicPlayer({ uri }: Props) {
         <View style={[styles.progressThumb, { left: `${visualProgress * 100}%` }]} />
       </View>
 
-      {/* Bottom row: time left — play controls — time right */}
+      {/* Bottom row: time — controls — time */}
       <View style={styles.bottomRow}>
 
         <Text style={styles.timeText}>
@@ -201,7 +219,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 14,
     paddingBottom: 10,
-    gap: 2,           // tight gap so controls sit close to the bar
+    gap: 2,
   },
   progressBar: {
     height: 20,
@@ -233,8 +251,6 @@ const styles = StyleSheet.create({
     top: '50%',
     marginTop: -6,
   },
-
-  // Single row: [time] [skip | play | skip] [time]
   bottomRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -243,7 +259,7 @@ const styles = StyleSheet.create({
   timeText: {
     color: 'rgba(255,255,255,0.4)',
     fontSize: 10,
-    width: 32,        // fixed width so times don't shift the center buttons
+    width: 32,
   },
   controls: {
     flexDirection: 'row',

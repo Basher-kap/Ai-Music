@@ -6,13 +6,16 @@ import { THEME_KEYS } from '@/constant';
 type Props = {
     visible: boolean;
     onClose: () => void;
-    onSave: (data: { title: string; artist: string; themes: string[] }) => void;
+    onSave: (data: { title: string; artist: string; themes: string[] }) => Promise<void>;
 };
 
 export default function AddSongForm({ visible, onClose, onSave }: Props) {
     const [title, setTitle] = useState('');
     const [artist, setArtist] = useState('');
     const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
 
     const toggleTheme = (theme: string) => {
         if (selectedThemes.includes(theme)) {
@@ -22,17 +25,22 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
         }
     };
 
-    const handleSave = () => {
-        // Pass the local state back to the parent component
-        onSave({ title, artist, themes: selectedThemes });
-        
-        // Reset form for next use
-        setTitle('');
-        setArtist('');
-        setSelectedThemes([]);
-        onClose();
+    const handleSave = async () => {
+      setSaving(true);
+      setSaveError(null);
+        try {
+            await onSave({ title, artist, themes: selectedThemes });
+            // Only reset and close if save succeeded
+            setTitle('');
+            setArtist('');
+            setSelectedThemes([]);
+            onClose();
+        } catch (err: any) {
+            setSaveError(err.message || 'Failed to save song.');
+        } finally {
+            setSaving(false);
+        }
     };
-
     return (
         <Modal
             visible={visible}
@@ -99,13 +107,18 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
                             <Text style={styles.cancelText}>Cancel</Text>
                         </TouchableOpacity>
 
-                        {/* Save */}
-                        <TouchableOpacity 
-                            style={[styles.saveButton, !title && { opacity: 0.5 }]} 
+                        {saveError && (
+                        <Text style={{ color: '#ff6b6b', marginBottom: 8, fontSize: 13 }}>
+                            {saveError}
+                        </Text>
+                        )}
+
+                        <TouchableOpacity
+                            style={[styles.saveButton, (!title || saving) && { opacity: 0.5 }]}
                             onPress={handleSave}
-                            disabled={!title} // Disable if title is empty
+                            disabled={!title || saving}
                         >
-                            <Text style={styles.saveText}>Save</Text>
+                        <Text style={styles.saveText}>{saving ? 'Saving...' : 'Save'}</Text>
                         </TouchableOpacity>
                     </View>
 

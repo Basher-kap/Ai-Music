@@ -25,9 +25,11 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
   }; 
 
   useEffect(() => {
-
-    setSelectedThemes(song?.song_theme ?? []);
-  }, [song]);
+    if (visible && song) {
+      setSelectedThemes(song.song_theme ?? []);
+      setReview(song.review || ''); 
+    }
+  }, [visible, song]);
   
   return (
        <Modal
