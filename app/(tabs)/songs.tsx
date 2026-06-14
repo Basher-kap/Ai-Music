@@ -1,5 +1,5 @@
 // app/(tabs)/songs.tsx
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useTextTheme, useTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -135,11 +135,15 @@ export default function Songs() {
 
         <AddSongForm
           visible={editOpen}
-          onClose={() => setEditOpen(false)} 
+          onClose={() => setEditOpen(false)}
           onSave={async (songData) => {
-            const { title, artist, themes } = songData;
-            await addSong(title, artist, themes);
-            setEditOpen(false);
+            try {
+              await addSong(songData.title, songData.artist, songData.themes);
+              setEditOpen(false);
+            } catch (err: any) {
+              // Because addSong throws when offline
+              Alert.alert('Cannot Add Song', err.message);
+            }
           }}
         />
 

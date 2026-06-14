@@ -87,54 +87,64 @@ export function SongsProvider({ children }: { children: ReactNode}) {
         }
     };
 
+    const isNetworkError = (err: any): boolean => {
+    return err?.message?.includes('Network request failed') ||
+            err?.message?.includes('Failed to fetch') ||
+            err?.message?.includes('Network Error');
+    };
+
     //FETCH SONGS - LOCAL-FIRST then sybc with Supabase in the background
 
-    //function to get the data
+        //function to get the data
     const fetchSongs = async () => {
-        setError(null); //then sends no error yet
+    setError(null);
 
-        const { data: { session } } = await supabase.auth.getSession();
-        const user = session?.user ?? null;
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
 
-        logger.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
+    console.log('[Songs] Fetching songs for user:', user?.email ?? 'none');
 
-        if (!user) {
-            setSongs([]);
-            setLoading(false);
-            return;
-        }
+    if (!user) {
+        setSongs([]);
+        setLoading(false);
+        return;
+    }
 
-        //Step 1 Load From cache first for instant display
-        const cached = await loadFromCache();
-        if (cached.length > 0) {
-            setSongs(cached);
-            setLoading(false); // this shows cached data immediately
-            console.log('[Songs] ✓ Loaded', cached.length, 'songs from cache');
+    // Step 1 — Load from cache first
+    const cached = await loadFromCache();
+    if (cached.length > 0) {
+        setSongs(cached);
+        setLoading(false);
+        console.log('[Songs] ✓ Loaded', cached.length, 'songs from cache');
+    } else {
+        setLoading(true);
+    }
+
+    // Step 2 — Try Supabase
+    try {
+        const { data, error } = await supabase
+        .from('songs')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        setSongs(data as Song[]);
+        await saveToCache(data as Song[]);
+        console.log('[Songs] ✓ Fetched', data.length, 'songs from Supabase');
+
+    } catch (err: any) {
+        if (isNetworkError(err)) {
+        console.log('[Songs] Offline — using cached data');
+        // Because we already loaded cache — no error shown to user
         } else {
-            setLoading(true); // if no chache, show spinner until Supabase responds
+        console.error('[Songs] Fetch error:', err.message);
+        if (cached.length === 0) setError(err.message);
         }
-
-        //Step 2 feth fresh data from supabase
-        try {
-            const { data, error } = await supabase
-            .from('songs') //get a table "songs"
-            .select('*') //* means select all data in the 'songs'
-            .eq('user_id', user.id) //only fetch the user's songs
-            .order('created_at' , {ascending: false}); //newest at the top
-            
-            if (error) throw error;
-
-            setSongs(data as Song[]);
-            await saveToCache(data as Song[]); //update cache with fresh data
-            console.log('[Songs] ✓ Fetched', data.length, 'songs from Supabase');
-        } catch (err: any) {
-            console.error('[Songs] Fetch error:', err.message);
-            if (cached.length === 0) {
-                setError (err.message);
-            }
-        } finally {
-            setLoading(false);
-        }
+    } finally {
+        setLoading(false);
+    }
     };
         
     // AUTH LISTENER
@@ -155,79 +165,107 @@ export function SongsProvider({ children }: { children: ReactNode}) {
 
     // WRITE OPERATIONS - updates Supabase then update local state and cache
     const addSong = async (title: string, artist: string, song_theme: string[]) => {
-          logger.log('Adding song:', title, artist, song_theme);
+    console.log('[Songs] Adding song:', title, artist, song_theme);
 
-          //  need the current user's ID to associate the song
-         const { data: { session } } = await supabase.auth.getSession();
-         const user = session?.user ?? null;
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
 
-        if (!user) {
-            console.error('No user logged in. Cannot add song.');
-            return;
-        }
-        
+    if (!user) {
+        console.error('[Songs] No user logged in.');
+        return;
+    }
+
+    try {
         const { data, error } = await supabase
-            .from('songs')
-            .insert([{ title, artist, song_theme, user_id: user.id }]) //a query to add a song in a table
-            .select()
-            .single();
+        .from('songs')
+        .insert([{ title, artist, song_theme, user_id: user.id }])
+        .select()
+        .single();
 
-            if (error) {
-                console.error('[Songs] Error adding song:', error.message);
-                return;
-            }
+        if (error) throw error;
 
-            // we have the new row — update local state and cache directly
-            const updated = [ data as Song, ...songs];
-            setSongs(updated);
-            await saveToCache(updated);
-            console.log('[Songs] Song added and cache updated');
-    };
-
-    const addLyrics = async (id: string, title: string, artist: string, lyrics: string ) => {
-
-        const { error } = await supabase
-            .from('songs')
-            .update({ title, artist, lyrics }).eq('id',id); 
-
-        if ( error ) throw error;
-
-        // we onlye update the changed song in local state
-        const updated = songs.map(song => song.id === id ? {...song, title, artist, lyrics } : song);
+        const updated = [data as Song, ...songs];
         setSongs(updated);
         await saveToCache(updated);
-        console.log('[Songs] Lyrics added and cache updated');
+        console.log('[Songs] ✓ Song added');
+
+    } catch (err: any) {
+        if (isNetworkError(err)) {
+        console.log('[Songs] Cannot add song — offline');
+        // Because we want to inform the user
+        throw new Error('No internet connection. Please connect and try again.');
+        }
+        throw err;
+    }
     };
 
-    const addReviews = async (id: string, song_theme: string[], review: string ) => {
-
+    const addLyrics = async (id: string, title: string, artist: string, lyrics: string) => {
+    try {
         const { error } = await supabase
-            .from('songs')
-            .update({ song_theme, review }).eq('id',id); 
+        .from('songs')
+        .update({ title, artist, lyrics })
+        .eq('id', id);
 
-        if ( error ) throw error;
+        if (error) throw error;
 
-        // same as lyrics
-        const updated = songs.map( song => song.id === id ? { ...song, song_theme, review } : song );
+        const updated = songs.map(song =>
+        song.id === id ? { ...song, title, artist, lyrics } : song
+        );
         setSongs(updated);
         await saveToCache(updated);
-        console.log('[Songs] Review updated and cached updated');
+
+    } catch (err: any) {
+        if (isNetworkError(err)) {
+        throw new Error('No internet connection. Please connect and try again.');
+        }
+        throw err;
+    }
+    };
+
+    const addReviews = async (id: string, song_theme: string[], review: string) => {
+    try {
+        const { error } = await supabase
+        .from('songs')
+        .update({ song_theme, review })
+        .eq('id', id);
+
+        if (error) throw error;
+
+        const updated = songs.map(song =>
+        song.id === id ? { ...song, song_theme, review } : song
+        );
+        setSongs(updated);
+        await saveToCache(updated);
+
+    } catch (err: any) {
+        if (isNetworkError(err)) {
+        throw new Error('No internet connection. Please connect and try again.');
+        }
+        throw err;
+    }
     };
 
     const deleteSong = async (id: string) => {
-        setSongs(prev => prev.filter(s => s.id !==  id)) //instant UI update
-        logger.log('Deleting song:', id);
-          
+    console.log('[Songs] Deleting song:', id);
+    try {
         const { error } = await supabase
         .from('songs')
-        .delete().eq('id', id);
+        .delete()
+        .eq('id', id);
 
-        if ( error ) throw error;
+        if (error) throw error;
 
         const updated = songs.filter(song => song.id !== id);
         setSongs(updated);
         await saveToCache(updated);
-        console.log('[Songs] Song deleted and cache updated');
+        console.log('[Songs] ✓ Song deleted');
+
+    } catch (err: any) {
+        if (isNetworkError(err)) {
+        throw new Error('No internet connection. Please connect and try again.');
+        }
+        throw err;
+    }
     };
 
     const uploadAudio = async (songId: string, fileUri: string, fileName: string): Promise<string | null> => {
