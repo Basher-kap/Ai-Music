@@ -2,37 +2,45 @@
 module.exports = ({ config }) => {
   const profile = process.env.EAS_BUILD_PROFILE;
 
-  const appName = 
+  const appName =
     profile === 'development' ? 'Ai Music (Dev)' :
-    profile === 'preview' ? 'Ai Music (Prev)' :
+    profile === 'preview'     ? 'Ai Music (Prev)' :
     'Ai Music';
 
   const androidPackage =
     profile === 'development' ? 'com.nagiiiqt.AiMusicDev' :
-    profile === 'preview' ? 'com.nagiiiqt.AiMusicPrev' :
+    profile === 'preview'     ? 'com.nagiiiqt.AiMusicPrev' :
     'com.nagiiiqt.AiMusic';
 
   const iosBundleIdentifier =
     profile === 'development' ? 'com.nagiiiqt.AiMusicDev' :
-    profile === 'preview' ? 'com.nagiiiqt.AiMusicPrev' :
+    profile === 'preview'     ? 'com.nagiiiqt.AiMusicPrev' :
     'com.nagiiiqt.AiMusic';
 
   return {
     ...config,
     name: appName,
+
+    // Required at root level for AuthSession.makeRedirectUri({ scheme: 'aimusic' })
+    scheme: 'aimusic',
+
     plugins: [
       ...(config.plugins ?? []),
       'expo-web-browser',
-      'expo-av'
+      'expo-av',
     ],
+
     ios: {
       ...config.ios,
       bundleIdentifier: iosBundleIdentifier,
     },
+
     android: {
+      // Spread config.android FIRST, then override — prevents base config clobbering intentFilters
       ...config.android,
       package: androidPackage,
       intentFilters: [
+        // Primary: catches aimusic://auth/callback
         {
           action: 'VIEW',
           autoVerify: true,
@@ -45,16 +53,6 @@ module.exports = ({ config }) => {
           ],
           category: ['BROWSABLE', 'DEFAULT'],
         },
-        {
-          action: 'VIEW',
-          autoVerify: true,
-          data: [
-            {
-              scheme: 'aimusic',
-            },
-          ],
-          category: ['BROWSABLE', 'DEFAULT'],
-        }
       ],
     },
   };

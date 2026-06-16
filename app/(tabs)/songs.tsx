@@ -112,6 +112,10 @@ export default function Songs() {
               {/* Left — title and artist */}
               <View style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
                 <Text style={styles.songTitle}>{songItem.title}</Text>
+                {/* Because pending songs haven't synced yet */}
+                {songItem.pending && (
+                  <Ionicons name="cloud-upload-outline" size={12} color="rgba(255,255,255,0.4)" />
+                )}
                 <Text style={styles.songArtist}>{songItem.artist}</Text>
               </View>
 

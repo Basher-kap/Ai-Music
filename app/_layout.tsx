@@ -45,22 +45,29 @@ function RootLayoutInner() {
     ]).start(() => {
       setCurrentImage(backgroundImage);
     });
-  }), [activeTheme];
+  }, [activeTheme]); // fixed: deps array now actually attached to useEffect
+
+  const isFirstRun = useRef(true);
 
   useEffect(() => {
-      if (authLoading) return;
+    if (authLoading) return;
 
-      console.log('[Route] session:', session?.user?.email ?? 'none', '| authLoading:', authLoading);
+    const navigate = () => {
+      logger_navigate(session);
+      router.replace(session ? '/(tabs)' : '/login');
+    };
 
-      const timer = setTimeout(() => {
-        if (!session) {
-          router.replace('/login');
-        } else {
-          router.replace('/(tabs)');
-        }
-      }, 500); // ← small delay to let the stack mount first
+    function logger_navigate(s: any) {
+      console.log('[Layout] Navigating. Session present:', !!s);
+    }
 
-    return () => clearTimeout(timer);
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      const timer = setTimeout(navigate, 500);
+      return () => clearTimeout(timer);
+    } else {
+      navigate();
+    }
   }, [session, authLoading]);
 
   useEffect(() => {
@@ -73,6 +80,7 @@ function RootLayoutInner() {
       MedievalSharp_400Regular, Syne_600SemiBold, Syne_700Bold, RussoOne_400Regular, MetalMania_400Regular
     }
   )
+  
 
   if (!loadFonts || authLoading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>

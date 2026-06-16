@@ -4,6 +4,7 @@ import { supabase } from '@/utils/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system/legacy';
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import { useAuth } from './AuthContext'; 
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -17,7 +18,7 @@ type SongsContextType = {
   songs: Song[];
   loading: boolean;
   error: string | null;
-  debugLog: string[];           // ← visible in-app log
+  debugLog: string[];
   refetch: () => Promise<void>;
   addSong:     (title: string, artist: string, song_theme: string[]) => Promise<void>;
   addLyrics:   (id: string, title: string, artist: string, lyrics: string) => Promise<void>;
@@ -37,6 +38,8 @@ const SongsContext = createContext<SongsContextType>({
 });
 
 export function SongsProvider({ children }: { children: ReactNode }) {
+  const { session, loading: authLoading } = useAuth(); 
+
   const [songs, setSongs]       = useState<Song[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
@@ -44,8 +47,8 @@ export function SongsProvider({ children }: { children: ReactNode }) {
 
   const songsRef    = useRef<Song[]>([]);
   const fetchingRef = useRef(false);
+  const fetchStartTimeRef = useRef<number>(0); // stale-lock detection
   const logRef      = useRef<string[]>([]);
-  
 
   useEffect(() => { songsRef.current = songs; }, [songs]);
 
@@ -55,14 +58,12 @@ export function SongsProvider({ children }: { children: ReactNode }) {
     const ts  = new Date().toLocaleTimeString();
     const line = `[${ts}] ${msg}`;
     console.log(line);
-    const next = [...logRef.current.slice(-49), line]; // keep last 50
+    const next = [...logRef.current.slice(-49), line];
     logRef.current = next;
     setDebugLog([...next]);
   };
 
   // ─── Session — reads AsyncStorage only, NEVER hits network ───────────────
-  // getSession() = local read (safe offline)
-  // getUser()    = network call (breaks offline) ← never use this
 
   const getLocalSession = async () => {
     try {
@@ -72,8 +73,8 @@ export function SongsProvider({ children }: { children: ReactNode }) {
   };
 
   const getUserId = async (): Promise<string | null> => {
-    const session = await getLocalSession();
-    return session?.user?.id ?? null;
+    const s = await getLocalSession();
+    return s?.user?.id ?? null;
   };
 
   // ─── isOnline — 3s hard timeout ──────────────────────────────────────────
@@ -88,7 +89,7 @@ export function SongsProvider({ children }: { children: ReactNode }) {
       clearTimeout(tid);
       return res.ok;
     } catch {
-      return false; // offline or timeout — never throws
+      return false;
     }
   };
 
@@ -246,8 +247,16 @@ export function SongsProvider({ children }: { children: ReactNode }) {
   // ─── fetchSongs ───────────────────────────────────────────────────────────
 
   const fetchSongs = async (isRefresh = false) => {
-    if (fetchingRef.current) { log('Fetch already running, skipped'); return; }
+    if (fetchingRef.current) {
+      const elapsed = Date.now() - fetchStartTimeRef.current;
+      if (elapsed < 15000) {
+        log('Fetch already running, skipped');
+        return;
+      }
+      log('Fetch lock stale (>15s) — forcing through');
+    }
     fetchingRef.current = true;
+    fetchStartTimeRef.current = Date.now();
     if (!isRefresh) setLoading(true);
     setError(null);
 
@@ -255,7 +264,6 @@ export function SongsProvider({ children }: { children: ReactNode }) {
       const uid = await getUserId();
       if (!uid) { log('No user session'); setSongs([]); setLoading(false); fetchingRef.current = false; return; }
 
-      // Step 1 — Cache first (no network)
       const cached = await loadFromCache();
       if (cached.length > 0) {
         setSongs(cached);
@@ -263,7 +271,6 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
 
-      // Step 2 — Check network
       log('Checking network...');
       const online = await isOnline();
       log(`Network: ${online ? 'ONLINE' : 'OFFLINE'}`);
@@ -275,16 +282,13 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Step 3 — Flush pending ops (returns updated local array, no state changes inside)
       const { flushed } = await flushQueue(cached.length > 0 ? cached : songsRef.current);
 
-      // Step 4 — Fetch Supabase and merge
       try {
         const { data, error } = await supabase
           .from('songs').select('*').eq('user_id', uid).order('created_at', { ascending: false });
         if (error) throw error;
 
-        // Songs still pending after flush stay on top
         const stillPending = flushed.filter(s => s.pending);
         const merged = [...stillPending, ...(data as Song[])];
 
@@ -295,7 +299,6 @@ export function SongsProvider({ children }: { children: ReactNode }) {
 
       } catch (err: any) {
         log(`Supabase fetch failed: ${err.message}`);
-        // Use flushed state (pending ops processed) as fallback
         setSongs(flushed);
         songsRef.current = flushed;
         await saveToCache(flushed);
@@ -313,21 +316,19 @@ export function SongsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // ─── Auth listener ────────────────────────────────────────────────────────
-
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
-      log(`Auth: ${event}`);
-      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-        await fetchSongs();
-      } else if (event === 'SIGNED_OUT') {
-        await clearCache();
-        setSongs([]); songsRef.current = [];
-        setLoading(false);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+    if (authLoading) return;
+
+    if (session) {
+      log(`Session present (${session.user?.email}) — fetching songs`);
+      fetchSongs();
+    } else {
+      log('No session — clearing songs');
+      clearCache();
+      setSongs([]); songsRef.current = [];
+      setLoading(false);
+    }
+  }, [session, authLoading]);
 
   // ─── Background sync every 15s ────────────────────────────────────────────
 
