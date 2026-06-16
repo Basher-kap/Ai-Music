@@ -1,16 +1,15 @@
 // app/(tabs)/index.tsx
-import { Text, View, StyleSheet, TouchableOpacity, Easing, Animated, AppState, Alert } from 'react-native';
-import { useTextTheme, useTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
+import { useTextTheme, useTheme } from '@/context';
+import { useAuth } from '@/store';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useAuth } from '@/store';
-import { Image } from 'react-native';
+import { Alert, Animated, AppState, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { supabase } from '@/utils/supabase';
-import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Audio } from 'expo-av';
 
 type DailySong = {
   daily_song_title: string | null;

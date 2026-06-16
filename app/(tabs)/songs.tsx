@@ -1,21 +1,23 @@
 // app/(tabs)/songs.tsx
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
-import { router } from 'expo-router';
-import { useTextTheme, useTheme } from '@/context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
+import { useTextTheme, useTheme } from '@/context';
 import { useSongs } from '@/store';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
+import DebugLog from '@/components/DebugLog';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { RefreshControl } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
+
 
 export default function Songs() {
   const { ThemeTextStyles } = useTextTheme();
   const { activeTheme } = useTheme();
 
-  const { songs, loading, error, addSong, refetch } = useSongs();
+  const { songs, loading, error, addSong, refetch, debugLog } = useSongs();
   const [search, setSearch] = useState('');
 
   const filteredSongs = songs.filter(song => {
@@ -178,6 +180,7 @@ export default function Songs() {
         }}
       />
 
+        <DebugLog logs={debugLog} />
     </View>
   );
 }
