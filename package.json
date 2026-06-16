@@ -30,7 +30,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "@supabase/supabase-js": "^2.106.2",
-    "expo": "~54.0.33",
+    "expo": "~54.0.35",
     "expo-auth-session": "~7.0.11",
     "expo-av": "~16.0.8",
     "expo-clipboard": "~8.0.8",
@@ -39,14 +39,14 @@
     "expo-dev-client": "~6.0.21",
     "expo-document-picker": "~14.0.8",
     "expo-file-system": "~19.0.23",
-    "expo-font": "~14.0.11",
+    "expo-font": "~14.0.12",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
     "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.11",
     "expo-navigation-bar": "~5.0.10",
     "expo-network": "~8.0.8",
-    "expo-router": "~6.0.23",
+    "expo-router": "~6.0.24",
     "expo-splash-screen": "~31.0.13",
     "expo-status-bar": "~3.0.9",
     "expo-symbols": "~1.0.8",
@@ -71,5 +71,8 @@
     "prettier": "^3.8.3",
     "typescript": "~5.9.2"
   },
-  "private": true
+  "private": true,
+  "allowScripts": {
+    "unrs-resolver@1.11.1": true
+  }
 }
