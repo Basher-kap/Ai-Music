@@ -410,12 +410,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
   },
-  logoutSection: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 30,
-    alignItems: 'flex-end',
-  },
   profileSection: {
     flexDirection: 'row',
     alignItems: 'center',

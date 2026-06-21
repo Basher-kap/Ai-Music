@@ -1,10 +1,11 @@
 // app/generate-lyrics-format.tsx
-import { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Clipboard } from 'react-native';
-import { router } from 'expo-router';
-import { useTextTheme } from '@/context';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
+import { useTextTheme } from '@/context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as Clipboard from 'expo-clipboard';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -152,8 +153,8 @@ ${english}
     }
   };
 
-  const handleCopy = () => {
-    Clipboard.setString(output);
+  const handleCopy = async () => {
+    await Clipboard.setStringAsync(output);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

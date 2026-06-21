@@ -7,6 +7,7 @@ import { useBgImg, ThemeProvider, useTheme } from '@/context';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
+import { AlmendraDisplay_400Regular } from '@expo-google-fonts/almendra-display';
 import { DancingScript_600SemiBold } from '@expo-google-fonts/dancing-script';
 import { Fredoka_600SemiBold } from '@expo-google-fonts/fredoka';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
@@ -76,7 +77,7 @@ function RootLayoutInner() {
 
   const [loadFonts] = useFonts(
     {
-      Marcellus_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, 
+      Marcellus_400Regular, AlmendraDisplay_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, 
       MedievalSharp_400Regular, Syne_600SemiBold, Syne_700Bold, RussoOne_400Regular, MetalMania_400Regular
     }
   )
