@@ -1,6 +1,6 @@
 // components/DebugLog.tsx
-// Drop this anywhere in your app temporarily to see logs on device.
-// Remove when done testing.
+// Safe to leave in permanently — renders only in development builds.
+// Invisible in preview and production (guarded by __DEV__).
 //
 // Usage in songs.tsx:
 //   import DebugLog from '@/components/DebugLog';
@@ -12,6 +12,10 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function DebugLog({ logs }: { logs: string[] }) {
+  // Because __DEV__ is false in preview and production EAS builds,
+  // so that this never leaks into non-dev environments
+  if (!__DEV__) return null;
+
   const [open, setOpen] = useState(false);
 
   return (
