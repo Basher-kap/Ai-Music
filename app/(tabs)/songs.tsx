@@ -1,22 +1,25 @@
 // app/(tabs)/songs.tsx
-import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
-import { useTextTheme, useTheme } from '@/context';
-import { useSongs } from '@/store';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useTextTheme, useTheme, useButtonTheme, useSearchBarTheme } from '@/context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
+import { useSongs } from '@/store';
 
-import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
-import DebugLog from '@/components/DebugLog';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
+
+import {ADD_BUTTON_GRADIENTS } from '@/context/ButtonContext';
+import DebugLog from '@/components/DebugLog';
 
 
 export default function Songs() {
   const { activeTheme } = useTheme();
   const { ThemeTextStyles } = useTextTheme();
-  const { ThemeButtonStyles } = useButtonTheme();
+  const { ThemeButtonStyles } = useButtonTheme();4
+  const { ThemeSearchBarStyles } = useSearchBarTheme();
 
   const { songs, loading, error, addSong, refetch, debugLog } = useSongs();
   const [search, setSearch] = useState('');
@@ -158,35 +161,43 @@ export default function Songs() {
       </View>
 
       <View style={styles.actionRow}>
-        <View style={styles.searchContainer}>
+        <LinearGradient
+          colors={ThemeSearchBarStyles.gradientColors}
+          start={ThemeSearchBarStyles.gradientStart}
+          end={ThemeSearchBarStyles.gradientEnd}
+          style={[styles.searchContainer, ThemeSearchBarStyles.container]}
+        >
           <TextInput
             placeholder="Search songs..."
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            style={styles.searchInput}
+            placeholderTextColor={ThemeSearchBarStyles.placeholderColor}
+            style={[styles.searchInput, ThemeSearchBarStyles.input]}
             value={search}
             onChangeText={setSearch}
           />
-        </View>
+        </LinearGradient>
 
-          <TouchableOpacity style={[styles.themeToggle, filterByTheme && {
-            backgroundColor: THEME_ACCENTS[activeTheme as ThemeKey] + '33', // 20% opacity tint
-            borderColor: THEME_ACCENTS[activeTheme as ThemeKey],
-            },
-          ]} onPress={() => setFilterByTheme(prev => !prev)}>
-            <Ionicons name={filterByTheme ? 'color-palette' : 'color-palette-outline'} size={16}
-                color={filterByTheme ? THEME_ACCENTS[activeTheme as ThemeKey] : 'rgba(255,255,255,0.5)'}/>
+          <TouchableOpacity style={[styles.themeToggle, ThemeButtonStyles.themeToggle,
+              filterByTheme && ThemeButtonStyles.themeToggleActive,
+            ]}
+            onPress={() => setFilterByTheme(prev => !prev)}>
+            <Ionicons
+              name={filterByTheme ? 'color-palette' : 'color-palette-outline'} size={16}
+              color={filterByTheme ? '#FFFFFF' : 'rgba(255,255,255,0.5)'} />
           </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setEditOpen(true)}>
-          <LinearGradient
-            colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.addButton}
-          >
-            <Ionicons name="add" size={28} color="#000000" />
-          </LinearGradient>
-        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => setEditOpen(true)}
+            activeOpacity={0.8}
+            style={[styles.addButton, ThemeButtonStyles.addButton]}>
+            <LinearGradient
+              colors={ADD_BUTTON_GRADIENTS[activeTheme]}
+              start={{ x: 0, y: 0.15 }}
+              end={{ x: 1, y: 0.85 }}
+              style={[styles.addButton, ThemeButtonStyles.addButton]}
+            >
+              <Ionicons name="add" size={26} color="#FFFFFF" />
+            </LinearGradient>
+          </TouchableOpacity>
       </View>
 
       {renderBody()}

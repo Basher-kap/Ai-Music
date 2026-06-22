@@ -5,6 +5,8 @@ import { ViewStyle } from 'react-native';
 interface ThemeButtonStyle {
   addButton: ViewStyle;
   addButtonLong: ViewStyle;
+  themeToggle: ViewStyle;       // inactive — not filtering
+  themeToggleActive: ViewStyle; // active — filtering by theme
 }
 
 export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
@@ -21,56 +23,113 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
     },
     addButtonLong: {
       borderRadius: 20,
-    }
+    },
+    themeToggle: {
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: 'rgba(142, 232, 180, 0.2)',
+      backgroundColor: 'rgba(15, 30, 20, 0.35)',
+    },
+    themeToggleActive: {
+      borderRadius: 14,
+      borderWidth: 1.5,
+      borderColor: '#8ee8b4',
+      backgroundColor: 'rgba(88, 176, 122, 0.45)',
+      shadowColor: '#7EC8A0',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 14,
+      shadowOpacity: 1,
+      elevation: 8,
+    },
   },
 
   refreshing: {
     addButton: {
-      borderRadius: 99, 
-      borderColor: 'rgba(224, 250, 255, 0.11)', 
+      borderRadius: 99,
+      borderColor: 'rgba(224, 250, 255, 0.25)',
       borderWidth: 1.5,
       shadowColor: 'rgba(92, 225, 230, 0.4)',
       shadowOffset: { width: 0, height: 0 },
-      shadowRadius: 40, 
+      shadowRadius: 40,
       shadowOpacity: 1,
       elevation: 6,
     },
-    addButtonLong:{
-      borderRadius: 15, 
-      borderColor: 'rgba(170, 224, 234, 0.69)', 
+    addButtonLong: {
+      borderRadius: 15,
+      borderColor: 'rgba(170, 224, 234, 0.69)',
       borderWidth: 1.5,
-    }
+    },
+    themeToggle: {
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: 'rgba(92, 225, 230, 0.15)',
+      backgroundColor: 'rgba(224, 250, 255, 0.03)',
+    },
+    themeToggleActive: {
+      borderRadius: 99,
+      borderWidth: 1.5,
+      borderColor: '#5ce1e6',
+      backgroundColor: 'rgba(92, 225, 230, 0.35)',
+      shadowColor: '#5ce1e6',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 18,
+      shadowOpacity: 1,
+      elevation: 8,
+    },
   },
 
   love: {
     addButton: {
-      borderTopLeftRadius: 29,
-      borderTopRightRadius: 29,
-      borderBottomRightRadius: 29,
-      borderBottomLeftRadius: 5,
-      borderColor: '#fff0f6', 
-      borderWidth: 2,
-      shadowColor: 'rgba(255, 96, 144, 0.4)', 
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      borderBottomRightRadius: 24,
+      borderBottomLeftRadius: 6,
+      borderColor: '#fff0f6',
+      borderWidth: 1.5,
+      shadowColor: 'rgba(255, 96, 144, 0.4)',
       shadowOffset: { width: 0, height: 0 },
       shadowRadius: 36,
       shadowOpacity: 1,
       elevation: 10,
     },
-    addButtonLong:{
-      borderTopLeftRadius: 29,
-      borderTopRightRadius: 29,
-      borderBottomRightRadius: 29,
+    addButtonLong: {
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      borderBottomRightRadius: 24,
+      borderBottomLeftRadius: 6,
+      borderColor: '#fff0f6',
+      borderWidth: 1.5,
+    },
+    themeToggle: {
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 18,
+      borderBottomRightRadius: 18,
       borderBottomLeftRadius: 5,
-      borderColor: '#fff0f6', 
-      borderWidth: 2,
-    }
+      borderWidth: 1,
+      borderColor: 'rgba(255, 182, 210, 0.2)',
+      backgroundColor: 'rgba(30, 5, 15, 0.4)',
+    },
+    themeToggleActive: {
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 18,
+      borderBottomRightRadius: 18,
+      borderBottomLeftRadius: 5,
+      borderWidth: 1.5,
+      borderColor: '#ff6090',
+      backgroundColor: 'rgba(255, 96, 144, 0.4)',
+      shadowColor: 'rgba(255, 60, 120, 0.7)',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 16,
+      shadowOpacity: 1,
+      elevation: 10,
+    },
   },
 
   cheerful: {
     addButton: {
-      borderRadius: 10,
+      borderRadius: 14,
       borderColor: '#fff176',
-      borderWidth: 2,
+      borderWidth: 1.5,
       shadowColor: 'rgba(255, 220, 50, 0.85)',
       shadowOffset: { width: 0, height: 0 },
       shadowRadius: 32,
@@ -78,18 +137,35 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       elevation: 12,
     },
     addButtonLong: {
-      borderRadius: 10,
+      borderRadius: 14,
       borderColor: '#fff176',
-      borderWidth: 2,
-    }
+      borderWidth: 1.5,
+    },
+    themeToggle: {
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 220, 50, 0.2)',
+      backgroundColor: 'rgba(20, 12, 0, 0.4)',
+    },
+    themeToggleActive: {
+      borderRadius: 14,
+      borderWidth: 1.5,
+      borderColor: '#ffe000',
+      backgroundColor: 'rgba(255, 210, 0, 0.4)',
+      shadowColor: 'rgba(255, 220, 50, 0.9)',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 18,
+      shadowOpacity: 1,
+      elevation: 12,
+    },
   },
 
   emo: {
     addButton: {
-      borderRadius: 4,
-      borderColor: '#484848',
+      borderRadius: 6,
+      borderColor: '#3a3a3a',
       borderWidth: 1,
-      backgroundColor: 'transparent', 
+      backgroundColor: 'transparent',
       shadowColor: 'rgba(0, 0, 0, 0.9)',
       shadowOffset: { width: 0, height: 2 },
       shadowRadius: 14,
@@ -97,38 +173,72 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       elevation: 4,
     },
     addButtonLong: {
-      borderRadius: 4,
-      borderColor: '#484848',
+      borderRadius: 6,
+      borderColor: '#3a3a3a',
       borderWidth: 1,
       backgroundColor: 'transparent',
-    }
+    },
+    themeToggle: {
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: '#242424',
+      backgroundColor: 'rgba(8, 8, 8, 0.6)',
+    },
+    themeToggleActive: {
+      borderRadius: 6,
+      borderWidth: 1.5,
+      borderColor: '#8a6aaa',
+      backgroundColor: 'rgba(90, 70, 120, 0.4)',
+      shadowColor: 'rgba(110, 85, 160, 0.65)',
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 12,
+      shadowOpacity: 1,
+      elevation: 6,
+    },
   },
 
   aspire: {
     addButton: {
-        borderRadius: 99, 
-        borderColor: '#a0f0ff', 
-        borderWidth: 1.5,
-        shadowColor: '#00d2ff', 
-        shadowOffset: { width: 0, height: 0 },
-        shadowRadius: 26,
-        shadowOpacity: 0.85,
-        elevation: 12,
+      borderRadius: 99,
+      borderColor: '#a0f0ff',
+      borderWidth: 1.5,
+      shadowColor: '#00d2ff',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 26,
+      shadowOpacity: 0.85,
+      elevation: 12,
     },
-    addButtonLong:{
-      borderRadius: 30, 
-        borderColor: '#a0f1ff1e', 
-        borderWidth: 1.5,
-        shadowColor: '#00d2ff', 
-    }
+    addButtonLong: {
+      borderRadius: 30,
+      borderColor: '#a0f1ff1e',
+      borderWidth: 1.5,
+      shadowColor: '#00d2ff',
+    },
+    themeToggle: {
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: 'rgba(160, 240, 255, 0.15)',
+      backgroundColor: 'rgba(5, 3, 20, 0.5)',
+    },
+    themeToggleActive: {
+      borderRadius: 99,
+      borderWidth: 1.5,
+      borderColor: '#a0f0ff',
+      backgroundColor: 'rgba(0, 180, 255, 0.35)',
+      shadowColor: '#00d2ff',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 20,
+      shadowOpacity: 1,
+      elevation: 12,
+    },
   },
 
   determination: {
     addButton: {
-      borderTopLeftRadius: 8,
-      borderTopRightRadius: 8,
-      borderBottomLeftRadius: 18,
-      borderBottomRightRadius: 18,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 16,
+      borderBottomRightRadius: 16,
       borderColor: '#ff9060',
       borderWidth: 1.5,
       borderTopWidth: 2.5,
@@ -139,14 +249,39 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       elevation: 10,
     },
     addButtonLong: {
-      borderTopLeftRadius: 8,
-      borderTopRightRadius: 8,
-      borderBottomLeftRadius: 18,
-      borderBottomRightRadius: 18,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 16,
+      borderBottomRightRadius: 16,
       borderColor: '#ff9060',
       borderWidth: 1.5,
       borderTopWidth: 2.5,
-    }
+    },
+    themeToggle: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderTopWidth: 2,
+      borderColor: 'rgba(255, 107, 53, 0.2)',
+      backgroundColor: 'rgba(10, 5, 0, 0.45)',
+    },
+    themeToggleActive: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1.5,
+      borderTopWidth: 2.5,
+      borderColor: '#ff6b35',
+      backgroundColor: 'rgba(255, 107, 53, 0.4)',
+      shadowColor: 'rgba(255, 107, 53, 0.8)',
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 16,
+      shadowOpacity: 1,
+      elevation: 10,
+    },
   },
 
   wrath: {
@@ -154,7 +289,6 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       borderRadius: 0,
       borderColor: '#8b0000',
       borderWidth: 1,
-      borderLeftWidth: 1,
       shadowColor: 'rgba(180, 0, 0, 0.6)',
       shadowOffset: { width: 4, height: 0 },
       shadowRadius: 24,
@@ -165,22 +299,41 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       borderRadius: 0,
       borderColor: '#8b0000',
       borderWidth: 1,
-      borderLeftWidth: 1,
-    }
+    },
+    themeToggle: {
+      borderRadius: 0,
+      borderWidth: 1,
+      borderColor: 'rgba(139, 0, 0, 0.3)',
+      backgroundColor: 'rgba(10, 0, 0, 0.55)',
+    },
+    themeToggleActive: {
+      borderRadius: 0,
+      borderWidth: 1,
+      borderLeftWidth: 3,
+      borderColor: 'rgba(204, 0, 0, 0.8)',
+      borderLeftColor: '#ff0000',
+      backgroundColor: 'rgba(140, 0, 0, 0.45)',
+      shadowColor: 'rgba(200, 0, 0, 0.8)',
+      shadowOffset: { width: 4, height: 0 },
+      shadowRadius: 18,
+      shadowOpacity: 1,
+      elevation: 10,
+    },
   },
 };
 
 export const ADD_BUTTON_GRADIENTS: Record<ThemeKey, [string, string, ...string[]]> = {
   nostalgia:     ['#3a7a52', '#5ab07a'],
   refreshing:    [
-    'rgba(48, 181, 255, 0.70)',   
-    'rgba(92, 225, 230, 0.35)',   
-    'rgba(196, 250, 252, 0.57)'   
+    'rgba(48, 181, 255, 0.70)',
+    'rgba(92, 225, 230, 0.35)',
+    'rgba(196, 250, 252, 0.57)'
   ],
-  love:          ['#ff3377', '#ff8ebb', '#ff5599'],   
-  cheerful:      ['#ffaa00', '#ffe000', '#ffcc00'], 
+  love:          ['#ff3377', '#ff8ebb', '#ff5599'],
+  cheerful:      ['#ffaa00', '#ffe000', '#ffcc00'],
   emo:           ['#1a1a1a', '#2e2e2e'],
-  aspire:        ['#0b0926', '#13409b', '#00bcd4', '#00e5ff', '#ffffff'],  determination: ['#c03000', '#ff5500'],
+  aspire:        ['#0b0926', '#13409b', '#00bcd4', '#00e5ff', '#ffffff'],
+  determination: ['#c03000', '#ff5500'],
   wrath:         ['#1a0000', '#3d0000'],
 };
 
