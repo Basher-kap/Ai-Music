@@ -10,15 +10,7 @@ import { Alert, Animated, AppState, Easing, Image, StyleSheet, Text, TouchableOp
 import { supabase } from '@/utils/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
-
-type DailySong = {
-  daily_song_title: string | null;
-  daily_song_artist: string | null;
-  daily_song_url: string | null;
-  daily_song_image: string | null;
-  daily_song_theme: string | null;
-  updated_at: string | null;
-};
+import type { DailySong } from '@/types/settings';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();

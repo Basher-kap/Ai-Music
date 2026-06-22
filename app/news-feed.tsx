@@ -9,19 +9,10 @@ import * as WebBrowser from 'expo-web-browser';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { XMLParser } from 'fast-xml-parser'; // Native parser dependency
 import { useTextTheme } from '@/context';
-import { HEADER_HEIGHT, HEADER_PADDING_TOP, NewsSource } from '@/constant';
+import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { supabase } from '@/utils/supabase';
 import { useCallback, memo } from 'react';
-
-
-type NewsItem = {
-  title: string;
-  link: string;
-  pubDate: string;
-  description: string;
-  thumbnail: string;
-  author: string;
-};
+import type { NewsItem, NewsSource } from '@/types/news';
 
 export default function NewsFeed() {
   const { ThemeTextStyles } = useTextTheme();

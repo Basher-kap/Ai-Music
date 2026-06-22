@@ -9,17 +9,9 @@ import { useTextTheme } from '@/context';
 import { useAuth } from '@/store';
 import { supabase } from '@/utils/supabase';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, THEME_KEYS } from '@/constant';
+import type { DailySong } from '@/types/settings';
 
 const ADMIN_USER_ID = process.env.EXPO_PUBLIC_ADMIN_USER_ID;
-
-type DailySong = {
-  daily_song_title: string | null;
-  daily_song_artist: string | null;
-  daily_song_url: string | null;
-  daily_song_image: string | null;
-  daily_song_theme: string | null;
-  updated_at: string | null;
-};
 
 export default function Admin() {
   const { ThemeTextStyles } = useTextTheme();
