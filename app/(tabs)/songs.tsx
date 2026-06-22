@@ -9,7 +9,7 @@ import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } 
 import { AddSongForm, EmptyState, SongListSkeleton } from '@/components';
 import DebugLog from '@/components/DebugLog';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 
@@ -19,13 +19,23 @@ export default function Songs() {
 
   const { songs, loading, error, addSong, refetch, debugLog } = useSongs();
   const [search, setSearch] = useState('');
+  const [filterByTheme, setFilterByTheme] = useState(false);
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    setFilterByTheme(true);
+  }, [activeTheme]);
 
   const filteredSongs = songs.filter(song => {
     const matchesSearch =
       song.title.toLowerCase().includes(search.toLowerCase()) ||
       song.artist.toLowerCase().includes(search.toLowerCase());
 
-    const matchesTheme = song.song_theme?.includes(activeTheme);
+    const matchesTheme = filterByTheme ? song.song_theme?.includes(activeTheme) : true;
 
     return matchesSearch && matchesTheme;
   });
@@ -157,6 +167,15 @@ export default function Songs() {
           />
         </View>
 
+          <TouchableOpacity style={[styles.themeToggle, filterByTheme && {
+            backgroundColor: THEME_ACCENTS[activeTheme as ThemeKey] + '33', // 20% opacity tint
+            borderColor: THEME_ACCENTS[activeTheme as ThemeKey],
+            },
+          ]} onPress={() => setFilterByTheme(prev => !prev)}>
+            <Ionicons name={filterByTheme ? 'color-palette' : 'color-palette-outline'} size={16}
+                color={filterByTheme ? THEME_ACCENTS[activeTheme as ThemeKey] : 'rgba(255,255,255,0.5)'}/>
+          </TouchableOpacity>
+
         <TouchableOpacity onPress={() => setEditOpen(true)}>
           <LinearGradient
             colors={['rgb(255, 255, 255)', 'rgb(255, 255, 255)', 'rgba(0,0,0,0.2)']}
@@ -252,6 +271,16 @@ const styles = StyleSheet.create({
   searchInput: {
     fontSize: 14,
     color: '#FFFFFF',
+  },
+  themeToggle: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(15, 15, 15, 0.53)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   addButton: {
     width: 40,
