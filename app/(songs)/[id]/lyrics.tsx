@@ -4,8 +4,9 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useTextTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router, useGlobalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { Audio } from 'expo-av';
+import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lyrics() {
@@ -13,11 +14,22 @@ export default function Lyrics() {
   const { ThemeTextStyles } = useTextTheme();
 
   // fetches the songs from useSongs and find the song based on id
-  const { songs, addLyrics, deleteSong } = useSongs();
+  const { songs, addLyrics, deleteSong, uploadAudio } = useSongs();
   const song = songs.find(s => s.id === id);
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
 
+  useFocusEffect(
+    useCallback(() => {
+      const stopAllAudio = async () => {
+        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false, shouldDuckAndroid: false});
+      };
+      stopAllAudio();
+      return() => {
+
+      };
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -41,7 +53,7 @@ export default function Lyrics() {
 
       </View>
 
-      <MusicPlayer/>
+      <MusicPlayer uri={song?.localUri ?? song?.mp4song ?? null}/>
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
         {/* split by lines and trim of whitespace for consistent centering */}
@@ -61,6 +73,9 @@ export default function Lyrics() {
           await deleteSong(id as string);
           setEditOpen(false);
           router.replace('/(tabs)/songs');
+        }}
+        onUploadAudio={async (fileUri, fileName) => {
+          await uploadAudio(id as string, fileUri, fileName);
         }}
       />
     </View>
@@ -109,7 +124,7 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   lyricsText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#FFFFFF',
     lineHeight: 24,
     textAlign: 'center',

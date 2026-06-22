@@ -7,6 +7,7 @@ import { useBgImg, ThemeProvider, useTheme } from '@/context';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
+import { AlmendraDisplay_400Regular } from '@expo-google-fonts/almendra-display';
 import { DancingScript_600SemiBold } from '@expo-google-fonts/dancing-script';
 import { Fredoka_600SemiBold } from '@expo-google-fonts/fredoka';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
@@ -45,22 +46,29 @@ function RootLayoutInner() {
     ]).start(() => {
       setCurrentImage(backgroundImage);
     });
-  }), [activeTheme];
+  }, [activeTheme]); // fixed: deps array now actually attached to useEffect
+
+  const isFirstRun = useRef(true);
 
   useEffect(() => {
-      if (authLoading) return;
+    if (authLoading) return;
 
-      console.log('[Route] session:', session?.user?.email ?? 'none', '| authLoading:', authLoading);
+    const navigate = () => {
+      logger_navigate(session);
+      router.replace(session ? '/(tabs)' : '/login');
+    };
 
-      const timer = setTimeout(() => {
-        if (!session) {
-          router.replace('/login');
-        } else {
-          router.replace('/(tabs)');
-        }
-      }, 500); // ← small delay to let the stack mount first
+    function logger_navigate(s: any) {
+      console.log('[Layout] Navigating. Session present:', !!s);
+    }
 
-    return () => clearTimeout(timer);
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      const timer = setTimeout(navigate, 500);
+      return () => clearTimeout(timer);
+    } else {
+      navigate();
+    }
   }, [session, authLoading]);
 
   useEffect(() => {
@@ -69,10 +77,11 @@ function RootLayoutInner() {
 
   const [loadFonts] = useFonts(
     {
-      Marcellus_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, 
+      Marcellus_400Regular, AlmendraDisplay_400Regular, PlaywriteGBS_400Regular, DancingScript_600SemiBold, Fredoka_600SemiBold, 
       MedievalSharp_400Regular, Syne_600SemiBold, Syne_700Bold, RussoOne_400Regular, MetalMania_400Regular
     }
   )
+  
 
   if (!loadFonts || authLoading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
@@ -107,10 +116,13 @@ function RootLayoutInner() {
             animation: 'fade',
           }}
         >
+          <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
           <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'slide_from_right' }} />
           <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
           <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+          <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
+          <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
         </Stack>
       </ImageBackground>
     </>

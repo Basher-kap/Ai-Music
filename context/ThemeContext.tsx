@@ -9,13 +9,13 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  activeTheme: 'nostalgia',
+  activeTheme: 'aspire',
   setActiveTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   //the useState hook where the ThemeKeys actually live when pressed
-  const [activeTheme, setActiveTheme] = useState<ThemeKey>('aspire'); // as for now the default theme is nostalgia
+  const [activeTheme, setActiveTheme] = useState<ThemeKey>('aspire'); // as for now the default theme is aspire
 
   //the provider that wraps the app and makes the theme object available to any child component that calls the useTheme() hook. 
   //When a card is pressed, setActiveTheme is called with the corresponding theme key, which updates the activeTheme state and triggers a re-render of any components consuming this context, allowing them to reflect the new theme immediately.
