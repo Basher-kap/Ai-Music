@@ -8,6 +8,7 @@ interface ThemeButtonStyle {
   themeToggle: ViewStyle;
   themeToggleActive: ViewStyle;
   headerBtn: ViewStyle;
+  signOutBtn: ViewStyle;
 }
 
 export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
@@ -53,6 +54,19 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 0.8,
       elevation: 5,
       padding: 7,
+    },
+    signOutBtn: {
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#b48c50',
+      borderLeftWidth: 3,
+      borderLeftColor: '#d2b478',
+      backgroundColor: 'rgba(45, 22, 5, 0.72)',
+      shadowColor: '#a0783c',
+      shadowOffset: { width: 2, height: 2 },
+      shadowRadius: 0,
+      shadowOpacity: 0.6,
+      elevation: 3,
     },
   },
 
@@ -100,6 +114,19 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 0.5,
       elevation: 5,
       padding: 7,
+    },
+    signOutBtn: {
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: 'rgba(92, 225, 230, 0.45)',
+      borderRightWidth: 3,
+      borderRightColor: '#00f5ff',
+      backgroundColor: 'rgba(8, 45, 55, 0.7)',
+      shadowColor: '#00e5ff',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 10,
+      shadowOpacity: 0.3,
+      elevation: 3,
     },
   },
 
@@ -163,6 +190,21 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       elevation: 6,
       padding: 7,
     },
+    signOutBtn: {
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1,
+      borderColor: '#ff69b4',
+      borderBottomColor: '#ff007f',
+      backgroundColor: 'rgba(255, 100, 160, 0.55)',
+      shadowColor: '#ff007f',
+      shadowOffset: { width: 3, height: 3 },
+      shadowRadius: 0,
+      shadowOpacity: 0.8,
+      elevation: 4,
+    },
   },
 
   cheerful: {
@@ -209,6 +251,19 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 6,
       padding: 7,
+    },
+    signOutBtn: {
+      borderRadius: 8,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 210, 0, 0.6)',
+      borderBottomWidth: 3,
+      borderBottomColor: 'rgba(255, 160, 0, 0.8)',
+      backgroundColor: 'rgba(255, 210, 0, 0.55)',
+      shadowColor: '#ff4d00',
+      shadowOffset: { width: 4, height: 4 },
+      shadowRadius: 0,
+      shadowOpacity: 0.9,
+      elevation: 4,
     },
   },
 
@@ -261,6 +316,19 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       elevation: 5,
       padding: 7,
     },
+    signOutBtn: {
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: '#101428',
+      borderLeftWidth: 4,
+      borderLeftColor: '#4895ef',
+      backgroundColor: 'rgba(3, 4, 14, 0.88)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 3 },
+      shadowRadius: 8,
+      shadowOpacity: 0.7,
+      elevation: 4,
+    },
   },
 
   aspire: {
@@ -310,6 +378,20 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 0.65,
       elevation: 7,
       padding: 7,
+    },
+    signOutBtn: {
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: '#7b2ff7',
+      backgroundColor: 'rgba(30, 0, 75, 0.75)',
+      shadowColor: '#7b2ff7',
+      shadowOffset: { width: 0, height: -3 },
+      shadowRadius: 10,
+      shadowOpacity: 0.6,
+      elevation: 4,
     },
   },
 
@@ -379,6 +461,22 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       elevation: 7,
       padding: 7,
     },
+    signOutBtn: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderTopWidth: 2.5,
+      borderTopColor: '#ff5500',
+      borderColor: 'rgba(58, 13, 0, 0.6)',
+      backgroundColor: 'rgba(35, 10, 0, 0.78)',
+      shadowColor: '#ff4500',
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 10,
+      shadowOpacity: 0.35,
+      elevation: 4,
+    },
   },
 
   wrath: {
@@ -429,6 +527,19 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 0.85,
       elevation: 8,
       padding: 7,
+    },
+    signOutBtn: {
+      borderRadius: 1,
+      borderWidth: 1,
+      borderLeftWidth: 5,
+      borderColor: 'rgba(43, 0, 0, 0.6)',
+      borderLeftColor: '#660708',
+      backgroundColor: 'rgba(18, 0, 0, 0.82)',
+      shadowColor: '#ba181b',
+      shadowOffset: { width: -4, height: 3 },
+      shadowRadius: 10,
+      shadowOpacity: 0.75,
+      elevation: 5,
     },
   },
 };

@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
-import { useTextTheme, useTheme } from '@/context';
+import { useButtonTheme, useTextTheme, useTheme } from '@/context';
 import { useAuth } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
@@ -14,6 +14,7 @@ import type { DailySong } from '@/types/settings';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
+  const { ThemeButtonStyles } = useButtonTheme();
   const { signOut, user, session } = useAuth();
 
   const [dailySong, setDailySong] = useState<DailySong | null>(null);
@@ -252,8 +253,7 @@ export default function Index() {
       {/* Profile + Logout */}
       <View style={styles.profileSection}>
         {/* Logout button */}
-          <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-            {/* Avatar */}
+          <TouchableOpacity style={[styles.logoutBtn, ThemeButtonStyles.signOutBtn]}>
           {user?.user_metadata?.avatar_url ? (
             <Image
               source={{ uri: user.user_metadata.avatar_url }}
@@ -412,10 +412,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     padding: 6,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
   },
   avatar: {
     width: 28,
