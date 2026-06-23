@@ -1,6 +1,6 @@
 // app/(tabs)/index.tsx
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
-import { useButtonTheme, useTextTheme, useTheme } from '@/context';
+import { useButtonTheme, useFeatureCardTheme, useTextTheme, useTheme } from '@/context';
 import { useAuth } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
@@ -15,6 +15,8 @@ import type { DailySong } from '@/types/settings';
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
   const { ThemeButtonStyles } = useButtonTheme();
+  const { ThemeFeatureCardStyles } = useFeatureCardTheme();
+
   const { signOut, user, session } = useAuth();
 
   const [dailySong, setDailySong] = useState<DailySong | null>(null);
@@ -228,8 +230,8 @@ export default function Index() {
       {/* Features */}
       <View style={styles.featuresSection}>
 
-        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => router.push('/generate-lyrics-format')}>
-          <View style={styles.iconContainer}>
+        <TouchableOpacity style={[styles.featureCard, ThemeFeatureCardStyles.card]} activeOpacity={0.75} onPress={() => router.push('/generate-lyrics-format')}>
+          <View style={[styles.iconContainer, ThemeFeatureCardStyles.iconContainer]}>
             <Ionicons name="sparkles" size={20} color="#E8D5FF" />
           </View>
           <View style={styles.featureText}>
@@ -238,8 +240,8 @@ export default function Index() {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => router.push('/news-feed')}>
-          <View style={[styles.iconContainer, styles.iconContainer]}>
+        <TouchableOpacity style={[styles.featureCard, ThemeFeatureCardStyles.card]} activeOpacity={0.75} onPress={() => router.push('/news-feed')}>
+          <View style={[styles.iconContainer, ThemeFeatureCardStyles.iconContainer]}>
             <Ionicons name="newspaper" size={20} color="#A8F0D8" />
           </View>
           <View style={styles.featureText}>
@@ -370,9 +372,6 @@ const styles = StyleSheet.create({
   featureCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(20, 20, 20, 0.66)',
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     gap: 14,
@@ -381,9 +380,6 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
