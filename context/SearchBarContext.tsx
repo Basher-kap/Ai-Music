@@ -154,7 +154,7 @@ const themeSearchBarStyles: Record<ThemeKey, ThemeSearchBarStyle> = {
       borderWidth: 2,
       borderColor: '#00b4d8',
       borderBottomWidth: 3,
-      borderBottomColor: '#ff9e00',
+      borderBottomColor: '#230e6ad2',
       shadowColor: '#4361ee',
       shadowOffset: { width: 0, height: 4 },
       shadowRadius: 12,

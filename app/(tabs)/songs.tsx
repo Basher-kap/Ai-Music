@@ -1,7 +1,7 @@
 // app/(tabs)/songs.tsx
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { useTextTheme, useTheme, useButtonTheme, useSearchBarTheme } from '@/context';
+import { useTextTheme, useTheme, useButtonTheme, useSearchBarTheme, useSongItemTheme } from '@/context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, ThemeKey } from '@/constant';
 import { useSongs } from '@/store';
@@ -18,8 +18,9 @@ import DebugLog from '@/components/DebugLog';
 export default function Songs() {
   const { activeTheme } = useTheme();
   const { ThemeTextStyles } = useTextTheme();
-  const { ThemeButtonStyles } = useButtonTheme();4
+  const { ThemeButtonStyles } = useButtonTheme();
   const { ThemeSearchBarStyles } = useSearchBarTheme();
+  const { ThemeSongItemStyles } = useSongItemTheme();
 
   const { songs, loading, error, addSong, refetch, debugLog } = useSongs();
   const [search, setSearch] = useState('');
@@ -118,36 +119,38 @@ export default function Songs() {
           />
         }
         renderItem={({ item: songItem }) => (
-          <View style={styles.songCard}>
+          <LinearGradient
+            colors={ThemeSongItemStyles.gradientColors}
+            start={ThemeSongItemStyles.gradientStart}
+            end={ThemeSongItemStyles.gradientEnd}
+            style={[styles.songCard, ThemeSongItemStyles.card]}
+          >
             <TouchableOpacity
               style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}
               onPress={() => router.push({ pathname: '/(songs)/[id]/lyrics', params: { id: songItem.id } })}
             >
-              {/* Left — title and artist */}
               <View style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
-                <Text style={styles.songTitle}>{songItem.title}</Text>
-                {/* Because pending songs haven't synced yet */}
+                <Text style={[styles.songTitle, ThemeSongItemStyles.title]}>{songItem.title}</Text>
                 {songItem.pending && (
                   <Ionicons name="cloud-upload-outline" size={12} color="rgba(255,255,255,0.4)" />
                 )}
-                <Text style={styles.songArtist}>{songItem.artist}</Text>
+                <Text style={[styles.songArtist, ThemeSongItemStyles.artist]}>{songItem.artist}</Text>
               </View>
 
-              {/* Right — theme chips */}
               {songItem.song_theme?.length > 0 && (
                 <View style={styles.chipRow}>
                   {songItem.song_theme.map(theme => (
                     <View
                       key={theme}
-                      style={[styles.chip, { backgroundColor: THEME_ACCENTS[theme as ThemeKey] }]}
+                      style={[styles.chip, ThemeSongItemStyles.chip, { backgroundColor: THEME_ACCENTS[theme as ThemeKey] }]}
                     >
-                      <Text style={styles.chipText}>{theme}</Text>
+                      <Text style={[styles.chipText, ThemeSongItemStyles.chipText]}>{theme}</Text>
                     </View>
                   ))}
                 </View>
               )}
             </TouchableOpacity>
-          </View>
+          </LinearGradient>
         )}
       />
     );
@@ -247,7 +250,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
     paddingVertical: 8,
