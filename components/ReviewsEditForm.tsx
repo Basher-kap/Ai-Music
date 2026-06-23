@@ -60,19 +60,21 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave }: Prop
             {THEME_KEYS.map(theme => {
               const isSelected = selectedThemes.includes(theme);
               return (
-                <TouchableOpacity
-                  key={theme}
-                  style={[
-                    isSelected ? ThemeModalStyles.themeChipSelected : ThemeModalStyles.themeChip
-                  ]}
-                  onPress={() => toggleTheme(theme)}
-                >
-                  <Text style={[
-                    isSelected ? ThemeModalStyles.themeChipTextSelected : ThemeModalStyles.themeChipText
-                  ]}>
-                    {theme}
-                  </Text>
-                </TouchableOpacity>
+<TouchableOpacity
+    key={theme}
+    style={[
+        ThemeModalStyles.themeChip,
+        isSelected && ThemeModalStyles.themeChipSelected,
+    ]}
+    onPress={() => toggleTheme(theme)}
+>
+    <Text style={[
+        ThemeModalStyles.themeChipText,
+        isSelected && ThemeModalStyles.themeChipTextSelected,
+    ]}>
+        {theme}
+    </Text>
+</TouchableOpacity>
               );
             })}
           </View>

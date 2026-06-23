@@ -72,6 +72,8 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     themeChipSelected: {
       backgroundColor: '#d2b478',
       borderColor: '#d2b478',
+      borderWidth: 1,
+      borderRadius: 20,
     },
     themeChipText: {
       color: 'rgba(210, 180, 120, 0.8)',
@@ -171,13 +173,15 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       paddingVertical: 6,
       paddingHorizontal: 12,
       borderRadius: 99,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: 'rgba(92, 225, 230, 0.3)',
       backgroundColor: 'rgba(92, 225, 230, 0.07)',
     },
     themeChipSelected: {
       backgroundColor: '#5ce1e6',
       borderColor: '#5ce1e6',
+      borderWidth: 1.5,
+      borderRadius: 99,
     },
     themeChipText: {
       color: 'rgba(92, 225, 230, 0.8)',
@@ -267,7 +271,7 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     },
     input: {
       backgroundColor: 'rgba(255, 150, 190, 0.07)',
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: 'rgba(255, 105, 180, 0.3)',
       borderTopLeftRadius: 14,
       borderTopRightRadius: 14,
@@ -285,13 +289,18 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       borderTopRightRadius: 14,
       borderBottomRightRadius: 14,
       borderBottomLeftRadius: 4,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: 'rgba(255, 105, 180, 0.3)',
       backgroundColor: 'rgba(255, 150, 190, 0.07)',
     },
     themeChipSelected: {
       backgroundColor: '#ff69b4',
       borderColor: '#ff69b4',
+      borderWidth: 1.5,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
     },
     themeChipText: {
       color: 'rgba(255, 150, 190, 0.8)',
@@ -410,6 +419,8 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     themeChipSelected: {
       backgroundColor: '#ffe000',
       borderColor: '#ffe000',
+      borderWidth: 1.5,
+      borderRadius: 8,
     },
     themeChipText: {
       color: 'rgba(255, 210, 80, 0.8)',
@@ -516,6 +527,8 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     themeChipSelected: {
       backgroundColor: '#4895ef',
       borderColor: '#4895ef',
+      borderWidth: 1,
+      borderRadius: 4,
     },
     themeChipText: {
       color: 'rgba(120, 149, 220, 0.8)',
@@ -629,6 +642,11 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     themeChipSelected: {
       backgroundColor: '#7b2ff7',
       borderColor: '#7b2ff7',
+      borderWidth: 1,
+      borderTopLeftRadius: 12,
+      borderTopRightRadius: 3,
+      borderBottomLeftRadius: 3,
+      borderBottomRightRadius: 12,
     },
     themeChipText: {
       color: 'rgba(180, 130, 255, 0.8)',
@@ -756,6 +774,11 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     themeChipSelected: {
       backgroundColor: '#ff5500',
       borderColor: '#ff5500',
+      borderWidth: 1,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
     },
     themeChipText: {
       color: 'rgba(255, 140, 80, 0.8)',
@@ -874,6 +897,8 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     themeChipSelected: {
       backgroundColor: '#8b0000',
       borderColor: '#8b0000',
+      borderWidth: 1,
+      borderRadius: 1,
     },
     themeChipText: {
       color: 'rgba(200, 80, 80, 0.8)',

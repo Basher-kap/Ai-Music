@@ -86,16 +86,16 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
                             return (
                                 <TouchableOpacity
                                     key={theme}
-                                    style={isSelected
-                                        ? ThemeModalStyles.themeChipSelected
-                                        : ThemeModalStyles.themeChip
-                                    }
+                                    style={[
+                                        ThemeModalStyles.themeChip,
+                                        isSelected && ThemeModalStyles.themeChipSelected,
+                                    ]}
                                     onPress={() => toggleTheme(theme)}
                                 >
-                                    <Text style={isSelected
-                                        ? ThemeModalStyles.themeChipTextSelected
-                                        : ThemeModalStyles.themeChipText
-                                    }>
+                                    <Text style={[
+                                        ThemeModalStyles.themeChipText,
+                                        isSelected && ThemeModalStyles.themeChipTextSelected,
+                                    ]}>
                                         {theme}
                                     </Text>
                                 </TouchableOpacity>
