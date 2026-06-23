@@ -18,7 +18,7 @@ export default function EmptyState({ onAddSong }: Props) {
   return (
     <View style={styles.container}>
 
-      <View style={styles.iconWrapper}>
+      <View style={[styles.iconWrapper, ThemeButtonStyles.iconWrapper]}>
         <Ionicons name="musical-notes-outline" size={48} color="rgba(255, 255, 255, 0.67)" />
       </View>
 
