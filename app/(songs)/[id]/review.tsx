@@ -1,7 +1,7 @@
 // app/(songs)/[id]/review.tsx
 import { useGlobalSearchParams, router } from 'expo-router';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-import { useButtonTheme, useTextTheme } from '@/context';
+import { useButtonTheme, useTextTheme, useTextContainerTheme } from '@/context';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -12,6 +12,7 @@ export default function Review() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
   const { ThemeButtonStyles } = useButtonTheme();
+  const { ThemeTextContainerStyles } = useTextContainerTheme();
 
   // find the song based on id
   const { songs, addReviews } = useSongs();
@@ -44,7 +45,7 @@ export default function Review() {
 
       {/* For review, made standalone scrollview only for review */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.reviewContainer}>
+        <View style={[styles.reviewContainer, ThemeTextContainerStyles.lyricsContainer]}>
           <Text style={styles.reviewText}>{song?.review ?? 'No review added yet' }</Text>
         </View>
       </ScrollView>
