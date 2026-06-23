@@ -1,7 +1,7 @@
 // app/(songs)/[id]/lyrics.tsx
 import { LyricsEditForm, MusicPlayer } from '@/components';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-import { useTextTheme } from '@/context';
+import { useButtonTheme, useTextTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Audio } from 'expo-av';
@@ -12,6 +12,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
+  const { ThemeButtonStyles } = useButtonTheme();
 
   // fetches the songs from useSongs and find the song based on id
   const { songs, addLyrics, deleteSong, uploadAudio } = useSongs();
@@ -36,7 +37,7 @@ export default function Lyrics() {
 
       <View style={styles.header}>
 
-        <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -47,7 +48,7 @@ export default function Lyrics() {
           <Text style={ThemeTextStyles.tagline} adjustsFontSizeToFit numberOfLines={1} >{song?.artist}</Text>
         </View>
 
-        <TouchableOpacity style={styles.headerBtn} onPress={() => setEditOpen(true)}>
+        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => setEditOpen(true)}>
           <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
         </TouchableOpacity>
 

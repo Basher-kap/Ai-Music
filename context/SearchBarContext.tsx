@@ -1,7 +1,6 @@
 // context/SearchBarContext.tsximport { useTheme, ThemeKey } from './ThemeContext';
-import { ThemeKey } from '@/constant';
+import { useTheme, ThemeKey } from './ThemeContext';
 import { ViewStyle, TextStyle } from 'react-native';
-import { useTheme } from './ThemeContext';
 
 interface ThemeSearchBarStyle {
   container: ViewStyle;  

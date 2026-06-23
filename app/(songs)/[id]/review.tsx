@@ -1,7 +1,7 @@
 // app/(songs)/[id]/review.tsx
 import { useGlobalSearchParams, router } from 'expo-router';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-import { useTextTheme } from '@/context';
+import { useButtonTheme, useTextTheme } from '@/context';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,6 +11,7 @@ import { useSongs } from '@/store';
 export default function Review() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
+  const { ThemeButtonStyles } = useButtonTheme();
 
   // find the song based on id
   const { songs, addReviews } = useSongs();
@@ -24,7 +25,7 @@ export default function Review() {
 
       <View style={styles.header}>
 
-        <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -35,7 +36,7 @@ export default function Review() {
           <Text style={ThemeTextStyles.tagline} adjustsFontSizeToFit numberOfLines={1} >{song?.artist}</Text>
         </View>
           
-        <TouchableOpacity style={styles.headerBtn} onPress={() => setEditOpen(true)}>
+        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => setEditOpen(true)}>
           <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
         </TouchableOpacity>
 

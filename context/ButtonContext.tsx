@@ -5,8 +5,9 @@ import { ViewStyle } from 'react-native';
 interface ThemeButtonStyle {
   addButton: ViewStyle;
   addButtonLong: ViewStyle;
-  themeToggle: ViewStyle;       // inactive — not filtering
-  themeToggleActive: ViewStyle; // active — filtering by theme
+  themeToggle: ViewStyle;
+  themeToggleActive: ViewStyle;
+  headerBtn: ViewStyle;
 }
 
 export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
@@ -40,6 +41,18 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowRadius: 14,
       shadowOpacity: 1,
       elevation: 8,
+    },
+    headerBtn: {
+      borderRadius: 10,
+      borderWidth: 1.5,
+      borderColor: '#d2b478',
+      backgroundColor: 'rgba(50, 30, 8, 0.7)',
+      shadowColor: '#a0783c',
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 8,
+      shadowOpacity: 0.8,
+      elevation: 5,
+      padding: 7,
     },
   },
 
@@ -75,6 +88,18 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowRadius: 18,
       shadowOpacity: 1,
       elevation: 8,
+    },
+    headerBtn: {
+      borderRadius: 99,
+      borderWidth: 1.5,
+      borderColor: '#a3f7f5',
+      backgroundColor: 'rgba(20, 110, 130, 0.5)',
+      shadowColor: '#00e5ff',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 12,
+      shadowOpacity: 0.5,
+      elevation: 5,
+      padding: 7,
     },
   },
 
@@ -123,6 +148,21 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 10,
     },
+    headerBtn: {
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+      borderBottomRightRadius: 16,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1.5,
+      borderColor: '#ff69b4',
+      backgroundColor: 'rgba(80, 10, 40, 0.7)',
+      shadowColor: '#ff007f',
+      shadowOffset: { width: 3, height: 3 },
+      shadowRadius: 0,
+      shadowOpacity: 1,
+      elevation: 6,
+      padding: 7,
+    },
   },
 
   cheerful: {
@@ -157,6 +197,18 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowRadius: 18,
       shadowOpacity: 1,
       elevation: 12,
+    },
+    headerBtn: {
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: '#000000',
+      backgroundColor: 'rgba(200, 140, 0, 0.75)',
+      shadowColor: '#ff4d00',
+      shadowOffset: { width: 4, height: 4 },
+      shadowRadius: 0,
+      shadowOpacity: 1,
+      elevation: 6,
+      padding: 7,
     },
   },
 
@@ -195,6 +247,20 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 6,
     },
+    headerBtn: {
+      borderRadius: 4,
+      borderWidth: 1,
+      borderLeftWidth: 3,
+      borderColor: '#101428',
+      borderLeftColor: '#4895ef',
+      backgroundColor: 'rgba(8, 10, 25, 0.85)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 3 },
+      shadowRadius: 8,
+      shadowOpacity: 0.6,
+      elevation: 5,
+      padding: 7,
+    },
   },
 
   aspire: {
@@ -230,6 +296,20 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowRadius: 20,
       shadowOpacity: 1,
       elevation: 12,
+    },
+    headerBtn: {
+      borderRadius: 99,
+      borderWidth: 1.5,
+      borderColor: '#00b4d8',
+      borderBottomColor: '#ff9e00',
+      borderBottomWidth: 2,
+      backgroundColor: 'rgba(12, 28, 85, 0.72)',
+      shadowColor: '#4361ee',
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 12,
+      shadowOpacity: 0.65,
+      elevation: 7,
+      padding: 7,
     },
   },
 
@@ -282,6 +362,23 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowOpacity: 1,
       elevation: 10,
     },
+    headerBtn: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderTopWidth: 3,
+      borderColor: 'rgba(60, 20, 0, 0.5)',
+      borderTopColor: '#ff5500',
+      backgroundColor: 'rgba(40, 15, 0, 0.75)',
+      shadowColor: '#ff4500',
+      shadowOffset: { width: 0, height: 5 },
+      shadowRadius: 14,
+      shadowOpacity: 0.45,
+      elevation: 7,
+      padding: 7,
+    },
   },
 
   wrath: {
@@ -318,6 +415,20 @@ export const themeButtonStyles: Record<ThemeKey, ThemeButtonStyle> = {
       shadowRadius: 18,
       shadowOpacity: 1,
       elevation: 10,
+    },
+    headerBtn: {
+      borderRadius: 1,
+      borderWidth: 1,
+      borderLeftWidth: 5,
+      borderColor: 'rgba(43, 0, 0, 0.6)',
+      borderLeftColor: '#660708',
+      backgroundColor: 'rgba(18, 0, 0, 0.82)',
+      shadowColor: '#ba181b',
+      shadowOffset: { width: -4, height: 4 },
+      shadowRadius: 10,
+      shadowOpacity: 0.85,
+      elevation: 8,
+      padding: 7,
     },
   },
 };
