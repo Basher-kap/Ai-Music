@@ -7,3 +7,4 @@ export { useSearchBarTheme } from './SearchBarContext';
 export { useSongItemTheme } from './SongItemContext';
 export { useFeatureCardTheme } from './FeatureCardContext';
 export { useModalTheme } from './ModalContext';
+export * from './MusicPlayerContext';
