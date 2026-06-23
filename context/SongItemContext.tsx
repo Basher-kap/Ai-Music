@@ -17,42 +17,48 @@ interface ThemeSongItemStyle {
 }
 
 const themeSongItemStyles: Record<ThemeKey, ThemeSongItemStyle> = {
-  nostalgia: {
+nostalgia: {
     card: {
       borderTopLeftRadius: 4,
       borderTopRightRadius: 18,
       borderBottomRightRadius: 4,
       borderBottomLeftRadius: 18,
-      borderWidth: 1,
-      borderColor: '#b48c50',
-      borderLeftWidth: 3,
-      borderLeftColor: '#d2b478',
-      shadowColor: '#a0783c',
-      shadowOffset: { width: 3, height: 3 },
-      shadowRadius: 0,
-      shadowOpacity: 0.7,
+      borderWidth: 1.5,
+      borderColor: '#8ee8b4',
+      borderLeftWidth: 4,
+      borderLeftColor: '#3a7a52',
+      shadowColor: 'rgba(126, 200, 160, 0.6)',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 20,
+      shadowOpacity: 1,
       elevation: 4,
     },
-    gradientColors: ['rgba(45, 22, 5, 0.92)', 'rgba(62, 35, 10, 0.82)', 'rgba(80, 48, 14, 0.72)'],
+    // Translucent soft green linear gradient to match the player background profile
+    gradientColors: [
+      'rgba(222, 244, 231, 0.85)', 
+      'rgba(232, 248, 238, 0.75)', 
+      'rgba(242, 252, 246, 0.65)'
+    ],
     gradientStart: { x: 0, y: 0 },
     gradientEnd: { x: 1, y: 1 },
     title: {
-      color: '#ffd699',
+      color: '#28573a', // Deep forest tone for robust readability on light glass
       fontSize: 15,
+      fontWeight: '600',
     },
     artist: {
-      color: 'rgba(210, 180, 120, 0.7)',
+      color: 'rgba(58, 122, 82, 0.75)', // Muted version of the primary green
       fontSize: 10,
     },
     chip: {
       borderRadius: 20,
       borderWidth: 1,
-      borderColor: 'rgba(180, 140, 80, 0.5)',
+      borderColor: 'rgba(90, 176, 122, 0.4)',
     },
     chipText: {
       fontSize: 9,
       fontWeight: '700',
-      color: '#000000',
+      color: '#3a7a52',
       textTransform: 'capitalize',
     },
     skeletonCard: {
@@ -60,29 +66,29 @@ const themeSongItemStyles: Record<ThemeKey, ThemeSongItemStyle> = {
       borderTopRightRadius: 18,
       borderBottomRightRadius: 4,
       borderBottomLeftRadius: 18,
-      borderWidth: 1,
-      borderColor: 'rgba(180, 140, 80, 0.25)',
-      borderLeftWidth: 3,
-      borderLeftColor: 'rgba(210, 180, 120, 0.35)',
-      backgroundColor: 'rgba(45, 22, 5, 0.55)',
+      borderWidth: 1.5,
+      borderColor: 'rgba(142, 232, 180, 0.3)',
+      borderLeftWidth: 4,
+      borderLeftColor: 'rgba(58, 122, 82, 0.4)',
+      backgroundColor: 'rgba(222, 244, 231, 0.45)',
     },
     skeletonTitleBar: {
       height: 16,
       width: '60%',
-      backgroundColor: 'rgba(210, 180, 120, 0.25)',
+      backgroundColor: 'rgba(90, 176, 122, 0.25)',
       borderRadius: 6,
     },
     skeletonArtistBar: {
       height: 10,
       width: '35%',
-      backgroundColor: 'rgba(210, 180, 120, 0.12)',
+      backgroundColor: 'rgba(90, 176, 122, 0.12)',
       borderRadius: 6,
     },
   },
 
   refreshing: {
     card: {
-      borderRadius: 99,
+      borderRadius: 12,
       borderWidth: 1.5,
       borderColor: 'rgba(92, 225, 230, 0.5)',
       borderRightWidth: 4,
