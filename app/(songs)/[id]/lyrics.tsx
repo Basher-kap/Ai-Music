@@ -8,11 +8,13 @@ import { Audio } from 'expo-av';
 import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTextContainerTheme } from '@/context/TextContainerThemeContext';
 
 export default function Lyrics() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
   const { ThemeButtonStyles } = useButtonTheme();
+  const { ThemeTextContainerStyles } = useTextContainerTheme();
 
   // fetches the songs from useSongs and find the song based on id
   const { songs, addLyrics, deleteSong, uploadAudio } = useSongs();
@@ -56,7 +58,7 @@ export default function Lyrics() {
 
       <MusicPlayer uri={song?.localUri ?? song?.mp4song ?? null}/>
 
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.lyricsContainer}>
+      <ScrollView showsVerticalScrollIndicator={false} style={[styles.lyricsContainer, ThemeTextContainerStyles.lyricsContainer]}>
         {/* split by lines and trim of whitespace for consistent centering */}
         <Text style={styles.lyricsText}>{song?.lyrics ? song.lyrics.split('\n').map(line => line.trim()).join('\n') : 'No lyrics added yet' }</Text>
       </ScrollView>
