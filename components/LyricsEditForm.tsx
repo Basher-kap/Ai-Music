@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { useModalTheme } from '@/context';
 
 type Props = {
   visible: boolean;
@@ -21,7 +21,8 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
   const [lyrics, setLyrics] = useState(song?.lyrics || '');
   const [uploading, setUploading] = useState(false);
 
-  //reset state whenever the song changes or modal opens
+  const { ThemeModalStyles } = useModalTheme();
+
   useEffect(() => {
     if (visible && song) {
       setTitle(song.title);
@@ -31,23 +32,21 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
   }, [visible, song]);
 
   const handleSave = () => {
-    onSave({title, artist, lyrics });
-  }
+    onSave({ title, artist, lyrics });
+  };
 
   const handlePickAudio = async () => {
     const result = await DocumentPicker.getDocumentAsync({
       type: 'audio/mpeg',
       copyToCacheDirectory: true,
     });
-
     if (result.canceled) return;
-
     const file = result.assets[0];
     setUploading(true);
     await onUploadAudio?.(file.uri, file.name);
     setUploading(false);
-  }
-  
+  };
+
   return (
     <Modal
       visible={visible}
@@ -55,91 +54,79 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
       animationType="fade"
       onRequestClose={onClose}
     >
-      {/* Overlay */}
-      <TouchableOpacity 
-        style={styles.overlay} 
-        activeOpacity={1} 
+      <TouchableOpacity
+        style={styles.overlay}
+        activeOpacity={1}
         onPress={onClose}
       />
 
-      {/* Modal Box */}
       <View style={styles.modalContainer}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, ThemeModalStyles.modal]}>
 
-          <Text style={styles.modalTitle}>Edit Song</Text>
+          <Text style={[styles.modalTitle, ThemeModalStyles.modalTitle]}>Edit Song</Text>
 
-          {/* Song Title Input */}
-          <Text style={styles.label}>Title</Text>
+          <Text style={[styles.label, ThemeModalStyles.label]}>Title</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, ThemeModalStyles.input]}
             value={title}
             onChangeText={setTitle}
-            placeholderTextColor="rgba(255,255,255,0.4)"
+            placeholderTextColor={ThemeModalStyles.input.color as string}
             placeholder="Song title"
           />
 
-          {/* Artist Input */}
-          <Text style={styles.label}>Artist</Text>
+          <Text style={[styles.label, ThemeModalStyles.label]}>Artist</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, ThemeModalStyles.input]}
             value={artist}
             onChangeText={setArtist}
-            placeholderTextColor="rgba(255,255,255,0.4)"
+            placeholderTextColor={ThemeModalStyles.input.color as string}
             placeholder="Artist name"
           />
 
-          <Text style={styles.label}>Audio File</Text>
-          <TouchableOpacity 
-            style={styles.uploadButton} 
+          <Text style={[styles.label, ThemeModalStyles.label]}>Audio File</Text>
+          <TouchableOpacity
+            style={[styles.uploadButton, ThemeModalStyles.uploadButton]}
             onPress={handlePickAudio}
             disabled={uploading}
           >
-            {uploading 
-              ? <ActivityIndicator size="small" color="#FFFFFF" />
+            {uploading
+              ? <ActivityIndicator size="small" color={ThemeModalStyles.modalTitle.color as string} />
               : <>
-                  <Ionicons name="musical-note-outline" size={18} color="#FFFFFF" />
-                  <Text style={styles.uploadText}>
+                  <Ionicons name="musical-note-outline" size={18} color={ThemeModalStyles.modalTitle.color as string} />
+                  <Text style={[styles.uploadText, { color: ThemeModalStyles.input.color as string }]}>
                     {song?.mp4song ? 'Replace Audio File' : 'Upload MP3'}
                   </Text>
                 </>
             }
           </TouchableOpacity>
 
-          {/* Lyrics Input */}
-          <Text style={styles.label}>Lyrics</Text>
+          <Text style={[styles.label, ThemeModalStyles.label]}>Lyrics</Text>
           <TextInput
-            style={[styles.input, styles.lyricsInput]}
+            style={[styles.input, styles.lyricsInput, ThemeModalStyles.input]}
             value={lyrics}
             onChangeText={setLyrics}
-            placeholderTextColor="rgba(255,255,255,0.4)"
+            placeholderTextColor={ThemeModalStyles.input.color as string}
             placeholder="Enter lyrics..."
             multiline
             textAlignVertical="top"
           />
 
-          {/* Action Buttons */}
           <View style={styles.buttonRow}>
-
-            {/* Cancel */}
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={styles.cancelText}>Cancel</Text>
+            <TouchableOpacity style={[styles.actionButton, ThemeModalStyles.cancelButton]} onPress={onClose}>
+              <Text style={ThemeModalStyles.cancelText}>Cancel</Text>
             </TouchableOpacity>
 
-            {/* Save */}
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveText}>Save</Text>
+            <TouchableOpacity style={[styles.actionButton, ThemeModalStyles.saveButton]} onPress={handleSave}>
+              <Text style={ThemeModalStyles.saveText}>Save</Text>
             </TouchableOpacity>
-
           </View>
 
-          {/* Delete — separate and destructive */}
-          <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-            <Text style={styles.deleteText}>Delete Song</Text>
+          <TouchableOpacity style={[styles.deleteButton, ThemeModalStyles.deleteButton]} onPress={onDelete}>
+            <Text style={ThemeModalStyles.deleteText}>Delete Song</Text>
           </TouchableOpacity>
 
         </View>
       </View>
-
     </Modal>
   );
 }
@@ -147,10 +134,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modalContainer: {
@@ -161,94 +145,48 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: '100%',
-    backgroundColor: 'rgba(20, 20, 20, 0.97)',
-    borderRadius: 16,
     padding: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
   },
   modalTitle: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
     marginBottom: 14,
     textAlign: 'center',
   },
   label: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 11,
     marginBottom: 4,
     marginTop: 8,
   },
   input: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    color: '#FFFFFF',
     fontSize: 13,
   },
   lyricsInput: {
     height: 180,
     paddingTop: 10,
   },
+  uploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  uploadText: {
+    fontSize: 13,
+  },
   buttonRow: {
     flexDirection: 'row',
     gap: 8,
     marginTop: 12,
   },
-  cancelButton: {
+  actionButton: {
     flex: 1,
     paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
-  },
-  cancelText: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 14,
-  },
-  saveButton: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-  },
-  saveText: {
-    color: '#000000',
-    fontSize: 14,
-    fontWeight: '700',
   },
   deleteButton: {
     marginTop: 10,
     paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ff4444',
     alignItems: 'center',
-  },
-  deleteText: {
-    color: '#ff4444',
-    fontSize: 14,
-  },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-  },
-  uploadText: {
-    color: '#FFFFFF',
-    fontSize: 13,
   },
 });
-
