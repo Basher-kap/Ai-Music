@@ -15,50 +15,50 @@ interface ThemeModalStyle {
   cancelText: TextStyle;
   saveButton: ViewStyle;
   saveText: TextStyle;
-  uploadButton: ViewStyle;   // LyricsEditForm only
-  deleteButton: ViewStyle;   // LyricsEditForm only
+  uploadButton: ViewStyle;   
+  deleteButton: ViewStyle;  
   deleteText: TextStyle;
 }
 
 const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
-  nostalgia: {
+nostalgia: {
     modal: {
       borderTopLeftRadius: 4,
       borderTopRightRadius: 20,
       borderBottomRightRadius: 4,
       borderBottomLeftRadius: 20,
-      borderWidth: 1,
-      borderColor: 'rgba(210, 180, 120, 0.4)',
-      borderLeftWidth: 3,
-      borderLeftColor: '#d2b478',
-      backgroundColor: 'rgba(28, 14, 4, 0.97)',
-      shadowColor: '#a0783c',
-      shadowOffset: { width: 3, height: 3 },
-      shadowRadius: 0,
-      shadowOpacity: 0.7,
+      borderWidth: 1.5,
+      borderColor: '#8ee8b4',                // Matching your add button border color
+      borderLeftWidth: 4,
+      borderLeftColor: '#3a7a52',            // Accent deep green
+      backgroundColor: '#f2fcf6',            // Crisp, lighter mint background
+      shadowColor: 'rgba(126, 200, 160, 0.6)', // Matching your add button glow shadow
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 20,
+      shadowOpacity: 1,
       elevation: 8,
     },
     modalTitle: {
-      color: '#ffd699',
+      color: '#3a7a52',                      // Deep forest green
       fontSize: 16,
       fontWeight: '700',
       marginBottom: 14,
       textAlign: 'center',
     },
     label: {
-      color: 'rgba(210, 180, 120, 0.65)',
+      color: 'rgba(58, 122, 82, 0.75)',       // Accessible label tint
       fontSize: 11,
       marginBottom: 4,
       marginTop: 8,
     },
     input: {
-      backgroundColor: 'rgba(255, 220, 160, 0.07)',
+      backgroundColor: '#ffffff',            // Clean white surface
       borderWidth: 1,
-      borderColor: 'rgba(210, 180, 120, 0.3)',
+      borderColor: '#5ab07a',
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 8,
-      color: '#ffd699',
+      color: '#3a7a52',
       fontSize: 13,
     },
     themeChip: {
@@ -66,44 +66,42 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       paddingHorizontal: 12,
       borderRadius: 20,
       borderWidth: 1,
-      borderColor: 'rgba(210, 180, 120, 0.3)',
-      backgroundColor: 'rgba(255, 220, 160, 0.07)',
+      borderColor: 'rgba(90, 176, 122, 0.3)',
+      backgroundColor: 'rgba(90, 176, 122, 0.08)',
     },
     themeChipSelected: {
-      backgroundColor: '#d2b478',
-      borderColor: '#d2b478',
-      borderWidth: 1,
-      borderRadius: 20,
+      backgroundColor: '#5ab07a',            // Brighter green accent for selected items
+      borderColor: '#5ab07a',
     },
     themeChipText: {
-      color: 'rgba(210, 180, 120, 0.8)',
+      color: 'rgba(58, 122, 82, 0.8)',
       fontSize: 12,
+      fontWeight: '400',                     // Flat weight to avoid item expansion layout shifts
     },
     themeChipTextSelected: {
-      color: '#000000',
-      fontWeight: '600',
+      color: '#ffffff',                      // High-contrast clean text
     },
     cancelButton: {
       flex: 1,
       paddingVertical: 10,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: 'rgba(210, 180, 120, 0.35)',
+      borderColor: 'rgba(90, 176, 122, 0.5)',
       alignItems: 'center',
     },
     cancelText: {
-      color: 'rgba(210, 180, 120, 0.7)',
+      color: '#3a7a52',
       fontSize: 14,
     },
     saveButton: {
       flex: 1,
       paddingVertical: 10,
       borderRadius: 10,
-      backgroundColor: '#d2b478',
+      backgroundColor: '#3a7a52',            // Strong primary color for core actions
       alignItems: 'center',
     },
     saveText: {
-      color: '#000000',
+      color: '#ffffff',
       fontSize: 14,
       fontWeight: '700',
     },
@@ -111,9 +109,9 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      backgroundColor: 'rgba(255, 220, 160, 0.07)',
-      borderWidth: 1,
-      borderColor: 'rgba(210, 180, 120, 0.3)',
+      backgroundColor: '#ffffff',
+      borderWidth: 1.2,
+      borderColor: '#5ab07a',
       borderRadius: 10,
       paddingVertical: 10,
       paddingHorizontal: 14,
@@ -123,11 +121,11 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       paddingVertical: 10,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: '#ff4444',
+      borderColor: '#dc2626',
       alignItems: 'center',
     },
     deleteText: {
-      color: '#ff4444',
+      color: '#dc2626',
       fontSize: 14,
     },
   },
@@ -136,82 +134,80 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
     modal: {
       borderRadius: 24,
       borderWidth: 1.5,
-      borderColor: 'rgba(92, 225, 230, 0.45)',
+      borderColor: '#a0f0f5',                // Soft sea foam reflection line
       borderRightWidth: 4,
-      borderRightColor: '#00f5ff',
-      backgroundColor: 'rgba(8, 30, 38, 0.97)',
-      shadowColor: '#00e5ff',
+      borderRightColor: '#00bfff',           // Deep radiant sky blue accent bar
+      backgroundColor: '#f0faff',            // Crisp, bright ambient sky wash
+      shadowColor: '#00d2ff',                // Ethereal shallow water glow
       shadowOffset: { width: 0, height: 0 },
       shadowRadius: 20,
-      shadowOpacity: 0.35,
+      shadowOpacity: 0.6,
       elevation: 8,
     },
     modalTitle: {
-      color: '#e8feff',
+      color: '#005b82',                      // Deep sea navy for excellent readability
       fontSize: 16,
       fontWeight: '700',
       marginBottom: 14,
       textAlign: 'center',
     },
     label: {
-      color: 'rgba(92, 225, 230, 0.6)',
+      color: 'rgba(0, 91, 130, 0.7)',        // High-contrast clean ocean label
       fontSize: 11,
       marginBottom: 4,
       marginTop: 8,
     },
     input: {
-      backgroundColor: 'rgba(92, 225, 230, 0.07)',
+      backgroundColor: '#ffffff',            // Pure white input floor for clean layout brightness
       borderWidth: 1,
-      borderColor: 'rgba(92, 225, 230, 0.3)',
+      borderColor: '#7cdcf5',
       borderRadius: 99,
       paddingHorizontal: 16,
       paddingVertical: 8,
-      color: '#e8feff',
+      color: '#005b82',
       fontSize: 13,
     },
     themeChip: {
       paddingVertical: 6,
       paddingHorizontal: 12,
       borderRadius: 99,
-      borderWidth: 1.5,
-      borderColor: 'rgba(92, 225, 230, 0.3)',
-      backgroundColor: 'rgba(92, 225, 230, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(0, 191, 255, 0.25)',
+      backgroundColor: 'rgba(0, 191, 255, 0.06)', // Delicate air blue tint
     },
     themeChipSelected: {
-      backgroundColor: '#5ce1e6',
-      borderColor: '#5ce1e6',
-      borderWidth: 1.5,
-      borderRadius: 99,
+      backgroundColor: '#00bfff',            // Vivid clear sky fill
+      borderColor: '#00bfff',
     },
     themeChipText: {
-      color: 'rgba(92, 225, 230, 0.8)',
+      color: '#007ca8',
       fontSize: 12,
+      fontWeight: '400',                     // Keeping structure flat to anchor text dimensions
     },
     themeChipTextSelected: {
-      color: '#003d40',
-      fontWeight: '600',
+      color: '#ffffff',                      // High contrast punchy text surface
     },
     cancelButton: {
       flex: 1,
       paddingVertical: 10,
       borderRadius: 99,
       borderWidth: 1,
-      borderColor: 'rgba(92, 225, 230, 0.35)',
+      borderColor: 'rgba(0, 191, 255, 0.4)',
       alignItems: 'center',
     },
     cancelText: {
-      color: 'rgba(92, 225, 230, 0.7)',
+      color: '#007ca8',
       fontSize: 14,
     },
     saveButton: {
       flex: 1,
       paddingVertical: 10,
       borderRadius: 99,
-      backgroundColor: '#5ce1e6',
+      backgroundColor: '#00bfff',            // Radiant primary ocean action trigger
       alignItems: 'center',
     },
     saveText: {
-      color: '#003d40',
+      color: '#ffffff',
       fontSize: 14,
       fontWeight: '700',
     },
@@ -219,9 +215,9 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      backgroundColor: 'rgba(92, 225, 230, 0.07)',
+      backgroundColor: '#ffffff',
       borderWidth: 1,
-      borderColor: 'rgba(92, 225, 230, 0.3)',
+      borderColor: '#7cdcf5',
       borderRadius: 99,
       paddingVertical: 10,
       paddingHorizontal: 14,
@@ -231,15 +227,14 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       paddingVertical: 10,
       borderRadius: 99,
       borderWidth: 1,
-      borderColor: '#ff4444',
+      borderColor: '#ef4444',
       alignItems: 'center',
     },
     deleteText: {
-      color: '#ff4444',
+      color: '#ef4444',
       fontSize: 14,
     },
   },
-
   love: {
     modal: {
       borderTopLeftRadius: 20,
@@ -247,39 +242,40 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       borderBottomRightRadius: 20,
       borderBottomLeftRadius: 4,
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 105, 180, 0.45)',
-      borderBottomColor: '#ff007f',
-      backgroundColor: 'rgba(28, 3, 14, 0.97)',
-      shadowColor: '#ff007f',
+      borderColor: '#ffccd5',                // Extremely soft, delicate pink outline
+      borderBottomWidth: 4,
+      borderBottomColor: '#ff8fab',           // Sweet, soft rose accent bar
+      backgroundColor: '#fff5f7',            // Soft cream-pink ambient wash
+      shadowColor: '#ffb3c1',                // Gentle, romantic pink glow
       shadowOffset: { width: 4, height: 4 },
       shadowRadius: 0,
-      shadowOpacity: 0.8,
+      shadowOpacity: 0.6,
       elevation: 8,
     },
     modalTitle: {
-      color: '#ffe0ee',
+      color: '#c9184a',                      // Deep berry-rose for crisp, beautiful legibility
       fontSize: 16,
       fontWeight: '700',
       marginBottom: 14,
       textAlign: 'center',
     },
     label: {
-      color: 'rgba(255, 150, 190, 0.65)',
+      color: 'rgba(201, 24, 74, 0.7)',        // Clear, legible pastel-rose label
       fontSize: 11,
       marginBottom: 4,
       marginTop: 8,
     },
     input: {
-      backgroundColor: 'rgba(255, 150, 190, 0.07)',
+      backgroundColor: '#ffffff',            // Pure white input floor for clean layout brightness
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 105, 180, 0.3)',
+      borderColor: '#ffb3c1',
       borderTopLeftRadius: 14,
       borderTopRightRadius: 14,
       borderBottomRightRadius: 14,
       borderBottomLeftRadius: 4,
       paddingHorizontal: 12,
       paddingVertical: 8,
-      color: '#ffe0ee',
+      color: '#c9184a',
       fontSize: 13,
     },
     themeChip: {
@@ -290,25 +286,20 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       borderBottomRightRadius: 14,
       borderBottomLeftRadius: 4,
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 105, 180, 0.3)',
-      backgroundColor: 'rgba(255, 150, 190, 0.07)',
+      borderColor: 'rgba(255, 143, 171, 0.3)',
+      backgroundColor: 'rgba(255, 143, 171, 0.08)', // Faint blush tint
     },
     themeChipSelected: {
-      backgroundColor: '#ff69b4',
-      borderColor: '#ff69b4',
-      borderWidth: 1.5,
-      borderTopLeftRadius: 14,
-      borderTopRightRadius: 14,
-      borderBottomRightRadius: 14,
-      borderBottomLeftRadius: 4,
+      backgroundColor: '#ff8fab',            // Soft, cheerful cotton candy pink highlight
+      borderColor: '#ff8fab',
     },
     themeChipText: {
-      color: 'rgba(255, 150, 190, 0.8)',
+      color: '#ff4d6d',
       fontSize: 12,
+      fontWeight: '400',                     // Kept flat to prevent layout shifts on toggle
     },
     themeChipTextSelected: {
-      color: '#3d0018',
-      fontWeight: '600',
+      color: '#ffffff',                      // High contrast punchy text surface
     },
     cancelButton: {
       flex: 1,
@@ -318,11 +309,11 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       borderBottomRightRadius: 14,
       borderBottomLeftRadius: 4,
       borderWidth: 1,
-      borderColor: 'rgba(255, 105, 180, 0.35)',
+      borderColor: 'rgba(255, 143, 171, 0.5)',
       alignItems: 'center',
     },
     cancelText: {
-      color: 'rgba(255, 150, 190, 0.7)',
+      color: '#ff4d6d',
       fontSize: 14,
     },
     saveButton: {
@@ -332,11 +323,11 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       borderTopRightRadius: 14,
       borderBottomRightRadius: 14,
       borderBottomLeftRadius: 4,
-      backgroundColor: '#ff69b4',
+      backgroundColor: '#ff8fab',            // Warm, soft rose core action trigger
       alignItems: 'center',
     },
     saveText: {
-      color: '#3d0018',
+      color: '#ffffff',
       fontSize: 14,
       fontWeight: '700',
     },
@@ -344,9 +335,9 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      backgroundColor: 'rgba(255, 150, 190, 0.07)',
+      backgroundColor: '#ffffff',
       borderWidth: 1,
-      borderColor: 'rgba(255, 105, 180, 0.3)',
+      borderColor: '#ffb3c1',
       borderTopLeftRadius: 14,
       borderTopRightRadius: 14,
       borderBottomRightRadius: 14,
@@ -362,50 +353,49 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       borderBottomRightRadius: 14,
       borderBottomLeftRadius: 4,
       borderWidth: 1,
-      borderColor: '#ff4444',
+      borderColor: '#ef4444',
       alignItems: 'center',
     },
     deleteText: {
-      color: '#ff4444',
+      color: '#ef4444',
       fontSize: 14,
     },
   },
-
   cheerful: {
     modal: {
       borderRadius: 12,
       borderWidth: 2,
-      borderColor: 'rgba(255, 210, 0, 0.55)',
-      borderBottomWidth: 3,
-      borderBottomColor: 'rgba(255, 160, 0, 0.8)',
-      backgroundColor: 'rgba(22, 12, 0, 0.97)',
-      shadowColor: '#ff4d00',
-      shadowOffset: { width: 6, height: 5 },
+      borderColor: '#ffe066',                // Bright sunbeam outline
+      borderBottomWidth: 4,
+      borderBottomColor: '#f5a623',          // Warm solar flare accent bar
+      backgroundColor: '#fffdf0',            // Luminous warm daylight background
+      shadowColor: '#f5a623',                // Radiant golden glow
+      shadowOffset: { width: 4, height: 4 },
       shadowRadius: 0,
-      shadowOpacity: 1,
+      shadowOpacity: 0.5,
       elevation: 8,
     },
     modalTitle: {
-      color: '#fff8dc',
+      color: '#b26a00',                      // High-contrast deep sun-amber for clear readability
       fontSize: 16,
       fontWeight: '700',
       marginBottom: 14,
       textAlign: 'center',
     },
     label: {
-      color: 'rgba(255, 210, 80, 0.65)',
+      color: 'rgba(178, 106, 0, 0.75)',       // Sharp, clean sunny label
       fontSize: 11,
       marginBottom: 4,
       marginTop: 8,
     },
     input: {
-      backgroundColor: 'rgba(255, 210, 0, 0.07)',
+      backgroundColor: '#ffffff',            // Crisp white input surface for peak brightness
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 210, 0, 0.3)',
+      borderColor: '#ffd000',
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 8,
-      color: '#fff8dc',
+      color: '#b26a00',
       fontSize: 13,
     },
     themeChip: {
@@ -413,44 +403,42 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       paddingHorizontal: 12,
       borderRadius: 8,
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 210, 0, 0.3)',
-      backgroundColor: 'rgba(255, 210, 0, 0.07)',
+      borderColor: 'rgba(255, 208, 0, 0.3)',
+      backgroundColor: 'rgba(255, 208, 0, 0.08)', // Soft yellow sun-wash tint
     },
     themeChipSelected: {
-      backgroundColor: '#ffe000',
-      borderColor: '#ffe000',
-      borderWidth: 1.5,
-      borderRadius: 8,
+      backgroundColor: '#ffd000',            // Full midday sun highlight
+      borderColor: '#ffd000',
     },
     themeChipText: {
-      color: 'rgba(255, 210, 80, 0.8)',
+      color: '#d48800',
       fontSize: 12,
+      fontWeight: '400',                     // Flat weight to lock down layout dimensions
     },
     themeChipTextSelected: {
-      color: '#000000',
-      fontWeight: '600',
+      color: '#ffffff',                      // High-contrast clean white surface text
     },
     cancelButton: {
       flex: 1,
       paddingVertical: 10,
       borderRadius: 10,
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 210, 0, 0.35)',
+      borderColor: 'rgba(255, 208, 0, 0.5)',
       alignItems: 'center',
     },
     cancelText: {
-      color: 'rgba(255, 210, 80, 0.7)',
+      color: '#d48800',
       fontSize: 14,
     },
     saveButton: {
       flex: 1,
       paddingVertical: 10,
       borderRadius: 10,
-      backgroundColor: '#ffe000',
+      backgroundColor: '#f5a623',            // Striking, energetic warm gold trigger
       alignItems: 'center',
     },
     saveText: {
-      color: '#000000',
+      color: '#ffffff',
       fontSize: 14,
       fontWeight: '700',
     },
@@ -458,9 +446,9 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      backgroundColor: 'rgba(255, 210, 0, 0.07)',
+      backgroundColor: '#ffffff',
       borderWidth: 1.5,
-      borderColor: 'rgba(255, 210, 0, 0.3)',
+      borderColor: '#ffd000',
       borderRadius: 10,
       paddingVertical: 10,
       paddingHorizontal: 14,
@@ -470,11 +458,11 @@ const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
       paddingVertical: 10,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: '#ff4444',
+      borderColor: '#ef4444',
       alignItems: 'center',
     },
     deleteText: {
-      color: '#ff4444',
+      color: '#ef4444',
       fontSize: 14,
     },
   },
