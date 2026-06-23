@@ -64,8 +64,7 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
                     <Text style={[styles.label, ThemeModalStyles.label]}>Title of a Song</Text>
                     <TextInput
                         style={[styles.input, ThemeModalStyles.input]}
-                        placeholderTextColor={ThemeModalStyles.input.color as string}
-                        placeholder="Lemon"
+                        placeholderTextColor='rgba(245, 240, 240, 0.54)'
                         value={title}
                         onChangeText={setTitle}
                     />
@@ -73,8 +72,7 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
                     <Text style={[styles.label, ThemeModalStyles.label]}>Artist of a Song</Text>
                     <TextInput
                         style={[styles.input, ThemeModalStyles.input]}
-                        placeholderTextColor={ThemeModalStyles.input.color as string}
-                        placeholder="Kenshi Yonezu"
+                        placeholderTextColor='rgba(245, 240, 240, 0.54)'
                         value={artist}
                         onChangeText={setArtist}
                     />

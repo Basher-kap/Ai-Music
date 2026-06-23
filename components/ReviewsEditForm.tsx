@@ -53,28 +53,28 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave }: Prop
 
           {/* Song title and artist — read only */}
           <Text style={[styles.songTitle, ThemeModalStyles.modalTitle]}>{song?.title}</Text>
-          <Text style={[styles.songArtist, ThemeModalStyles.label]}>{song?.artist}</Text>
+          <Text style={[styles.songArtist]}>{song?.artist}</Text>
 
           <Text style={[styles.label, ThemeModalStyles.label]}>Themes</Text>
           <View style={styles.themeRow}>
             {THEME_KEYS.map(theme => {
               const isSelected = selectedThemes.includes(theme);
               return (
-<TouchableOpacity
-    key={theme}
-    style={[
-        ThemeModalStyles.themeChip,
-        isSelected && ThemeModalStyles.themeChipSelected,
-    ]}
-    onPress={() => toggleTheme(theme)}
->
-    <Text style={[
-        ThemeModalStyles.themeChipText,
-        isSelected && ThemeModalStyles.themeChipTextSelected,
-    ]}>
-        {theme}
-    </Text>
-</TouchableOpacity>
+                  <TouchableOpacity
+                      key={theme}
+                      style={[
+                          ThemeModalStyles.themeChip,
+                          isSelected && ThemeModalStyles.themeChipSelected,
+                      ]}
+                      onPress={() => toggleTheme(theme)}
+                  >
+                      <Text style={[
+                          ThemeModalStyles.themeChipText,
+                          isSelected && ThemeModalStyles.themeChipTextSelected,
+                      ]}>
+                          {theme}
+                      </Text>
+                  </TouchableOpacity>
               );
             })}
           </View>
@@ -82,7 +82,7 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave }: Prop
           <Text style={[styles.label, ThemeModalStyles.label]}>Review</Text>
           <TextInput
             style={[styles.input, styles.reviewInput, ThemeModalStyles.input]}
-            placeholderTextColor={ThemeModalStyles.input.color as string}
+            placeholderTextColor='rgba(245, 240, 240, 0.54)'
             placeholder="Enter your review..."
             value={review}
             onChangeText={setReview}
@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
   },
   songArtist: {
     fontSize: 10,
-    marginTop: 2,
+    color: 'rgba(255, 255, 255, 0.88)',
+    textAlign: 'center',
   },
   label: {
     marginBottom: 4,

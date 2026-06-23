@@ -70,7 +70,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
             style={[styles.input, ThemeModalStyles.input]}
             value={title}
             onChangeText={setTitle}
-            placeholderTextColor={ThemeModalStyles.input.color as string}
+            placeholderTextColor='rgba(245, 240, 240, 0.54)'
             placeholder="Song title"
           />
 
@@ -79,7 +79,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
             style={[styles.input, ThemeModalStyles.input]}
             value={artist}
             onChangeText={setArtist}
-            placeholderTextColor={ThemeModalStyles.input.color as string}
+            placeholderTextColor='rgba(245, 240, 240, 0.54)'
             placeholder="Artist name"
           />
 
@@ -105,7 +105,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
             style={[styles.input, styles.lyricsInput, ThemeModalStyles.input]}
             value={lyrics}
             onChangeText={setLyrics}
-            placeholderTextColor={ThemeModalStyles.input.color as string}
+            placeholderTextColor='rgba(245, 240, 240, 0.54)'
             placeholder="Enter lyrics..."
             multiline
             textAlignVertical="top"
