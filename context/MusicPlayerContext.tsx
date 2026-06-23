@@ -25,7 +25,7 @@ const themeMusicPlayerStyles: Record<ThemeKey, ThemeMusicPlayerStyle> = {
       borderColor: '#8ee8b4',
       borderLeftWidth: 4,
       borderLeftColor: '#3a7a52',
-      backgroundColor: 'rgba(242, 252, 246, 0.45)', // Nostalgia soft green glass
+      backgroundColor: 'rgba(222, 244, 231, 0.79)', // Nostalgia soft green glass
       shadowColor: 'rgba(126, 200, 160, 0.6)',
       shadowOffset: { width: 0, height: 0 },
       shadowRadius: 20,
@@ -76,7 +76,7 @@ const themeMusicPlayerStyles: Record<ThemeKey, ThemeMusicPlayerStyle> = {
       borderColor: '#a0f0f5',
       borderRightWidth: 4,
       borderRightColor: '#00bfff',
-      backgroundColor: 'rgba(240, 250, 255, 0.4)',  // Refreshing sea and sky glass
+      backgroundColor: 'rgba(221, 240, 249, 0.8)',  // Refreshing sea and sky glass
       shadowColor: '#00d2ff',
       shadowOffset: { width: 0, height: 0 },
       shadowRadius: 18,
@@ -130,7 +130,7 @@ const themeMusicPlayerStyles: Record<ThemeKey, ThemeMusicPlayerStyle> = {
       borderColor: '#ffccd5',
       borderBottomWidth: 4,
       borderBottomColor: '#ff8fab',
-      backgroundColor: 'rgba(255, 245, 247, 0.45)', // Love soft cherry glass
+      backgroundColor: 'rgba(252, 220, 227, 0.86)', // Love soft cherry glass
       shadowColor: '#ffb3c1',
       shadowOffset: { width: 3, height: 3 },
       shadowRadius: 0,
@@ -196,7 +196,7 @@ const themeMusicPlayerStyles: Record<ThemeKey, ThemeMusicPlayerStyle> = {
       borderColor: '#ffe066',
       borderBottomWidth: 4,
       borderBottomColor: '#f5a623',
-      backgroundColor: 'rgba(255, 253, 240, 0.45)', // Cheerful radiant solar glass
+      backgroundColor: 'rgba(248, 244, 218, 0.84)', // Cheerful radiant solar glass
       shadowColor: '#f5a623',
       shadowOffset: { width: 5, height: 4 },
       shadowRadius: 0,
