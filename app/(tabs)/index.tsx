@@ -358,12 +358,12 @@ const styles = StyleSheet.create({
   },
   dailySongTitle: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 17,
     fontWeight: '600',
   },
   dailySongArtist: {
-    color: 'rgba(255,255,255,0.5)',
-    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.65)',
+    fontSize: 13,
   },
   featuresSection: {
     paddingHorizontal: 20,
