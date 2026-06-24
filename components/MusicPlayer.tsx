@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-na
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Audio } from 'expo-av';
 import { useMusicPlayerTheme } from '@/context/MusicPlayerContext';
+import { useAudioCoordinator } from '@/store';
 
 type Props = {
   uri: string | null | undefined;
@@ -25,6 +26,8 @@ export default function MusicPlayer({ uri }: Props) {
   const [visualProgress, setVisualProgress] = useState(0);
 
   const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
+
+  const { stopDailySong } = useAudioCoordinator();
 
   useEffect(() => {
     let sound: Audio.Sound;
@@ -84,6 +87,8 @@ export default function MusicPlayer({ uri }: Props) {
       await soundRef.current.pauseAsync();
       setIsPlaying(false);
     } else {
+      // Because daily song and music player would overlap if both play at once
+      await stopDailySong();
       await soundRef.current.playAsync();
       setIsPlaying(true);
     }

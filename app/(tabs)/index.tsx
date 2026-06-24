@@ -2,6 +2,7 @@
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
 import { useButtonTheme, useFeatureCardTheme, useTextTheme, useTheme } from '@/context';
 import { useAuth } from '@/store';
+import { useAudioCoordinator } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -21,6 +22,8 @@ export default function Index() {
 
   const [dailySong, setDailySong] = useState<DailySong | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { registerStopDailySong } = useAudioCoordinator();
+
   const soundRef = useRef<Audio.Sound | null>(null);
 
   const rotation = useRef(new Animated.Value(0)).current;
@@ -100,6 +103,15 @@ export default function Index() {
           );
           soundRef.current = sound;
           setIsPlaying(true);
+
+          registerStopDailySong(async () => {
+            if (soundRef.current) {
+              await soundRef.current.stopAsync();
+              await soundRef.current.unloadAsync();
+              soundRef.current = null;
+              setIsPlaying(false);
+            }
+          });
           console.log('[Home] Playing:', dailySong.daily_song_title);
 
           sound.setOnPlaybackStatusUpdate((status) => {
