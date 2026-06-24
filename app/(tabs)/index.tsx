@@ -267,7 +267,7 @@ export default function Index() {
       {/* Profile + Logout */}
       <View style={styles.profileSection}>
         {/* Logout button */}
-          <TouchableOpacity style={[styles.logoutBtn, ThemeButtonStyles.signOutBtn]}>
+          <TouchableOpacity style={[styles.logoutBtn, ThemeButtonStyles.signOutBtn]} onPress={signOut}>
           {user?.user_metadata?.avatar_url ? (
             <Image
               source={{ uri: user.user_metadata.avatar_url }}

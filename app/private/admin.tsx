@@ -11,8 +11,6 @@ import { supabase } from '@/utils/supabase';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, THEME_ACCENTS, THEME_KEYS } from '@/constant';
 import type { DailySong } from '@/types/settings';
 
-const ADMIN_USER_ID = process.env.EXPO_PUBLIC_ADMIN_USER_ID;
-
 export default function Admin() {
   const { ThemeTextStyles } = useTextTheme();
   const { user } = useAuth();
@@ -32,7 +30,8 @@ export default function Admin() {
   const previewImageWidth = (width - 40) * 0.45; // ~45% of available content width
 
   useEffect(() => {
-    if (user && user.id !== ADMIN_USER_ID) {
+    // this is just a UI guard to redirect non-admins immediately
+    if (user && !user.user_metadata?.is_admin) {
       router.replace('/(tabs)');
     }
   }, [user]);

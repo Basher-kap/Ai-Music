@@ -87,7 +87,7 @@ ${english}
           ],
           generationConfig: { //object containing settings that fine-tune how the AI generates its response.
             temperature: 0.1,
-            maxOutputTokens: 4096,
+            maxOutputTokens: 32768,
             responseMimeType: "application/json",
             responseSchema: {
               type: "OBJECT",
@@ -120,13 +120,31 @@ ${english}
         throw new Error(data?.error?.message ?? 'Gemini API error');
       }
 
+      // Check if output was truncated before attempting parse
+      const finishReason = data?.candidates?.[0]?.finishReason;
+        if (finishReason === 'MAX_TOKENS') {
+          throw new Error('Lyrics are too long to process in one request. Try splitting them into sections.');
+        }
+
       const rawJsonString = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!rawJsonString) {
         throw new Error('No format payload returned from Gemini.');
       }
 
-      // Parse the enforced structured JSON output
-      const parsedData = JSON.parse(rawJsonString);
+
+      // Because Gemini 2.5 Flash sometimes wraps JSON in markdown code fences
+      // even when responseMimeType is set to application/json
+      const cleanedJson = rawJsonString
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/\s*```$/, '')
+        .trim();
+
+      if (!cleanedJson) {
+        throw new Error('Empty response from Gemini.');
+      }
+
+      const parsedData = JSON.parse(cleanedJson);
       const groups: LyricGroup[] = parsedData?.lyricGroups ?? [];
 
       if (groups.length === 0) {
