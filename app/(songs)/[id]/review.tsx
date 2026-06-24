@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFFFF',
     lineHeight: 24,
-    textAlign: 'left',
+    textAlign: 'justify',
     width: '100%',
   },
 });
