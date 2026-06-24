@@ -20,6 +20,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
   const [artist, setArtist] = useState(song?.artist || '');
   const [lyrics, setLyrics] = useState(song?.lyrics || '');
   const [uploading, setUploading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null); // ← add
 
   const { ThemeModalStyles } = useModalTheme();
 
@@ -28,6 +29,7 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
       setTitle(song.title);
       setArtist(song.artist);
       setLyrics(song.lyrics || '');
+      setSelectedFileName(null); 
     }
   }, [visible, song]);
 
@@ -41,7 +43,9 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
       copyToCacheDirectory: true,
     });
     if (result.canceled) return;
+
     const file = result.assets[0];
+    setSelectedFileName(file.name);
     setUploading(true);
     await onUploadAudio?.(file.uri, file.name);
     setUploading(false);
@@ -84,17 +88,18 @@ export default function LyricsEditForm({ visible, song, onClose, onSave, onDelet
           />
 
           <Text style={[styles.label, ThemeModalStyles.label]}>Audio File</Text>
-          <TouchableOpacity
-            style={[styles.uploadButton, ThemeModalStyles.uploadButton]}
-            onPress={handlePickAudio}
-            disabled={uploading}
-          >
+          <TouchableOpacity style={[styles.uploadButton, ThemeModalStyles.uploadButton]} onPress={handlePickAudio} disabled={uploading}>
             {uploading
               ? <ActivityIndicator size="small" color={ThemeModalStyles.modalTitle.color as string} />
               : <>
-                  <Ionicons name="musical-note-outline" size={18} color={ThemeModalStyles.modalTitle.color as string} />
-                  <Text style={[styles.uploadText, { color: ThemeModalStyles.input.color as string }]}>
-                    {song?.mp4song ? 'Replace Audio File' : 'Upload MP3'}
+                  <Ionicons name={selectedFileName || song?.mp4song ? 'musical-note' : 'musical-note-outline'} size={18} color={ThemeModalStyles.modalTitle.color as string}/>
+                  <Text style={[styles.uploadText, { color: ThemeModalStyles.input.color as string, flex: 1 }]} numberOfLines={1} ellipsizeMode="tail">
+                    {selectedFileName
+                      ? selectedFileName
+                      : song?.mp4song
+                        ? `${song.mp4song.split('/').pop()}`
+                        : 'Upload MP3'
+                    }
                   </Text>
                 </>
             }
