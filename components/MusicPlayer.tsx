@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Audio } from 'expo-av';
+import { useMusicPlayerTheme } from '@/context/MusicPlayerContext';
+import { useAudioCoordinator } from '@/store';
 
 type Props = {
   uri: string | null | undefined;
@@ -23,15 +25,14 @@ export default function MusicPlayer({ uri }: Props) {
   const scrubRatio = useRef(0);
   const [visualProgress, setVisualProgress] = useState(0);
 
-  // ─── Load / reload audio whenever uri changes ─────────────────────────────
+  const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
+
+  const { stopDailySong } = useAudioCoordinator();
 
   useEffect(() => {
     let sound: Audio.Sound;
-
     const loadAudio = async () => {
       if (!uri) return;
-
-      // Unload any previous sound first
       if (soundRef.current) {
         await soundRef.current.unloadAsync();
         soundRef.current = null;
@@ -40,13 +41,11 @@ export default function MusicPlayer({ uri }: Props) {
         setDuration(0);
         setVisualProgress(0);
       }
-
       await Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
         staysActiveInBackground: false,
         shouldDuckAndroid: false,
       });
-
       const { sound: newSound } = await Audio.Sound.createAsync(
         { uri },
         { shouldPlay: false },
@@ -66,19 +65,12 @@ export default function MusicPlayer({ uri }: Props) {
           }
         }
       );
-
       soundRef.current = newSound;
       sound = newSound;
     };
-
     loadAudio();
-
-    return () => {
-      sound?.unloadAsync();
-    };
+    return () => { sound?.unloadAsync(); };
   }, [uri]);
-
-  // ─── Controls ─────────────────────────────────────────────────────────────
 
   const seekTo = async (ms: number) => {
     if (!soundRef.current) return;
@@ -95,6 +87,8 @@ export default function MusicPlayer({ uri }: Props) {
       await soundRef.current.pauseAsync();
       setIsPlaying(false);
     } else {
+      // Because daily song and music player would overlap if both play at once
+      await stopDailySong();
       await soundRef.current.playAsync();
       setIsPlaying(true);
     }
@@ -103,26 +97,21 @@ export default function MusicPlayer({ uri }: Props) {
   const handleSkipBack = () => seekTo(Math.max(0, position - SKIP_MS));
   const handleSkipForward = () => seekTo(Math.min(duration, position + SKIP_MS));
 
-  // ─── Scrub bar pan responder ──────────────────────────────────────────────
-
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-
       onPanResponderGrant: (e) => {
         isScrubbing.current = true;
         const ratio = Math.min(Math.max(e.nativeEvent.locationX / barWidth.current, 0), 1);
         scrubRatio.current = ratio;
         setVisualProgress(ratio);
       },
-
       onPanResponderMove: (e) => {
         const ratio = Math.min(Math.max(e.nativeEvent.locationX / barWidth.current, 0), 1);
         scrubRatio.current = ratio;
         setVisualProgress(ratio);
       },
-
       onPanResponderRelease: async () => {
         isScrubbing.current = false;
         if (!soundRef.current) return;
@@ -138,8 +127,6 @@ export default function MusicPlayer({ uri }: Props) {
     })
   ).current;
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
-
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -149,10 +136,8 @@ export default function MusicPlayer({ uri }: Props) {
 
   if (!uri) return null;
 
-  // ─── Render ───────────────────────────────────────────────────────────────
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, ThemeMusicPlayerStyles.container]}>
 
       {/* Progress bar */}
       <View
@@ -160,47 +145,50 @@ export default function MusicPlayer({ uri }: Props) {
         onLayout={(e) => { barWidth.current = e.nativeEvent.layout.width; }}
         {...panResponder.panHandlers}
       >
-        <View style={styles.track} />
-        <View style={[styles.progressFill, { width: `${visualProgress * 100}%` }]} />
-        <View style={[styles.progressThumb, { left: `${visualProgress * 100}%` }]} />
+        <View style={[styles.track, ThemeMusicPlayerStyles.track]} />
+        <View style={[styles.progressFill, ThemeMusicPlayerStyles.progressFill, { width: `${visualProgress * 100}%` }]} />
+        <View style={[styles.progressThumb, ThemeMusicPlayerStyles.progressThumb, { left: `${visualProgress * 100}%` }]} />
       </View>
 
-      {/* Bottom row: time — controls — time */}
+      {/* Bottom row */}
       <View style={styles.bottomRow}>
-
-        <Text style={styles.timeText}>
+        <Text style={[styles.timeText, ThemeMusicPlayerStyles.timeText]}>
           {formatTime(isScrubbing.current ? scrubRatio.current * duration : position)}
         </Text>
 
         <View style={styles.controls}>
           <TouchableOpacity
-            style={styles.skipBtn}
+            style={[styles.skipBtn, ThemeMusicPlayerStyles.skipBtn]}
             onPress={handleSkipBack}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
-            <Ionicons name="play-back" size={15} color="rgba(255,255,255,0.85)" />
+            <Ionicons name="play-back" size={15} color={ThemeMusicPlayerStyles.skipIconColor} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.playBtn} onPress={handlePlayPause}>
+          <TouchableOpacity
+            style={[styles.playBtn, ThemeMusicPlayerStyles.playBtn]}
+            onPress={handlePlayPause}
+          >
             <Ionicons
               name={isPlaying ? 'pause' : 'play'}
               size={20}
-              color="#000"
+              color={ThemeMusicPlayerStyles.playIconColor}
               style={!isPlaying ? { marginLeft: 2 } : undefined}
             />
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.skipBtn}
+            style={[styles.skipBtn, ThemeMusicPlayerStyles.skipBtn]}
             onPress={handleSkipForward}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
           >
-            <Ionicons name="play-forward" size={15} color="rgba(255,255,255,0.85)" />
+            <Ionicons name="play-forward" size={15} color={ThemeMusicPlayerStyles.skipIconColor} />
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.timeText}>{formatTime(duration)}</Text>
-
+        <Text style={[styles.timeText, ThemeMusicPlayerStyles.timeText]}>
+          {formatTime(duration)}
+        </Text>
       </View>
 
     </View>
@@ -212,10 +200,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginTop: 8,
     marginBottom: 8,
-    backgroundColor: 'rgba(15, 15, 15, 0.6)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 16,
     paddingHorizontal: 18,
     paddingTop: 14,
     paddingBottom: 10,
@@ -231,22 +215,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 3,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderRadius: 2,
   },
   progressFill: {
     position: 'absolute',
     left: 0,
     height: 3,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 2,
   },
   progressThumb: {
     position: 'absolute',
     width: 12,
     height: 12,
-    borderRadius: 6,
-    backgroundColor: '#FFFFFF',
     marginLeft: -6,
     top: '50%',
     marginTop: -6,
@@ -257,7 +235,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   timeText: {
-    color: 'rgba(255,255,255,0.4)',
     fontSize: 10,
     width: 32,
   },
@@ -269,16 +246,10 @@ const styles = StyleSheet.create({
   skipBtn: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
   },
   playBtn: {
     width: PLAY_BTN,
     height: PLAY_BTN,
-    borderRadius: PLAY_BTN / 2,
-    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },

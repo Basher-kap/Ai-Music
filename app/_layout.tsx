@@ -19,7 +19,9 @@ import { ActivityIndicator, View } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import * as NavigationBar from 'expo-navigation-bar';
 import { AuthProvider, SongsProvider, useAuth } from '@/store';
+import { AudioCoordinatorProvider } from '@/store';
 import { router } from 'expo-router';
+
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
@@ -134,7 +136,9 @@ export default function RootLayout() {
     <ThemeProvider>
       <AuthProvider>
         <SongsProvider>
-          <RootLayoutInner/>
+          <AudioCoordinatorProvider>  
+            <RootLayoutInner/>
+          </AudioCoordinatorProvider>   
         </SongsProvider>
       </AuthProvider>
     </ThemeProvider>

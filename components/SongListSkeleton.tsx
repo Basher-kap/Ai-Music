@@ -1,15 +1,17 @@
 // components/SongListSkeleton.tsx
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 import { useEffect, useRef } from 'react';
+import { useSongItemTheme } from '@/context/SongItemContext';
 
 function SkeletonCard() {
   const opacity = useRef(new Animated.Value(0.3)).current;
+  const { ThemeSongItemStyles } = useSongItemTheme();
 
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(opacity, {
-          toValue: 0.7,
+          toValue: 0.9,
           duration: 800,
           easing: Easing.ease,
           useNativeDriver: true,
@@ -25,17 +27,14 @@ function SkeletonCard() {
   }, []);
 
   return (
-    <Animated.View style={[styles.card, { opacity }]}>
-      {/* Title placeholder */}
-      <View style={styles.titleBar} />
-      {/* Artist placeholder */}
-      <View style={styles.artistBar} />
+    <Animated.View style={[styles.card, ThemeSongItemStyles.skeletonCard, { opacity }]}>
+      <View style={[styles.titleBar, ThemeSongItemStyles.skeletonTitleBar]} />
+      <View style={[styles.artistBar, ThemeSongItemStyles.skeletonArtistBar]} />
     </Animated.View>
   );
 }
 
 export default function SongListSkeleton() {
-  // Because showing 5 skeleton cards fills the screen naturally
   return (
     <View style={styles.container}>
       {[...Array(5)].map((_, i) => (
@@ -51,24 +50,16 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   card: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
     gap: 8,
   },
   titleBar: {
     height: 16,
     width: '60%',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 6,
   },
   artistBar: {
     height: 10,
     width: '35%',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 6,
   },
 });

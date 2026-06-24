@@ -2,24 +2,41 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { useButtonTheme, useTextTheme } from '@/context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ADD_BUTTON_GRADIENTS } from '@/context/ButtonContext';
+import { THEME_ACCENTS } from '@/constant';
+
 type Props = {
   onAddSong: () => void;
 };
 
 export default function EmptyState({ onAddSong }: Props) {
+  const { ThemeButtonStyles, activeTheme } = useButtonTheme();
+  const { ThemeTextStyles } = useTextTheme();
+
   return (
     <View style={styles.container}>
 
-      <View style={styles.iconWrapper}>
-        <Ionicons name="musical-notes-outline" size={48} color="rgba(255,255,255,0.2)" />
+      <View style={[styles.iconWrapper, ThemeButtonStyles.iconWrapper]}>
+        <Ionicons name="musical-notes-outline" size={48} color="rgba(255, 255, 255, 0.67)" />
       </View>
 
-      <Text style={styles.title}>No songs yet</Text>
-      <Text style={styles.subtitle}>Start building your personal music collection</Text>
+      <Text style={[styles.h2Title]}>No songs yet</Text>
+      <Text style={[styles.subtitle, ThemeTextStyles.subtitle]}>
+        Start building your personal music collection
+      </Text>
 
-      <TouchableOpacity style={styles.addButton} onPress={onAddSong}>
-        <Ionicons name="add" size={20} color="#000000" />
-        <Text style={styles.addButtonText}>Add your first song</Text>
+      <TouchableOpacity style={[styles.addButtonLong]} onPress={onAddSong} activeOpacity={0.8}>
+        <LinearGradient
+          colors={ADD_BUTTON_GRADIENTS[activeTheme]}
+          start={{ x: 0, y: 0.15 }}
+          end={{ x: 1, y: 0.85 }}
+          style={[styles.addButtonLong, ThemeButtonStyles.addButtonLong]}
+        >
+          <Ionicons name="add" size={22} color="#fffafa" style={{ marginRight: 4 }} />
+          <Text style={styles.addButtonText}>Add your first song</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
     </View>
@@ -39,36 +56,34 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
   },
-  title: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
+  h2Title: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: 'rgb(255, 255, 255)',
   },
   subtitle: {
-    color: 'rgba(255,255,255,0.45)',
     fontSize: 13,
     textAlign: 'center',
     lineHeight: 18,
+    color: 'rgb(255, 255, 255)',
   },
-  addButton: {
+  addButtonLong: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingVertical: 12,
+    paddingVertical: 12,  
     paddingHorizontal: 20,
     marginTop: 8,
+    gap: 10,
   },
   addButtonText: {
-    color: '#000000',
+    color: '#f9f2f2',
     fontSize: 14,
     fontWeight: '700',
   },

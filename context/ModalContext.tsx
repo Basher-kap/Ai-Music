@@ -1,0 +1,953 @@
+// context/ModalContext.tsx
+import { useTheme, ThemeKey } from './ThemeContext';
+import { ViewStyle, TextStyle } from 'react-native';
+
+interface ThemeModalStyle {
+  modal: ViewStyle;
+  modalTitle: TextStyle;
+  label: TextStyle;
+  input: TextStyle;
+  themeChip: ViewStyle;
+  themeChipSelected: ViewStyle;
+  themeChipText: TextStyle;
+  themeChipTextSelected: TextStyle;
+  cancelButton: ViewStyle;
+  cancelText: TextStyle;
+  saveButton: ViewStyle;
+  saveText: TextStyle;
+  uploadButton: ViewStyle;   
+  deleteButton: ViewStyle;  
+  deleteText: TextStyle;
+}
+
+const themeModalStyles: Record<ThemeKey, ThemeModalStyle> = {
+nostalgia: {
+    modal: {
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 20,
+      borderBottomRightRadius: 4,
+      borderBottomLeftRadius: 20,
+      borderWidth: 1.5,
+      borderColor: '#8ee8b4',                // Matching your add button border color
+      borderLeftWidth: 4,
+      borderLeftColor: '#3a7a52',            // Accent deep green
+      backgroundColor: '#f2fcf6',            // Crisp, lighter mint background
+      shadowColor: 'rgba(126, 200, 160, 0.6)', // Matching your add button glow shadow
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 20,
+      shadowOpacity: 1,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#3a7a52',                      // Deep forest green
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(58, 122, 82, 0.75)',       // Accessible label tint
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: '#ffffff',            // Clean white surface
+      borderWidth: 1,
+      borderColor: '#5ab07a',
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#3a7a52',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: 'rgba(90, 176, 122, 0.3)',
+      backgroundColor: 'rgba(90, 176, 122, 0.08)',
+    },
+    themeChipSelected: {
+      backgroundColor: '#5ab07a',            // Brighter green accent for selected items
+      borderColor: '#5ab07a',
+    },
+    themeChipText: {
+      color: 'rgba(58, 122, 82, 0.8)',
+      fontSize: 12,
+      fontWeight: '400',                     // Flat weight to avoid item expansion layout shifts
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',                      // High-contrast clean text
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: 'rgba(90, 176, 122, 0.5)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: '#3a7a52',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 10,
+      backgroundColor: '#3a7a52',            // Strong primary color for core actions
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: '#ffffff',
+      borderWidth: 1.2,
+      borderColor: '#5ab07a',
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#dc2626',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#dc2626',
+      fontSize: 14,
+    },
+  },
+
+  refreshing: {
+    modal: {
+      borderRadius: 24,
+      borderWidth: 1.5,
+      borderColor: '#a0f0f5',                // Soft sea foam reflection line
+      borderRightWidth: 4,
+      borderRightColor: '#00bfff',           // Deep radiant sky blue accent bar
+      backgroundColor: '#f0faff',            // Crisp, bright ambient sky wash
+      shadowColor: '#00d2ff',                // Ethereal shallow water glow
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 20,
+      shadowOpacity: 0.6,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#005b82',                      // Deep sea navy for excellent readability
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(0, 91, 130, 0.7)',        // High-contrast clean ocean label
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: '#ffffff',            // Pure white input floor for clean layout brightness
+      borderWidth: 1,
+      borderColor: '#7cdcf5',
+      borderRadius: 99,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      color: '#005b82',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: 'rgba(0, 191, 255, 0.25)',
+      backgroundColor: 'rgba(0, 191, 255, 0.06)', // Delicate air blue tint
+    },
+    themeChipSelected: {
+      backgroundColor: '#00bfff',            // Vivid clear sky fill
+      borderColor: '#00bfff',
+    },
+    themeChipText: {
+      color: '#007ca8',
+      fontSize: 12,
+      fontWeight: '400',                     // Keeping structure flat to anchor text dimensions
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',                      // High contrast punchy text surface
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: 'rgba(0, 191, 255, 0.4)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: '#007ca8',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 99,
+      backgroundColor: '#00bfff',            // Radiant primary ocean action trigger
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: '#ffffff',
+      borderWidth: 1,
+      borderColor: '#7cdcf5',
+      borderRadius: 99,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: '#ef4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ef4444',
+      fontSize: 14,
+    },
+  },
+  love: {
+    modal: {
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      borderBottomRightRadius: 20,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1.5,
+      borderColor: '#ffccd5',                // Extremely soft, delicate pink outline
+      borderBottomWidth: 4,
+      borderBottomColor: '#ff8fab',           // Sweet, soft rose accent bar
+      backgroundColor: '#fff5f7',            // Soft cream-pink ambient wash
+      shadowColor: '#ffb3c1',                // Gentle, romantic pink glow
+      shadowOffset: { width: 4, height: 4 },
+      shadowRadius: 0,
+      shadowOpacity: 0.6,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#c9184a',                      // Deep berry-rose for crisp, beautiful legibility
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(201, 24, 74, 0.7)',        // Clear, legible pastel-rose label
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: '#ffffff',            // Pure white input floor for clean layout brightness
+      borderWidth: 1.5,
+      borderColor: '#ffb3c1',
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#c9184a',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 143, 171, 0.3)',
+      backgroundColor: 'rgba(255, 143, 171, 0.08)', // Faint blush tint
+    },
+    themeChipSelected: {
+      backgroundColor: '#ff8fab',            // Soft, cheerful cotton candy pink highlight
+      borderColor: '#ff8fab',
+    },
+    themeChipText: {
+      color: '#ff4d6d',
+      fontSize: 12,
+      fontWeight: '400',                     // Kept flat to prevent layout shifts on toggle
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',                      // High contrast punchy text surface
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 143, 171, 0.5)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: '#ff4d6d',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      backgroundColor: '#ff8fab',            // Warm, soft rose core action trigger
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: '#ffffff',
+      borderWidth: 1,
+      borderColor: '#ffb3c1',
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1,
+      borderColor: '#ef4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ef4444',
+      fontSize: 14,
+    },
+  },
+  cheerful: {
+    modal: {
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: '#ffe066',                // Bright sunbeam outline
+      borderBottomWidth: 4,
+      borderBottomColor: '#f5a623',          // Warm solar flare accent bar
+      backgroundColor: '#fffdf0',            // Luminous warm daylight background
+      shadowColor: '#f5a623',                // Radiant golden glow
+      shadowOffset: { width: 4, height: 4 },
+      shadowRadius: 0,
+      shadowOpacity: 0.5,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#b26a00',                      // High-contrast deep sun-amber for clear readability
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(178, 106, 0, 0.75)',       // Sharp, clean sunny label
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: '#ffffff',            // Crisp white input surface for peak brightness
+      borderWidth: 1.5,
+      borderColor: '#ffd000',
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#b26a00',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 208, 0, 0.3)',
+      backgroundColor: 'rgba(255, 208, 0, 0.08)', // Soft yellow sun-wash tint
+    },
+    themeChipSelected: {
+      backgroundColor: '#ffd000',            // Full midday sun highlight
+      borderColor: '#ffd000',
+    },
+    themeChipText: {
+      color: '#d48800',
+      fontSize: 12,
+      fontWeight: '400',                     // Flat weight to lock down layout dimensions
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',                      // High-contrast clean white surface text
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 10,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 208, 0, 0.5)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: '#d48800',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 10,
+      backgroundColor: '#f5a623',            // Striking, energetic warm gold trigger
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: '#ffffff',
+      borderWidth: 1.5,
+      borderColor: '#ffd000',
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#ef4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ef4444',
+      fontSize: 14,
+    },
+  },
+
+  emo: {
+    modal: {
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: '#101428',
+      borderLeftWidth: 5,
+      borderLeftColor: '#4895ef',
+      backgroundColor: 'rgba(3, 4, 14, 0.98)',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 12,
+      shadowOpacity: 0.8,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#e8ecff',
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(120, 149, 220, 0.6)',
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: 'rgba(72, 149, 239, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(72, 149, 239, 0.25)',
+      borderRadius: 4,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#e8ecff',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: 'rgba(72, 149, 239, 0.25)',
+      backgroundColor: 'rgba(72, 149, 239, 0.07)',
+    },
+    themeChipSelected: {
+      backgroundColor: '#4895ef',
+      borderColor: '#4895ef',
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+    themeChipText: {
+      color: 'rgba(120, 149, 220, 0.8)',
+      fontSize: 12,
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',
+      fontWeight: '600',
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: 'rgba(72, 149, 239, 0.25)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: 'rgba(120, 149, 220, 0.7)',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 4,
+      backgroundColor: '#4895ef',
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: 'rgba(72, 149, 239, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(72, 149, 239, 0.25)',
+      borderRadius: 4,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: '#ff4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ff4444',
+      fontSize: 14,
+    },
+  },
+
+  aspire: {
+    modal: {
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 20,
+      borderWidth: 1,
+      borderColor: 'rgba(150, 80, 255, 0.45)',
+      backgroundColor: 'rgba(8, 2, 22, 0.98)',
+      shadowColor: '#7b2ff7',
+      shadowOffset: { width: 0, height: -4 },
+      shadowRadius: 18,
+      shadowOpacity: 0.6,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#ead6ff',
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(180, 130, 255, 0.6)',
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: 'rgba(150, 80, 255, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(150, 80, 255, 0.3)',
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 14,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#ead6ff',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderTopLeftRadius: 12,
+      borderTopRightRadius: 3,
+      borderBottomLeftRadius: 3,
+      borderBottomRightRadius: 12,
+      borderWidth: 1,
+      borderColor: 'rgba(150, 80, 255, 0.3)',
+      backgroundColor: 'rgba(150, 80, 255, 0.07)',
+    },
+    themeChipSelected: {
+      backgroundColor: '#7b2ff7',
+      borderColor: '#7b2ff7',
+      borderWidth: 1,
+      borderTopLeftRadius: 12,
+      borderTopRightRadius: 3,
+      borderBottomLeftRadius: 3,
+      borderBottomRightRadius: 12,
+    },
+    themeChipText: {
+      color: 'rgba(180, 130, 255, 0.8)',
+      fontSize: 12,
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',
+      fontWeight: '600',
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: 'rgba(150, 80, 255, 0.35)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: 'rgba(180, 130, 255, 0.7)',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 14,
+      backgroundColor: '#7b2ff7',
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: 'rgba(150, 80, 255, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(150, 80, 255, 0.3)',
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 14,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: '#ff4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ff4444',
+      fontSize: 14,
+    },
+  },
+
+  determination: {
+    modal: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 22,
+      borderBottomRightRadius: 22,
+      borderWidth: 1,
+      borderTopWidth: 3,
+      borderTopColor: '#ff5500',
+      borderColor: 'rgba(58, 13, 0, 0.8)',
+      backgroundColor: 'rgba(10, 3, 0, 0.98)',
+      shadowColor: '#ff4500',
+      shadowOffset: { width: 0, height: 6 },
+      shadowRadius: 20,
+      shadowOpacity: 0.45,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#ffe3cc',
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(255, 140, 80, 0.65)',
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: 'rgba(255, 107, 53, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(255, 107, 53, 0.3)',
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#ffe3cc',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 107, 53, 0.3)',
+      backgroundColor: 'rgba(255, 107, 53, 0.07)',
+    },
+    themeChipSelected: {
+      backgroundColor: '#ff5500',
+      borderColor: '#ff5500',
+      borderWidth: 1,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+    },
+    themeChipText: {
+      color: 'rgba(255, 140, 80, 0.8)',
+      fontSize: 12,
+    },
+    themeChipTextSelected: {
+      color: '#000000',
+      fontWeight: '600',
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 107, 53, 0.35)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: 'rgba(255, 140, 80, 0.7)',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      backgroundColor: '#ff5500',
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#000000',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: 'rgba(255, 107, 53, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(255, 107, 53, 0.3)',
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: '#ff4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ff4444',
+      fontSize: 14,
+    },
+  },
+
+  wrath: {
+    modal: {
+      borderRadius: 1,
+      borderWidth: 1,
+      borderLeftWidth: 6,
+      borderColor: 'rgba(43, 0, 0, 0.7)',
+      borderLeftColor: '#660708',
+      backgroundColor: 'rgba(8, 0, 0, 0.98)',
+      shadowColor: '#ba181b',
+      shadowOffset: { width: -5, height: 5 },
+      shadowRadius: 14,
+      shadowOpacity: 0.85,
+      elevation: 8,
+    },
+    modalTitle: {
+      color: '#ffcccc',
+      fontSize: 16,
+      fontWeight: '700',
+      marginBottom: 14,
+      textAlign: 'center',
+    },
+    label: {
+      color: 'rgba(200, 80, 80, 0.65)',
+      fontSize: 11,
+      marginBottom: 4,
+      marginTop: 8,
+    },
+    input: {
+      backgroundColor: 'rgba(186, 24, 27, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(100, 0, 0, 0.5)',
+      borderRadius: 1,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      color: '#ffcccc',
+      fontSize: 13,
+    },
+    themeChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 1,
+      borderWidth: 1,
+      borderColor: 'rgba(100, 0, 0, 0.5)',
+      backgroundColor: 'rgba(186, 24, 27, 0.07)',
+    },
+    themeChipSelected: {
+      backgroundColor: '#8b0000',
+      borderColor: '#8b0000',
+      borderWidth: 1,
+      borderRadius: 1,
+    },
+    themeChipText: {
+      color: 'rgba(200, 80, 80, 0.8)',
+      fontSize: 12,
+    },
+    themeChipTextSelected: {
+      color: '#ffffff',
+      fontWeight: '600',
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 1,
+      borderWidth: 1,
+      borderColor: 'rgba(100, 0, 0, 0.5)',
+      alignItems: 'center',
+    },
+    cancelText: {
+      color: 'rgba(200, 80, 80, 0.7)',
+      fontSize: 14,
+    },
+    saveButton: {
+      flex: 1,
+      paddingVertical: 10,
+      borderRadius: 1,
+      backgroundColor: '#8b0000',
+      alignItems: 'center',
+    },
+    saveText: {
+      color: '#ffffff',
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: 'rgba(186, 24, 27, 0.07)',
+      borderWidth: 1,
+      borderColor: 'rgba(100, 0, 0, 0.5)',
+      borderRadius: 1,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    deleteButton: {
+      marginTop: 10,
+      paddingVertical: 10,
+      borderRadius: 1,
+      borderWidth: 1,
+      borderColor: '#ff4444',
+      alignItems: 'center',
+    },
+    deleteText: {
+      color: '#ff4444',
+      fontSize: 14,
+    },
+  },
+};
+
+export function useModalTheme() {
+  const { activeTheme } = useTheme();
+  const ThemeModalStyles = themeModalStyles[activeTheme] ?? themeModalStyles.aspire;
+  return { ThemeModalStyles };
+}

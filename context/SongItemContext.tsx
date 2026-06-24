@@ -1,9 +1,518 @@
 // context/SongItemContext.tsx
-
 import { useTheme, ThemeKey } from './ThemeContext';
+import { ViewStyle, TextStyle } from 'react-native';
+
+interface ThemeSongItemStyle {
+  card: ViewStyle;              // border, shadow, shape — no backgroundColor
+  gradientColors: [string, string, ...string[]];
+  gradientStart: { x: number; y: number };
+  gradientEnd: { x: number; y: number };
+  title: TextStyle;
+  artist: TextStyle;
+  chip: ViewStyle;              // shape only — bg comes from THEME_ACCENTS
+  chipText: TextStyle;
+  skeletonCard: ViewStyle;      // ← ghost of the real card
+  skeletonTitleBar: ViewStyle;  // ← title placeholder
+  skeletonArtistBar: ViewStyle; // ← artist placeholder
+}
+
+const themeSongItemStyles: Record<ThemeKey, ThemeSongItemStyle> = {
+nostalgia: {
+    card: {
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 18,
+      borderBottomRightRadius: 4,
+      borderBottomLeftRadius: 18,
+      borderWidth: 1.5,
+      borderColor: '#8ee8b4',
+      borderLeftWidth: 4,
+      borderLeftColor: '#3a7a52',
+      shadowColor: 'rgba(126, 200, 160, 0.6)',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 20,
+      shadowOpacity: 1,
+      elevation: 4,
+    },
+    // Translucent soft green linear gradient to match the player background profile
+    gradientColors: [
+      'rgba(222, 244, 231, 0.85)', 
+      'rgba(232, 248, 238, 0.75)', 
+      'rgba(242, 252, 246, 0.65)'
+    ],
+    gradientStart: { x: 0, y: 0 },
+    gradientEnd: { x: 1, y: 1 },
+    title: {
+      color: '#28573a', // Deep forest tone for robust readability on light glass
+      fontSize: 15,
+      fontWeight: '600',
+    },
+    artist: {
+      color: 'rgba(58, 122, 82, 0.75)', // Muted version of the primary green
+      fontSize: 10,
+    },
+    chip: {
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: 'rgba(90, 176, 122, 0.4)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#3a7a52',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 18,
+      borderBottomRightRadius: 4,
+      borderBottomLeftRadius: 18,
+      borderWidth: 1.5,
+      borderColor: 'rgba(142, 232, 180, 0.3)',
+      borderLeftWidth: 4,
+      borderLeftColor: 'rgba(58, 122, 82, 0.4)',
+      backgroundColor: 'rgba(222, 244, 231, 0.45)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(90, 176, 122, 0.25)',
+      borderRadius: 6,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(90, 176, 122, 0.12)',
+      borderRadius: 6,
+    },
+  },
+
+  refreshing: {
+    card: {
+      borderRadius: 12,
+      borderWidth: 1.5,
+      borderColor: 'rgba(92, 225, 230, 0.5)',
+      borderRightWidth: 4,
+      borderRightColor: '#00f5ff',
+      shadowColor: '#00e5ff',
+      shadowOffset: { width: 0, height: 0 },
+      shadowRadius: 14,
+      shadowOpacity: 0.35,
+      elevation: 4,
+    },
+    gradientColors: ['rgba(8, 45, 55, 0.92)', 'rgba(15, 90, 110, 0.82)', 'rgba(30, 140, 160, 0.72)'],
+    gradientStart: { x: 0, y: 0.5 },
+    gradientEnd: { x: 1, y: 0.5 },
+    title: {
+      color: '#e8feff',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(92, 225, 230, 0.65)',
+      fontSize: 10,
+    },
+    chip: {
+      borderRadius: 99,
+      borderWidth: 1,
+      borderColor: 'rgba(92, 225, 230, 0.4)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#003d40',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderRadius: 99,
+      borderWidth: 1.5,
+      borderColor: 'rgba(92, 225, 230, 0.25)',
+      borderRightWidth: 4,
+      borderRightColor: 'rgba(0, 245, 255, 0.3)',
+      backgroundColor: 'rgba(8, 45, 55, 0.55)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(92, 225, 230, 0.22)',
+      borderRadius: 99,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(92, 225, 230, 0.10)',
+      borderRadius: 99,
+    },
+  },
+
+  love: {
+    card: {
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 18,
+      borderBottomRightRadius: 18,
+      borderBottomLeftRadius: 4,
+      shadowColor: '#ff007f',
+      shadowOffset: { width: 4, height: 4 },
+      shadowRadius: 0,
+      shadowOpacity: 0.9,
+      elevation: 6,
+    },
+    gradientColors: ['rgba(255, 227, 241, 0.85)', 'rgba(255, 179, 217, 0.75)'],
+    gradientStart: { x: 0, y: 0.5 },
+    gradientEnd: { x: 1, y: 0.5 },
+    title: {
+      color: '#6c032d',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(108, 3, 45, 0.7)',
+      fontSize: 10,
+    },
+    chip: {
+      borderTopLeftRadius: 14,
+      borderTopRightRadius: 14,
+      borderBottomRightRadius: 14,
+      borderBottomLeftRadius: 3,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 105, 180, 0.4)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#3d0018',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 18,
+      borderBottomRightRadius: 18,
+      borderBottomLeftRadius: 4,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 105, 180, 0.25)',
+      borderBottomColor: 'rgba(255, 0, 127, 0.35)',
+      backgroundColor: 'rgba(50, 5, 22, 0.55)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(255, 105, 180, 0.22)',
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 8,
+      borderBottomRightRadius: 8,
+      borderBottomLeftRadius: 2,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(255, 105, 180, 0.10)',
+      borderTopLeftRadius: 8,
+      borderTopRightRadius: 8,
+      borderBottomRightRadius: 8,
+      borderBottomLeftRadius: 2,
+    },
+  },
+
+  cheerful: {
+    card: {
+      borderRadius: 10,
+      shadowColor: '#ff4d00',
+      shadowOffset: { width: 6, height: 5 },
+      shadowRadius: 0,
+      shadowOpacity: 1,
+      elevation: 6,
+    },
+    gradientColors: ['#ffee00c8', '#ffbb00c9'],
+    gradientStart: { x: 0, y: 0.5 },
+    gradientEnd: { x: 1, y: 0.5 },
+    title: {
+      color: '#000000',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(0, 0, 0, 0.65)',
+      fontSize: 10,
+    },
+    chip: {
+      borderRadius: 6,
+      borderWidth: 1.5,
+      borderColor: '#000000',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#000000',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderRadius: 10,
+      borderWidth: 1.5,
+      borderColor: 'rgba(255, 210, 0, 0.25)',
+      backgroundColor: 'rgba(60, 28, 0, 0.55)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(255, 210, 0, 0.22)',
+      borderRadius: 6,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(255, 210, 0, 0.10)',
+      borderRadius: 6,
+    },
+  },
+
+  emo: {
+    card: {
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: '#101428',
+      borderLeftWidth: 5,
+      borderLeftColor: '#4895ef',
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 8,
+      shadowOpacity: 0.6,
+      elevation: 5,
+    },
+    gradientColors: ['rgba(3, 4, 14, 0.95)', 'rgba(6, 8, 22, 0.88)', 'rgba(10, 13, 32, 0.80)'],
+    gradientStart: { x: 0, y: 0.5 },
+    gradientEnd: { x: 1, y: 0.5 },
+    title: {
+      color: '#e8ecff',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(120, 149, 220, 0.65)',
+      fontSize: 10,
+    },
+    chip: {
+      borderRadius: 3,
+      borderWidth: 1,
+      borderColor: 'rgba(72, 149, 239, 0.35)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#ffffff',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: 'rgba(72, 149, 239, 0.15)',
+      borderLeftWidth: 5,
+      borderLeftColor: 'rgba(72, 149, 239, 0.35)',
+      backgroundColor: 'rgba(3, 4, 14, 0.75)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(72, 149, 239, 0.18)',
+      borderRadius: 3,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(72, 149, 239, 0.08)',
+      borderRadius: 3,
+    },
+  },
+
+  aspire: {
+    card: {
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 18,
+      shadowOffset: { width: 0, height: -4 },
+      shadowRadius: 16,
+      shadowColor: 'rgba(0, 180, 216, 0.72)',
+      shadowOpacity: 0.7,
+      elevation: 8,
+    },
+    gradientColors: ['rgba(3, 4, 94, 0.92)', 'rgba(0, 118, 182, 0.88)', 'rgba(0, 180, 216, 0.77)', 'rgba(144, 225, 239, 0.85)'],
+    gradientStart: { x: 0, y: 1 },
+    gradientEnd: { x: 1, y: 0 },
+    title: {
+      color: '#ffffff',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(255, 255, 255, 0.7)',
+      fontSize: 10,
+    },
+    chip: {
+      borderRadius: 4,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.4)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#03045e',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderTopLeftRadius: 18,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 18,
+      borderWidth: 1,
+      borderColor: 'rgba(150, 80, 255, 0.25)',
+      backgroundColor: 'rgba(30, 0, 75, 0.55)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(150, 80, 255, 0.22)',
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 2,
+      borderBottomLeftRadius: 2,
+      borderBottomRightRadius: 10,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(150, 80, 255, 0.10)',
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 2,
+      borderBottomLeftRadius: 2,
+      borderBottomRightRadius: 10,
+    },
+  },
+
+  determination: {
+    card: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      borderWidth: 1,
+      borderTopWidth: 3,
+      borderTopColor: '#ff5500',
+      borderColor: 'rgba(58, 13, 0, 0.8)',
+      shadowColor: '#ff4500',
+      shadowOffset: { width: 0, height: 6 },
+      shadowRadius: 18,
+      shadowOpacity: 0.4,
+      elevation: 8,
+    },
+    gradientColors: ['rgba(12, 3, 0, 0.95)', 'rgba(35, 10, 0, 0.85)', 'rgba(65, 22, 0, 0.75)'],
+    gradientStart: { x: 0, y: 1 },
+    gradientEnd: { x: 0, y: 0 },
+    title: {
+      color: '#ffe3cc',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(255, 140, 80, 0.65)',
+      fontSize: 10,
+    },
+    chip: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 14,
+      borderBottomRightRadius: 14,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 85, 0, 0.35)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#000000',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderTopLeftRadius: 6,
+      borderTopRightRadius: 6,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+      borderWidth: 1,
+      borderTopWidth: 3,
+      borderTopColor: 'rgba(255, 85, 0, 0.4)',
+      borderColor: 'rgba(58, 13, 0, 0.5)',
+      backgroundColor: 'rgba(12, 3, 0, 0.65)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(255, 107, 53, 0.22)',
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(255, 107, 53, 0.10)',
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 4,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+    },
+  },
+
+  wrath: {
+    card: {
+      borderRadius: 1,
+      borderWidth: 1,
+      borderLeftWidth: 6,
+      borderColor: 'rgba(43, 0, 0, 0.7)',
+      borderLeftColor: '#660708',
+      shadowColor: '#ba181b',
+      shadowOffset: { width: -5, height: 5 },
+      shadowRadius: 12,
+      shadowOpacity: 0.85,
+      elevation: 9,
+    },
+    gradientColors: ['rgba(28, 0, 5, 0.95)', 'rgba(42, 0, 8, 0.87)', 'rgba(58, 0, 12, 0.78)'],
+    gradientStart: { x: 0, y: 0.5 },
+    gradientEnd: { x: 1, y: 0.5 },
+    title: {
+      color: '#ffcccc',
+      fontSize: 15,
+    },
+    artist: {
+      color: 'rgba(200, 80, 80, 0.65)',
+      fontSize: 10,
+    },
+    chip: {
+      borderRadius: 1,
+      borderWidth: 1,
+      borderColor: 'rgba(100, 0, 0, 0.6)',
+    },
+    chipText: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: '#ffffff',
+      textTransform: 'capitalize',
+    },
+    skeletonCard: {
+      borderRadius: 1,
+      borderWidth: 1,
+      borderLeftWidth: 6,
+      borderColor: 'rgba(43, 0, 0, 0.45)',
+      borderLeftColor: 'rgba(102, 7, 8, 0.6)',
+      backgroundColor: 'rgba(18, 0, 0, 0.65)',
+    },
+    skeletonTitleBar: {
+      height: 16,
+      width: '60%',
+      backgroundColor: 'rgba(186, 24, 27, 0.22)',
+      borderRadius: 1,
+    },
+    skeletonArtistBar: {
+      height: 10,
+      width: '35%',
+      backgroundColor: 'rgba(186, 24, 27, 0.10)',
+      borderRadius: 1,
+    },
+  },
+};
 
 export function useSongItemTheme() {
-    return {
-
-    };
+  const { activeTheme } = useTheme();
+  const ThemeSongItemStyles = themeSongItemStyles[activeTheme] ?? themeSongItemStyles.aspire;
+  return { ThemeSongItemStyles };
 }

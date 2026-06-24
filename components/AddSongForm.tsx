@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { THEME_KEYS } from '@/constant';
+import { useModalTheme } from '@/context';
 
 type Props = {
     visible: boolean;
@@ -13,9 +14,10 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
     const [title, setTitle] = useState('');
     const [artist, setArtist] = useState('');
     const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState<string | null>(null);
+
+    const { ThemeModalStyles } = useModalTheme();
 
     const toggleTheme = (theme: string) => {
         if (selectedThemes.includes(theme)) {
@@ -26,11 +28,10 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
     };
 
     const handleSave = async () => {
-      setSaving(true);
-      setSaveError(null);
+        setSaving(true);
+        setSaveError(null);
         try {
             await onSave({ title, artist, themes: selectedThemes });
-            // Only reset and close if save succeeded
             setTitle('');
             setArtist('');
             setSelectedThemes([]);
@@ -41,6 +42,7 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
             setSaving(false);
         }
     };
+
     return (
         <Modal
             visible={visible}
@@ -48,51 +50,50 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
             animationType="fade"
             onRequestClose={onClose}
         >
-            {/* Overlay */}
-            <TouchableOpacity 
-                style={styles.overlay} 
-                activeOpacity={1} 
+            <TouchableOpacity
+                style={styles.overlay}
+                activeOpacity={1}
                 onPress={onClose}
             />
 
-            {/* Modal Box */}
             <View style={styles.modalContainer}>
-                <View style={styles.modal}>
+                <View style={[styles.modal, ThemeModalStyles.modal]}>
 
-                    <Text style={styles.modalTitle}>Add a Song</Text>
+                    <Text style={[styles.modalTitle, ThemeModalStyles.modalTitle]}>Add a Song</Text>
 
-                    {/* Song Title Input */}
-                    <Text style={styles.label}>Title of a Song</Text>
+                    <Text style={[styles.label, ThemeModalStyles.label]}>Title of a Song</Text>
                     <TextInput
-                        style={styles.input}
-                        placeholderTextColor="rgba(255,255,255,0.4)"
-                        placeholder="Lemon"
-                        value={title} //inputs a value for a data
+                        style={[styles.input, ThemeModalStyles.input]}
+                        placeholderTextColor='rgba(245, 240, 240, 0.54)'
+                        value={title}
                         onChangeText={setTitle}
                     />
 
-                    {/* Artist Input */}
-                    <Text style={styles.label}>Artist of a Song</Text>
+                    <Text style={[styles.label, ThemeModalStyles.label]}>Artist of a Song</Text>
                     <TextInput
-                        style={styles.input}
-                        placeholderTextColor="rgba(255,255,255,0.4)"
-                        placeholder="Kenshi Yonezu"
+                        style={[styles.input, ThemeModalStyles.input]}
+                        placeholderTextColor='rgba(245, 240, 240, 0.54)'
                         value={artist}
                         onChangeText={setArtist}
                     />
 
-                    {/* Theme Input */}
-                    <Text style={styles.label}>Themes</Text>
+                    <Text style={[styles.label, ThemeModalStyles.label]}>Themes</Text>
                     <View style={styles.themeRow}>
                         {THEME_KEYS.map(theme => {
                             const isSelected = selectedThemes.includes(theme);
                             return (
-                                <TouchableOpacity 
-                                    key={theme} 
-                                    style={[styles.themeChip, isSelected && styles.themeChipSelected]}
+                                <TouchableOpacity
+                                    key={theme}
+                                    style={[
+                                        ThemeModalStyles.themeChip,
+                                        isSelected && ThemeModalStyles.themeChipSelected,
+                                    ]}
                                     onPress={() => toggleTheme(theme)}
                                 >
-                                    <Text style={[styles.themeChipText, isSelected && styles.themeChipTextSelected ]}>
+                                    <Text style={[
+                                        ThemeModalStyles.themeChipText,
+                                        isSelected && ThemeModalStyles.themeChipTextSelected,
+                                    ]}>
                                         {theme}
                                     </Text>
                                 </TouchableOpacity>
@@ -100,25 +101,26 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
                         })}
                     </View>
 
-                    {/* Action Buttons */}
+                    {saveError && (
+                        <Text style={styles.errorText}>{saveError}</Text>
+                    )}
+
                     <View style={styles.buttonRow}>
-                        {/* Cancel */}
-                        <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                            <Text style={styles.cancelText}>Cancel</Text>
+                        <TouchableOpacity
+                            style={[styles.actionButton, ThemeModalStyles.cancelButton]}
+                            onPress={onClose}
+                        >
+                            <Text style={ThemeModalStyles.cancelText}>Cancel</Text>
                         </TouchableOpacity>
 
-                        {saveError && (
-                        <Text style={{ color: '#ff6b6b', marginBottom: 8, fontSize: 13 }}>
-                            {saveError}
-                        </Text>
-                        )}
-
                         <TouchableOpacity
-                            style={[styles.saveButton, (!title || saving) && { opacity: 0.5 }]}
+                            style={[styles.actionButton, ThemeModalStyles.saveButton, (!title || saving) && styles.disabled]}
                             onPress={handleSave}
                             disabled={!title || saving}
                         >
-                        <Text style={styles.saveText}>{saving ? 'Saving...' : 'Save'}</Text>
+                            <Text style={ThemeModalStyles.saveText}>
+                                {saving ? 'Saving...' : 'Save'}
+                            </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -131,10 +133,7 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
 const styles = StyleSheet.create({
     overlay: {
         position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        top: 0, left: 0, right: 0, bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
     },
     modalContainer: {
@@ -145,33 +144,19 @@ const styles = StyleSheet.create({
     },
     modal: {
         width: '100%',
-        backgroundColor: 'rgba(20, 20, 20, 0.97)',
-        borderRadius: 16,
         padding: 18,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.15)',
     },
     modalTitle: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: '700',
         marginBottom: 14,
         textAlign: 'center',
     },
     label: {
-        color: 'rgba(255,255,255,0.6)',
-        fontSize: 11,
         marginBottom: 4,
         marginTop: 8,
     },
     input: {
-        backgroundColor: 'rgba(255,255,255,0.08)',
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.15)',
-        borderRadius: 10,
         paddingHorizontal: 12,
         paddingVertical: 8,
-        color: '#FFFFFF',
         fontSize: 13,
     },
     themeRow: {
@@ -180,53 +165,22 @@ const styles = StyleSheet.create({
         gap: 8,
         marginTop: 4,
     },
-    themeChip: {
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
-        backgroundColor: 'rgba(255,255,255,0.08)',
-    },
-    themeChipSelected: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#FFFFFF',
-    },
-    themeChipText: {
-        color: '#FFFFFF',
-        fontSize: 12,
-    },
-    themeChipTextSelected: {
-        color: '#000000',
-        fontWeight: '600',
-    },
     buttonRow: {
         flexDirection: 'row',
         gap: 8,
         marginTop: 18,
     },
-    cancelButton: {
+    actionButton: {
         flex: 1,
         paddingVertical: 10,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: 'rgba(255,255,255,0.2)',
         alignItems: 'center',
     },
-    cancelText: {
-        color: 'rgba(255,255,255,0.7)',
-        fontSize: 14,
+    errorText: {
+        color: '#ff6b6b',
+        fontSize: 13,
+        marginTop: 8,
     },
-    saveButton: {
-        flex: 1,
-        paddingVertical: 10,
-        borderRadius: 10,
-        backgroundColor: '#FFFFFF',
-        alignItems: 'center',
-    },
-    saveText: {
-        color: '#000000',
-        fontSize: 14,
-        fontWeight: '700',
+    disabled: {
+        opacity: 0.5,
     },
 });

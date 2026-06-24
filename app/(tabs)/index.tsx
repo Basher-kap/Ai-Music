@@ -1,7 +1,8 @@
 // app/(tabs)/index.tsx
 import { HEADER_HEIGHT, HEADER_PADDING_TOP, ThemeKey } from '@/constant';
-import { useTextTheme, useTheme } from '@/context';
+import { useButtonTheme, useFeatureCardTheme, useTextTheme, useTheme } from '@/context';
 import { useAuth } from '@/store';
+import { useAudioCoordinator } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -14,10 +15,15 @@ import type { DailySong } from '@/types/settings';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
+  const { ThemeButtonStyles } = useButtonTheme();
+  const { ThemeFeatureCardStyles } = useFeatureCardTheme();
+
   const { signOut, user, session } = useAuth();
 
   const [dailySong, setDailySong] = useState<DailySong | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { registerStopDailySong } = useAudioCoordinator();
+
   const soundRef = useRef<Audio.Sound | null>(null);
 
   const rotation = useRef(new Animated.Value(0)).current;
@@ -97,6 +103,15 @@ export default function Index() {
           );
           soundRef.current = sound;
           setIsPlaying(true);
+
+          registerStopDailySong(async () => {
+            if (soundRef.current) {
+              await soundRef.current.stopAsync();
+              await soundRef.current.unloadAsync();
+              soundRef.current = null;
+              setIsPlaying(false);
+            }
+          });
           console.log('[Home] Playing:', dailySong.daily_song_title);
 
           sound.setOnPlaybackStatusUpdate((status) => {
@@ -227,23 +242,23 @@ export default function Index() {
       {/* Features */}
       <View style={styles.featuresSection}>
 
-        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => router.push('/generate-lyrics-format')}>
-          <View style={styles.iconContainer}>
+        <TouchableOpacity style={[styles.featureCard, ThemeFeatureCardStyles.card]} activeOpacity={0.75} onPress={() => router.push('/generate-lyrics-format')}>
+          <View style={[styles.iconContainer, ThemeFeatureCardStyles.iconContainer]}>
             <Ionicons name="sparkles" size={20} color="#E8D5FF" />
           </View>
           <View style={styles.featureText}>
-            <Text style={styles.featureTitle}>Generate Lyrics</Text>
-            <Text style={styles.featureSubtitle}>Automates lyrics format (Kanji, Romaji, English)</Text>
+            <Text style={[styles.featureTitle, ThemeTextStyles.h3]}>Generate Lyrics</Text>
+            <Text style={[styles.description, ThemeTextStyles.description]}>Automates lyrics format (Kanji, Romaji, English)</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.featureCard} activeOpacity={0.75} onPress={() => router.push('/news-feed')}>
-          <View style={[styles.iconContainer, styles.iconContainer]}>
+        <TouchableOpacity style={[styles.featureCard, ThemeFeatureCardStyles.card]} activeOpacity={0.75} onPress={() => router.push('/news-feed')}>
+          <View style={[styles.iconContainer, ThemeFeatureCardStyles.iconContainer]}>
             <Ionicons name="newspaper" size={20} color="#A8F0D8" />
           </View>
           <View style={styles.featureText}>
-            <Text style={styles.featureTitle}>News Feed</Text>
-            <Text style={styles.featureSubtitle}>Check latest updates in J-music industry</Text>
+            <Text style={[styles.featureTitle, ThemeTextStyles.h3]}>News Feed</Text>
+            <Text style={[styles.description, ThemeTextStyles.description]}>Check latest updates in J-music industry</Text>
           </View>
         </TouchableOpacity>
 
@@ -252,8 +267,7 @@ export default function Index() {
       {/* Profile + Logout */}
       <View style={styles.profileSection}>
         {/* Logout button */}
-          <TouchableOpacity style={styles.logoutBtn} onPress={signOut}>
-            {/* Avatar */}
+          <TouchableOpacity style={[styles.logoutBtn, ThemeButtonStyles.signOutBtn]}>
           {user?.user_metadata?.avatar_url ? (
             <Image
               source={{ uri: user.user_metadata.avatar_url }}
@@ -356,12 +370,12 @@ const styles = StyleSheet.create({
   },
   dailySongTitle: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 17,
     fontWeight: '600',
   },
   dailySongArtist: {
-    color: 'rgba(255,255,255,0.5)',
-    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.65)',
+    fontSize: 13,
   },
   featuresSection: {
     paddingHorizontal: 20,
@@ -370,9 +384,6 @@ const styles = StyleSheet.create({
   featureCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(20, 20, 20, 0.66)',
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     gap: 14,
@@ -381,9 +392,6 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -392,12 +400,9 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   featureTitle: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '700',
     letterSpacing: -0.2,
   },
-  featureSubtitle: {
+  description: {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 12,
     lineHeight: 16,
@@ -415,10 +420,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     padding: 6,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
   },
   avatar: {
     width: 28,

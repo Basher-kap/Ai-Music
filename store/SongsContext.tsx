@@ -207,9 +207,18 @@ export function SongsProvider({ children }: { children: ReactNode }) {
         } else if (op.type === 'DELETE') {
           const song = current.find(s => s.id === op.id);
           if (song?.pending) { current = current.filter(s => s.id !== op.id); continue; }
+          
           const { error } = await supabase.from('songs').delete().eq('id', op.id);
           if (error) throw error;
           log(`Sync: DELETE done ${op.id}`);
+
+            // Because queued deletions also need their storage file cleaned up
+            const filePath = `${user.id}/${op.id}.mp3`;
+            const { error: storageErr } = await supabase.storage
+              .from('songs-audio')
+              .remove([filePath]);
+            if (storageErr) log(`Sync: storage cleanup skipped ${op.id} — ${storageErr.message}`);
+            else log(`Sync: storage file removed ${op.id}`);
 
         } else if (op.type === 'AUDIO') {
           const song = current.find(s => s.id === op.id);
@@ -460,6 +469,17 @@ export function SongsProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.from('songs').delete().eq('id', id);
       if (error) throw error;
       log(`deleteSong: synced ${id}`);
+
+      const session = await getLocalSession();
+      const user = session?.user ?? null;
+      if (user) {
+        const filePath = `${user.id}/${id}.mp3`;
+        const { error: storageErr } = await supabase.storage
+          .from('songs-audio').remove([filePath]);
+
+          if (storageErr) log(`deleteSong: storage cleanup skipped — ${storageErr.message}`);
+          else log(`deleteSong: storage file removed ${id}`);
+      }
     } catch (err: any) {
       if (isNetworkError(err)) await enqueue({ type: 'DELETE', id });
       else throw err;

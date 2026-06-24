@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@expo-google-fonts/almendra-display": "^0.4.1",
+    "@expo-google-fonts/cinzel": "^0.4.2",
     "@expo-google-fonts/dancing-script": "^0.4.2",
     "@expo-google-fonts/fredoka": "^0.4.1",
+    "@expo-google-fonts/libre-baskerville": "^0.4.3",
     "@expo-google-fonts/marcellus": "^0.4.1",
     "@expo-google-fonts/medievalsharp": "^0.4.1",
     "@expo-google-fonts/metal-mania": "^0.4.1",

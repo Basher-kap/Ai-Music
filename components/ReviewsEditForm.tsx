@@ -1,20 +1,22 @@
-// components/ReviewEditForm.tsx
+// components/ReviewsEditForm.tsx
 import { THEME_KEYS } from "@/constant";
 import { Song } from "@/types/songs";
 import { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
+import { useModalTheme } from '@/context';
 
 type Props = {
   visible: boolean;
   song: Song | undefined;
   onClose: () => void;
-  onSave: (data: {song_theme: string[], review: string}) => void;
+  onSave: (data: { song_theme: string[], review: string }) => void;
 };
 
-export default function ReviewsEditForm({ visible, song, onClose, onSave} : Props) {
+export default function ReviewsEditForm({ visible, song, onClose, onSave }: Props) {
   const [selectedThemes, setSelectedThemes] = useState<string[]>(song?.song_theme ?? []);
   const [review, setReview] = useState(song?.review || '');
+
+  const { ThemeModalStyles } = useModalTheme();
 
   const toggleTheme = (theme: string) => {
     if (selectedThemes.includes(theme)) {
@@ -22,101 +24,95 @@ export default function ReviewsEditForm({ visible, song, onClose, onSave} : Prop
     } else {
       setSelectedThemes([...selectedThemes, theme]);
     }
-  }; 
+  };
 
   useEffect(() => {
     if (visible && song) {
       setSelectedThemes(song.song_theme ?? []);
-      setReview(song.review || ''); 
+      setReview(song.review || '');
     }
   }, [visible, song]);
-  
-  return (
-       <Modal
-             visible={visible}
-             transparent
-             animationType="fade"
-             onRequestClose={onClose}
-           >
-             {/* Overlay */}
-             <TouchableOpacity 
-               style={styles.overlay} 
-               activeOpacity={1} 
-               onPress={onClose}
-             />
-       
-             {/* Modal Box */}
-             <View style={styles.modalContainer}>
-               <View style={styles.modal}>
-       
-                 <Text style={styles.modalTitle}>Edit Review Song</Text>
-       
-                 {/* Song Title, not inputtable anymore */}
-                 <Text style={styles.songModalTitle}> {song?.title} </Text>
-       
-                 {/* Artist Input, not inputtable */}
-                 <Text style={styles.artistModalTitle}> {song?.artist} </Text>
-       
-                {/* Theme */}
-                <Text style={styles.label}>Themes</Text>
-                <View style={styles.themeRow}>
-                  {THEME_KEYS.map(theme => {
-                    const isSelected = selectedThemes.includes(theme);
-                    return (
-                      <TouchableOpacity
-                        key={theme}
-                        style={[styles.themeChip, isSelected && styles.themeChipSelected]}
-                        onPress={() => toggleTheme(theme)}
-                      >
-                        <Text style={[styles.themeChipText, isSelected && styles.themeChipTextSelected]}>
-                          {theme}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
 
-                 {/* Review Input */}
-                 <Text style={styles.label}>Review</Text>
-                 <TextInput
-                   style={[styles.input, styles.reviewsInput]}
-                   placeholderTextColor="rgba(255,255,255,0.4)"
-                   placeholder="Enter your review..."
-                   value={review}
-                   onChangeText={setReview}
-                   multiline
-                   textAlignVertical="top"
-                 />
-       
-                 {/* Action Buttons */}
-                 <View style={styles.buttonRow}>
-       
-                   {/* Cancel */}
-                   <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                     <Text style={styles.cancelText}>Cancel</Text>
-                   </TouchableOpacity>
-       
-                   {/* Save */}
-                   <TouchableOpacity style={styles.saveButton} onPress= {() => onSave({ song_theme: selectedThemes, review })}>
-                     <Text style={styles.saveText}>Save</Text>
-                   </TouchableOpacity>
-       
-                 </View>
-       
-               </View>
-             </View>
-       
-           </Modal>
-    );
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity
+        style={styles.overlay}
+        activeOpacity={1}
+        onPress={onClose}
+      />
+
+      <View style={styles.modalContainer}>
+        <View style={[styles.modal, ThemeModalStyles.modal]}>
+
+          <Text style={[styles.modalTitle, ThemeModalStyles.modalTitle]}>Edit Review Song</Text>
+
+          {/* Song title and artist — read only */}
+          <Text style={[styles.songTitle, ThemeModalStyles.modalTitle]}>{song?.title}</Text>
+          <Text style={[styles.songArtist]}>{song?.artist}</Text>
+
+          <Text style={[styles.label, ThemeModalStyles.label]}>Themes</Text>
+          <View style={styles.themeRow}>
+            {THEME_KEYS.map(theme => {
+              const isSelected = selectedThemes.includes(theme);
+              return (
+                  <TouchableOpacity
+                      key={theme}
+                      style={[
+                          ThemeModalStyles.themeChip,
+                          isSelected && ThemeModalStyles.themeChipSelected,
+                      ]}
+                      onPress={() => toggleTheme(theme)}
+                  >
+                      <Text style={[
+                          ThemeModalStyles.themeChipText,
+                          isSelected && ThemeModalStyles.themeChipTextSelected,
+                      ]}>
+                          {theme}
+                      </Text>
+                  </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          <Text style={[styles.label, ThemeModalStyles.label]}>Review</Text>
+          <TextInput
+            style={[styles.input, styles.reviewInput, ThemeModalStyles.input]}
+            placeholderTextColor='rgba(245, 240, 240, 0.54)'
+            placeholder="Enter your review..."
+            value={review}
+            onChangeText={setReview}
+            multiline
+            textAlignVertical="top"
+          />
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={[styles.actionButton, ThemeModalStyles.cancelButton]} onPress={onClose}>
+              <Text style={ThemeModalStyles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, ThemeModalStyles.saveButton]}
+              onPress={() => onSave({ song_theme: selectedThemes, review })}
+            >
+              <Text style={ThemeModalStyles.saveText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </View>
+    </Modal>
+  );
 }
 
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modalContainer: {
@@ -127,42 +123,33 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: '100%',
-    backgroundColor: 'rgba(20, 20, 20, 0.97)',
-    borderRadius: 16,
     padding: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
   },
   modalTitle: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
     marginBottom: 14,
     textAlign: 'center',
   },
-  label: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 11,
-    marginBottom: 4,
-    marginTop: 8,
-  },
-  songModalTitle: {
-    color: '#FFFFFF',
+  songTitle: {
     fontSize: 15,
     fontWeight: '700',
   },
-  artistModalTitle: {
-    color: '#FFFFFF',
+  songArtist: {
     fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.88)',
+    textAlign: 'center',
+  },
+  label: {
+    marginBottom: 4,
+    marginTop: 8,
   },
   input: {
-    color: '#FFFFFF',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
+    fontSize: 13,
+  },
+  reviewInput: {
+    height: 180,
+    paddingTop: 10,
   },
   themeRow: {
     flexDirection: 'row',
@@ -170,69 +157,14 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 4,
   },
-  themeChip: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  themeChipSelected: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#FFFFFF',
-  },
-  themeChipText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-  },
-  themeChipTextSelected: {
-    color: '#000000',
-    fontWeight: '600',
-  },
-  reviewsInput: {
-    height: 180,
-    paddingTop: 10,
-  },
   buttonRow: {
     flexDirection: 'row',
     gap: 8,
     marginTop: 12,
   },
-  cancelButton: {
+  actionButton: {
     flex: 1,
     paddingVertical: 8,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
-  },
-  cancelText: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 14,
-  },
-  saveButton: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-  },
-  saveText: {
-    color: '#000000',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  deleteButton: {
-    marginTop: 10,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ff4444',
-    alignItems: 'center',
-  },
-  deleteText: {
-    color: '#ff4444',
-    fontSize: 14,
   },
 });

@@ -1,7 +1,7 @@
 // app/(songs)/[id]/review.tsx
 import { useGlobalSearchParams, router } from 'expo-router';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
-import { useTextTheme } from '@/context';
+import { useButtonTheme, useTextTheme, useTextContainerTheme } from '@/context';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,6 +11,8 @@ import { useSongs } from '@/store';
 export default function Review() {
   const { id } = useGlobalSearchParams();
   const { ThemeTextStyles } = useTextTheme();
+  const { ThemeButtonStyles } = useButtonTheme();
+  const { ThemeTextContainerStyles } = useTextContainerTheme();
 
   // find the song based on id
   const { songs, addReviews } = useSongs();
@@ -24,7 +26,7 @@ export default function Review() {
 
       <View style={styles.header}>
 
-        <TouchableOpacity style={styles.headerBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -35,7 +37,7 @@ export default function Review() {
           <Text style={ThemeTextStyles.tagline} adjustsFontSizeToFit numberOfLines={1} >{song?.artist}</Text>
         </View>
           
-        <TouchableOpacity style={styles.headerBtn} onPress={() => setEditOpen(true)}>
+        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => setEditOpen(true)}>
           <Ionicons name="pencil-outline" size={20} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -43,7 +45,7 @@ export default function Review() {
 
       {/* For review, made standalone scrollview only for review */}
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.reviewContainer}>
+        <View style={[styles.reviewContainer, ThemeTextContainerStyles.lyricsContainer]}>
           <Text style={styles.reviewText}>{song?.review ?? 'No review added yet' }</Text>
         </View>
       </ScrollView>
@@ -99,13 +101,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
-    margin: 12,
+    marginTop: 60,
+    margin: 20,
   },
   reviewText: {
     fontSize: 16,
     color: '#FFFFFF',
     lineHeight: 24,
-    textAlign: 'left',
+    textAlign: 'justify',
     width: '100%',
   },
 });
