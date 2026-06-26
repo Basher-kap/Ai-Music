@@ -23,6 +23,8 @@
     },
     "production": {
       "autoIncrement": true,
+      "environment": "production",
+      "channel": "production",
       "env": {
         "EAS_BUILD_PROFILE": "production"
       }
