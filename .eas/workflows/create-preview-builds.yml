@@ -1,20 +1,12 @@
-name: Create Preview Builds
+name: Publish preview update
 
 on:
   push:
-    branches: ['preview']
+    branches: ['*']
 
 jobs:
-  build_android_preview:
-    name: Build Android Preview
-    type: build
+  publish_preview_update:
+    name: Publish preview update
+    type: update
     params:
-      platform: android
-      profile: preview
-
-  build_ios_preview:
-    name: Build iOS Preview
-    type: build
-    params:
-      platform: ios
-      profile: preview
+      branch: ${{ github.ref_name || 'test' }}
