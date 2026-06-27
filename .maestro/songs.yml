@@ -1,0 +1,7 @@
+appId: com.nagiiiqt.AiMusic
+---
+- launchApp
+- tapOn: "Songs"
+- assertVisible: "Your Songs"
+- assertVisible: "No songs yet"
+- assertVisible: "Add your first song"

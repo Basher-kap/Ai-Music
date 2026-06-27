@@ -1,0 +1,23 @@
+name: E2E Tests Android
+
+on:
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build_android_for_e2e:
+    name: Build Android for E2E
+    type: build
+    params:
+      platform: android
+      profile: e2e-test
+
+  maestro_test:
+    name: Run Maestro Tests
+    needs: [build_android_for_e2e]
+    type: maestro
+    params:
+      build_id: ${{ needs.build_android_for_e2e.outputs.build_id }}
+      flow_path:
+        - .maestro/home.yml
+        - .maestro/songs.yml

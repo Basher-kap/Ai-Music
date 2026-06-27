@@ -28,6 +28,12 @@
       "env": {
         "EAS_BUILD_PROFILE": "production"
       }
+    },
+    "e2e-test": {
+      "withoutCredentials": true,
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {

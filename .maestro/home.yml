@@ -1,0 +1,6 @@
+appId: com.nagiiiqt.AiMusic
+---
+- launchApp
+- assertVisible: "Ai Music"
+- assertVisible: "Generate Lyrics"
+- assertVisible: "News Feed"
