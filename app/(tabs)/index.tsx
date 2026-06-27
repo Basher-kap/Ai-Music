@@ -196,7 +196,7 @@ export default function Index() {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+        <Text style={[ThemeTextStyles.appTitle]}>Welcome Hello, Ai Music</Text>
       </View>
 
       {/* Vinyl */}
