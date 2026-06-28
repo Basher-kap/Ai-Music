@@ -25,6 +25,9 @@
       "autoIncrement": true,
       "environment": "production",
       "channel": "production",
+      "android": {
+          "image": "latest"
+        },
       "env": {
         "EAS_BUILD_PROFILE": "production"
       }
