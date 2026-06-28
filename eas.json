@@ -26,8 +26,9 @@
       "environment": "production",
       "channel": "production",
       "android": {
-          "image": "latest"
-        },
+        "image": "latest",
+        "config": "production-android.yml"
+      },
       "env": {
         "EAS_BUILD_PROFILE": "production"
       }

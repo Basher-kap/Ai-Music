@@ -1,0 +1,21 @@
+build:
+  name: Production Android Build (with Gradle cache)
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - eas/resolve_build_config
+    - eas/prebuild
+    - eas/configure_eas_update
+    - eas/inject_android_credentials
+    - eas/configure_android_version
+    - eas/restore_build_cache:
+        inputs:
+          key: gradle-${{ hashFiles('package-lock.json') }}
+          restore_keys: gradle
+          path: ~/.gradle/caches
+    - eas/run_gradle
+    - eas/save_build_cache:
+        inputs:
+          key: gradle-${{ hashFiles('package-lock.json') }}
+          path: ~/.gradle/caches
+    - eas/find_and_upload_build_artifacts
