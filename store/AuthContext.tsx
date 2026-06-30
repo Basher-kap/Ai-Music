@@ -8,6 +8,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
 import * as Linking from 'expo-linking';
 import { logger } from "@/utils/logger";
+import { Platform } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -97,6 +98,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const signInWithGoogle = async (): Promise<string | null> => {
+          if (Platform.OS === 'web') {
+            // Web: use Supabase's built-in OAuth redirect
+            const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+            });
+            if (error) console.error(error);
+            return null;
+        }
+
         try {
             logger.log('[Auth] Starting Google Sign-In...');
 
