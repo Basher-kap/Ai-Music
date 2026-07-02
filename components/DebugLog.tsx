@@ -1,12 +1,6 @@
 // components/DebugLog.tsx
 // Safe to leave in permanently — renders only in development builds.
 // Invisible in preview and production (guarded by __DEV__).
-//
-// Usage in songs.tsx:
-//   import DebugLog from '@/components/DebugLog';
-//   const { debugLog } = useSongs();
-//   ...
-//   <DebugLog logs={debugLog} />
 
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
