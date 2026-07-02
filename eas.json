@@ -21,6 +21,17 @@
         "EAS_BUILD_PROFILE": "preview"
       }
     },
+    "release-test": {
+      "distribution": "internal",
+      "environment": "production",
+      "channel": "production",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EAS_BUILD_PROFILE": "production"
+      }
+    },
     "production": {
       "autoIncrement": true,
       "environment": "production",

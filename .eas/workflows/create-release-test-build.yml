@@ -1,0 +1,9 @@
+name: Create Release Test Build
+
+jobs:
+  build_android_release_test:
+    name: Build Android (Release Test)
+    type: build
+    params:
+      platform: android
+      profile: release-test
