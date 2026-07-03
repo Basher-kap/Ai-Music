@@ -84,7 +84,7 @@ export default function Theme() {
       </View>
 
       {/* Scrollable cards below */}
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll} contentContainerStyle={styles.content}>
         {THEMES.map((theme) => {
           const isActive = activeTheme === theme.key;
           const accent = THEME_ACCENTS[theme.key];

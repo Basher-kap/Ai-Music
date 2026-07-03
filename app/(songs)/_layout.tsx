@@ -2,6 +2,15 @@
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTabTheme } from '@/context';
+import { Platform } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import type { ReactNode } from 'react';
+
+function WebUnmountOnBlur({ children }: { children: ReactNode }) {
+  const isFocused = useIsFocused();
+  if (Platform.OS === 'web' && !isFocused) return null;
+  return <>{children}</>;
+}
 
 export default function SongDetailLayout() {
     const { tabStyles } = useTabTheme();
@@ -11,6 +20,7 @@ export default function SongDetailLayout() {
         ...tabStyles,
         sceneStyle: { backgroundColor: 'transparent' },
       }}
+      screenLayout={({ children }) => <WebUnmountOnBlur>{children}</WebUnmountOnBlur>}
     >
       <Tabs.Screen
         name="[id]/lyrics"
