@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const signInWithGoogle = async (): Promise<string | null> => {
-          if (Platform.OS === 'web') {
+         if (Platform.OS === 'web') {
             // Web: use Supabase's built-in OAuth redirect
             const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
@@ -106,7 +106,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 redirectTo: `${window.location.origin}/auth/callback`,
             },
             });
-            if (error) console.error(error);
+            if (error) {
+                logger.log('[Auth] ✗ Web sign-in error:', error.message);
+                return error.message;
+            }
             return null;
         }
 
@@ -153,7 +156,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return null;
 
         } catch (error) {
-            console.error('[Auth] Google sign-in error:', error);
+            logger.log('[Auth] Google sign-in error:', error);
             return 'Something went wrong. Please try again.';
         } finally {
             await WebBrowser.coolDownAsync();
