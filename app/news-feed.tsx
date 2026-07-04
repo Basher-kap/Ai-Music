@@ -48,20 +48,25 @@ export default function NewsFeed() {
         return;
       }
 
-      console.log('[News] Fetching natively from', loadedSources.length, 'sources...');
+      console.log('[News] Fetching feeds via proxy from', loadedSources.length, 'sources...');
 
-      // 1. Fetch RAW XML streams straight from the primary domains
-      const responses = await Promise.all(
-        loadedSources.map(source =>
-          fetch(source.url)
-            .then(res => res.text()) // Get raw string text data instead of JSON
-            .then(xmlData => ({ xmlData, sourceName: source.name }))
-            .catch(err => {
-              console.warn(`[NEWS] Network failure fetching ${source.name}:`, err.message);
-              return { xmlData: '', sourceName: source.name };
-            })
-        )
-      );
+      const { data: proxyData, error: proxyError } = await supabase.functions.invoke('fetch-rss', {
+        body: { urls: loadedSources.map(s => s.url) },
+      });
+
+      if (proxyError) {
+        throw new Error(proxyError.message ?? 'Failed to reach the news feed proxy.');
+      }
+
+      const proxyResults: { url: string; xmlData: string; error: string | null }[] = proxyData?.results ?? [];
+
+      const responses = loadedSources.map((source, i) => {
+        const result = proxyResults[i];
+        if (!result?.xmlData) {
+          console.warn(`[NEWS] Failed to fetch ${source.name}:`, result?.error ?? 'no data returned');
+        }
+        return { xmlData: result?.xmlData ?? '', sourceName: source.name };
+      });
 
       const extractImageFromText = (text: string): string => {
         if (!text) return '';
@@ -143,7 +148,7 @@ export default function NewsFeed() {
       validItems.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
       setNews(validItems);
-      console.log('[News] ✓ Successfully Fetched', validItems.length, 'total articles natively!');
+      console.log('[News] ✓ Successfully fetched', validItems.length, 'total articles!');
 
     } catch (err: any) {
       console.error('[News] Global Error:', err.message);
