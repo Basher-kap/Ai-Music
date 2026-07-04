@@ -20,11 +20,6 @@ export default function Index() {
   const { signOut, user, session } = useAuth();
 
   const [dailySong, setDailySong] = useState<DailySong | null>(null);
-  // Playback itself (the Audio.Sound instance and whether it's playing)
-  // lives in AudioCoordinatorProvider, mounted at the app root — not here.
-  // That's what lets the daily song keep playing across tab switches on
-  // web, where Home itself gets unmounted when you leave the tab (see
-  // app/(tabs)/_layout.tsx). Home just reads and reacts to the shared state.
   const { isDailySongPlaying, playDailySong, stopDailySong } = useAudioCoordinator();
 
   const rotation = useRef(new Animated.Value(0)).current;
@@ -142,7 +137,7 @@ export default function Index() {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <Text style={[ThemeTextStyles.appTitle]}>Ai Music</Text>
+        <Text style={[ThemeTextStyles.appTitle]}>Ai Musics</Text>
       </View>
 
       {/* Vinyl */}
