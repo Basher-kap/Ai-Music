@@ -1,14 +1,12 @@
 // app/generate-lyrics-format.tsx
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useTextTheme } from '@/context';
+import { supabase } from '@/utils/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-
-const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // Define the response type matching our schema
 interface LyricGroup {
@@ -38,114 +36,23 @@ export default function GenerateLyricsFormat() {
     setError(null);
     setOutput('');
 
-    const prompt = `
-You are a Japanese lyrics formatter and translator verifier.
-
-The user has provided three versions of Japanese song lyrics:
-1. Kanji (original Japanese)
-2. Romaji (romanized Japanese)
-3. English (translation)
-
-Your tasks:
-1. Verify that the Romaji correctly matches the Kanji pronunciation line by line. Fix any errors silently.
-2. Verify that the English translation correctly matches the Kanji meaning line by line. Fix any errors silently.
-3. Format the output by interleaving the lines in this exact pattern per line group:
-   - Kanji line
-   - English line
-   - Romaji line
-   - (blank line between groups)
-
-IMPORTANT:
-- Match lines by their position — first Kanji line goes with first English line and first Romaji line
-- Keep the exact same number of lines as the input
-- Do not add any explanation, notes, or extra text — output ONLY the formatted lyrics
-- Separate each group of 3 lines with exactly one blank line
-
-Here are the lyrics:
-
-KANJI:
-${kanji}
-
-ROMAJI:
-${romaji}
-
-ENGLISH:
-${english}
-    `.trim();
-
     try {
-      const response = await fetch(GEMINI_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: prompt }],
-            },
-          ],
-          generationConfig: { //object containing settings that fine-tune how the AI generates its response.
-            temperature: 0.1,
-            maxOutputTokens: 32768,
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                //structuring the array
-                lyricGroups: {
-                  type: "ARRAY",
-                  description: "List of matched lyric rows grouped by timeline order.",
-                  items: {
-                    //formatting the line
-                    type: "OBJECT",
-                    properties: {
-                      kanji: { type: "STRING" },
-                      english: { type: "STRING" },
-                      romaji: { type: "STRING" }
-                    },
-                    required: ["kanji", "english", "romaji"]
-                  }
-                }
-              },
-              required: ["lyricGroups"]
-            }
-          },
-        }),
+      // The Gemini call itself now happens inside the format-lyrics edge
+      // function — the API key lives there as a server-side secret only,
+      // never in this client bundle (previously EXPO_PUBLIC_GEMINI_API_KEY
+      // was readable by anyone via the browser's Network tab on web).
+      const { data, error: fnError } = await supabase.functions.invoke('format-lyrics', {
+        body: { kanji, romaji, english },
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.error?.message ?? 'Gemini API error');
+      if (fnError) {
+        throw new Error(fnError.message ?? 'Failed to reach the lyrics formatter.');
+      }
+      if (data?.error) {
+        throw new Error(data.error);
       }
 
-      // Check if output was truncated before attempting parse
-      const finishReason = data?.candidates?.[0]?.finishReason;
-        if (finishReason === 'MAX_TOKENS') {
-          throw new Error('Lyrics are too long to process in one request. Try splitting them into sections.');
-        }
-
-      const rawJsonString = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!rawJsonString) {
-        throw new Error('No format payload returned from Gemini.');
-      }
-
-
-      // Because Gemini 2.5 Flash sometimes wraps JSON in markdown code fences
-      // even when responseMimeType is set to application/json
-      const cleanedJson = rawJsonString
-        .replace(/^```json\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/\s*```$/, '')
-        .trim();
-
-      if (!cleanedJson) {
-        throw new Error('Empty response from Gemini.');
-      }
-
-      const parsedData = JSON.parse(cleanedJson);
-      const groups: LyricGroup[] = parsedData?.lyricGroups ?? [];
+      const groups: LyricGroup[] = data?.groups ?? [];
 
       if (groups.length === 0) {
         throw new Error('No structured lyric pairs could be configured.');
