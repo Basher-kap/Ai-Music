@@ -1,16 +1,4 @@
 // supabase/functions/format-lyrics/index.ts
-//
-// Moves the Gemini call for the Lyrics Formatter screen server-side.
-// Previously EXPO_PUBLIC_GEMINI_API_KEY was embedded directly in the app
-// bundle — fine as "not ideal" on native, but on web it's trivially visible
-// to anyone via the browser's Network tab. This function keeps the real
-// key (GEMINI_API_KEY, no EXPO_PUBLIC_ prefix) as a server-side secret that
-// never ships to any client, native or web.
-//
-// Deploy with:
-//   supabase functions deploy format-lyrics
-// Set the secret once with:
-//   supabase secrets set GEMINI_API_KEY=your-real-key
 
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -105,17 +93,23 @@ ${english}
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data?.error?.message ?? 'Gemini API error');
+      const rawMsg = data?.error?.message ?? '';
+      console.error('[format-lyrics] Gemini API error:', rawMsg);
+      if (/quota|rate limit|resource_exhausted/i.test(rawMsg)) {
+        throw new Error('Google servers are busy right now. Please wait a few seconds and try again!');
+      }
+      throw new Error('The lyrics service ran into a problem on our end. Please try again in a moment.');
     }
 
     const finishReason = data?.candidates?.[0]?.finishReason;
     if (finishReason === 'MAX_TOKENS') {
-      throw new Error('Lyrics are too long to process in one request. Try splitting them into sections.');
+      throw new Error('These lyrics are too long to process in one go. Try splitting them into shorter sections.');
     }
 
     const rawJsonString = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!rawJsonString) {
-      throw new Error('No format payload returned from Gemini.');
+      console.error('[format-lyrics] No content returned from Gemini response:', JSON.stringify(data));
+      throw new Error('Something went wrong generating the lyrics. Please try again.');
     }
 
     // Gemini 2.5 Flash sometimes wraps JSON in markdown code fences even
@@ -127,14 +121,21 @@ ${english}
       .trim();
 
     if (!cleanedJson) {
-      throw new Error('Empty response from Gemini.');
+      console.error('[format-lyrics] Empty response after markdown-fence cleanup');
+      throw new Error('Something went wrong generating the lyrics. Please try again.');
     }
 
-    const parsedData = JSON.parse(cleanedJson);
+    let parsedData;
+    try {
+      parsedData = JSON.parse(cleanedJson);
+    } catch (parseErr) {
+      console.error('[format-lyrics] JSON parse failed:', parseErr, '\nRaw text:', cleanedJson);
+      throw new Error('Something went wrong generating the lyrics. Please try again.');
+    }
     const groups = parsedData?.lyricGroups ?? [];
 
     if (groups.length === 0) {
-      throw new Error('No structured lyric pairs could be configured.');
+      throw new Error("Couldn't match up the lyrics lines. Double-check each version has a similar number of lines and try again.");
     }
 
     return new Response(

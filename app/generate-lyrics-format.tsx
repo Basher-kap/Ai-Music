@@ -37,16 +37,19 @@ export default function GenerateLyricsFormat() {
     setOutput('');
 
     try {
-      // The Gemini call itself now happens inside the format-lyrics edge
-      // function — the API key lives there as a server-side secret only,
-      // never in this client bundle (previously EXPO_PUBLIC_GEMINI_API_KEY
-      // was readable by anyone via the browser's Network tab on web).
-      const { data, error: fnError } = await supabase.functions.invoke('format-lyrics', {
+        const { data, error: fnError } = await supabase.functions.invoke('format-lyrics', {
         body: { kanji, romaji, english },
       });
 
       if (fnError) {
-        throw new Error(fnError.message ?? 'Failed to reach the lyrics formatter.');
+        let message = fnError.message ?? 'Failed to reach the lyrics formatter.';
+        try {
+          const body = await fnError.context?.json();
+          if (body?.error) message = body.error;
+        } catch {
+          // context wasn't readable/JSON — fall back to the generic message
+        }
+        throw new Error(message);
       }
       if (data?.error) {
         throw new Error(data.error);
@@ -70,6 +73,8 @@ export default function GenerateLyricsFormat() {
       const errorMsg = err.message ?? '';
         if (errorMsg.includes('high demand') || errorMsg.includes('quota')) {
             setError('Google servers are busy right now. Please wait a few seconds and try again!');
+        } else if (errorMsg.toLowerCase().includes('network') || errorMsg.toLowerCase().includes('fetch')) {
+            setError('Could not reach the lyrics formatter. Check your internet connection and try again.');
         } else {
             setError(errorMsg || 'Something went wrong. Please try again.');
         }
