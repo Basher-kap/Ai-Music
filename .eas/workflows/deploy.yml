@@ -2,6 +2,9 @@ name: Deploy
 on:
   push:
     branches: ['main']
+defaults:
+  tools:
+    node: 22.12.0
 jobs:
   deploy:
     type: deploy
