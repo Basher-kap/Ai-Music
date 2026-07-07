@@ -2,8 +2,9 @@
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Animated, ImageBackground, StyleSheet } from 'react-native';
+import { Animated, ImageBackground, StyleSheet, Platform  } from 'react-native';
 import { useBgImg, ThemeProvider, useTheme } from '@/context';
+import { THEME_ACCENTS } from '@/constant';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
@@ -90,43 +91,46 @@ function RootLayoutInner() {
       <ActivityIndicator size="large" color="#7EC8A0" />
     </View>
   );
+  const webContentStyle = { backgroundColor: THEME_ACCENTS[activeTheme] ?? '#1a1a2e' };
+  const nativeContentStyle = { backgroundColor: 'transparent' };
+  const contentStyle = Platform.OS === 'web' ? webContentStyle : nativeContentStyle;
+
   return (
     <>
       <StatusBar hidden={true} />
-      <ImageBackground
-        source={backgroundImage}
-        style={styles.background}
-        resizeMode="cover"
+      {Platform.OS !== 'web' && (
+        <ImageBackground
+          source={backgroundImage}
+          style={styles.background}
+          resizeMode="cover"
+        >
+          <Animated.View
+            style={[StyleSheet.absoluteFillObject, { opacity: fadeAnim }]}
+          >
+            <ImageBackground
+              source={nextImage}
+              style={styles.background}
+              resizeMode="cover"
+            />
+          </Animated.View>
+        </ImageBackground>
+      )}
+
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle,
+          animation: 'fade',
+        }}
       >
-        <Animated.View 
-          style={[
-            StyleSheet.absoluteFillObject,
-            { opacity: fadeAnim }
-          ]}
-        >
-          <ImageBackground
-            source={nextImage}
-            style={styles.background}
-            resizeMode="cover"
-          />
-        </Animated.View>
-        
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: 'transparent' },
-            animation: 'fade',
-          }}
-        >
-          <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
-          <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'slide_from_right' }} />
-          <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
-          <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
-          <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
-          <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
-        </Stack>
-      </ImageBackground>
+        <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle, animation:'fade'}} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
+        <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle, animation: 'slide_from_right' }} />
+        <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
+        <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+        <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle, animation:'fade'}} />
+        <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle, animation:'fade'}} />
+      </Stack>
     </>
   );
 }
