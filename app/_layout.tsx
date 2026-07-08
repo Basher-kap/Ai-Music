@@ -52,14 +52,12 @@ function RootLayoutInner() {
   }, [activeTheme]); // fixed: deps array now actually attached to useEffect
 
   const isFirstRun = useRef(true);
+  const wasLoggedIn = useRef<boolean | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
 
-    const navigate = () => {
-      logger_navigate(session);
-      router.replace(session ? '/(tabs)' : '/login');
-    };
+    const isLoggedIn = !!session;
 
     function logger_navigate(s: any) {
       console.log('[Layout] Navigating. Session present:', !!s);
@@ -67,10 +65,18 @@ function RootLayoutInner() {
 
     if (isFirstRun.current) {
       isFirstRun.current = false;
-      const timer = setTimeout(navigate, 500);
+      wasLoggedIn.current = isLoggedIn;
+      const timer = setTimeout(() => {
+        logger_navigate(session);
+        router.replace(isLoggedIn ? '/(tabs)' : '/login');
+      }, 500);
       return () => clearTimeout(timer);
-    } else {
-      navigate();
+    }
+
+    if (wasLoggedIn.current !== isLoggedIn) {
+      wasLoggedIn.current = isLoggedIn;
+      logger_navigate(session);
+      router.replace(isLoggedIn ? '/(tabs)' : '/login');
     }
   }, [session, authLoading]);
 
