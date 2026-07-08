@@ -95,10 +95,30 @@ function RootLayoutInner() {
   const nativeContentStyle = { backgroundColor: 'transparent' };
   const contentStyle = Platform.OS === 'web' ? webContentStyle : nativeContentStyle;
 
+  const stackNavigator = (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle,
+        animation: 'fade',
+      }}
+    >
+      <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle, animation:'fade'}} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
+      <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle, animation: 'slide_from_right' }} />
+      <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
+      <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+      <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle, animation:'fade'}} />
+      <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle, animation:'fade'}} />
+    </Stack>
+  );
+
   return (
     <>
       <StatusBar hidden={true} />
-      {Platform.OS !== 'web' && (
+      {Platform.OS === 'web' ? (
+        stackNavigator
+      ) : (
         <ImageBackground
           source={backgroundImage}
           style={styles.background}
@@ -113,24 +133,9 @@ function RootLayoutInner() {
               resizeMode="cover"
             />
           </Animated.View>
+          {stackNavigator}
         </ImageBackground>
       )}
-
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle,
-          animation: 'fade',
-        }}
-      >
-        <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle, animation:'fade'}} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
-        <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle, animation: 'slide_from_right' }} />
-        <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
-        <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
-        <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle, animation:'fade'}} />
-        <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle, animation:'fade'}} />
-      </Stack>
     </>
   );
 }
