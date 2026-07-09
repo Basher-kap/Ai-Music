@@ -78,16 +78,22 @@ export function SongsProvider({ children }: { children: ReactNode }) {
   };
 
   // ─── isOnline — 3s hard timeout ──────────────────────────────────────────
-
   const isOnline = async (): Promise<boolean> => {
     try {
       const controller = new AbortController();
       const tid = setTimeout(() => controller.abort(), 3000);
-      const res = await fetch('https://www.google.com/favicon.ico', {
-        method: 'HEAD', cache: 'no-cache', signal: controller.signal,
+      // mode: 'no-cors' is required on web — a plain cross-origin fetch to
+      // google.com gets blocked by CORS in the browser (it doesn't send
+      // permissive CORS headers), which made isOnline() always return
+      // false on web even when the network was fine. With no-cors we get
+      // an opaque response but no CORS error, so resolving (vs throwing)
+      // is enough to confirm reachability. No effect on native, where
+      // CORS was never enforced in the first place.
+      await fetch('https://www.google.com/favicon.ico', {
+        method: 'HEAD', cache: 'no-cache', mode: 'no-cors', signal: controller.signal,
       });
       clearTimeout(tid);
-      return res.ok;
+      return true;
     } catch {
       return false;
     }

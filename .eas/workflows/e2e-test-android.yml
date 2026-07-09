@@ -1,8 +1,8 @@
 name: E2E Tests Android
 
-on:
-  pull_request:
-    branches: ['main']
+#on:
+#  pull_request:
+#    branches: ['main']
 
 jobs:
   build_android_for_e2e:

@@ -2,8 +2,9 @@
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Animated, ImageBackground, StyleSheet } from 'react-native';
+import { Animated, ImageBackground, StyleSheet, Platform  } from 'react-native';
 import { useBgImg, ThemeProvider, useTheme } from '@/context';
+import { THEME_ACCENTS } from '@/constant';
 import { useFonts } from 'expo-font';
 import { Marcellus_400Regular } from '@expo-google-fonts/marcellus';
 import { PlaywriteGBS_400Regular } from '@expo-google-fonts/playwrite-gb-s';
@@ -51,14 +52,12 @@ function RootLayoutInner() {
   }, [activeTheme]); // fixed: deps array now actually attached to useEffect
 
   const isFirstRun = useRef(true);
+  const wasLoggedIn = useRef<boolean | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
 
-    const navigate = () => {
-      logger_navigate(session);
-      router.replace(session ? '/(tabs)' : '/login');
-    };
+    const isLoggedIn = !!session;
 
     function logger_navigate(s: any) {
       console.log('[Layout] Navigating. Session present:', !!s);
@@ -66,10 +65,18 @@ function RootLayoutInner() {
 
     if (isFirstRun.current) {
       isFirstRun.current = false;
-      const timer = setTimeout(navigate, 500);
+      wasLoggedIn.current = isLoggedIn;
+      const timer = setTimeout(() => {
+        logger_navigate(session);
+        router.replace(isLoggedIn ? '/(tabs)' : '/login');
+      }, 500);
       return () => clearTimeout(timer);
-    } else {
-      navigate();
+    }
+
+    if (wasLoggedIn.current !== isLoggedIn) {
+      wasLoggedIn.current = isLoggedIn;
+      logger_navigate(session);
+      router.replace(isLoggedIn ? '/(tabs)' : '/login');
     }
   }, [session, authLoading]);
 
@@ -90,43 +97,51 @@ function RootLayoutInner() {
       <ActivityIndicator size="large" color="#7EC8A0" />
     </View>
   );
+  const webContentStyle = { backgroundColor: THEME_ACCENTS[activeTheme] ?? '#1a1a2e' };
+  const nativeContentStyle = { backgroundColor: 'transparent' };
+  const contentStyle = Platform.OS === 'web' ? webContentStyle : nativeContentStyle;
+
+  const stackNavigator = (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle,
+        animation: 'fade',
+      }}
+    >
+      <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle, animation:'fade'}} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
+      <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle, animation: 'slide_from_right' }} />
+      <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
+      <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+      <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle, animation:'fade'}} />
+      <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle, animation:'fade'}} />
+    </Stack>
+  );
+
   return (
     <>
       <StatusBar hidden={true} />
-      <ImageBackground
-        source={backgroundImage}
-        style={styles.background}
-        resizeMode="cover"
-      >
-        <Animated.View 
-          style={[
-            StyleSheet.absoluteFillObject,
-            { opacity: fadeAnim }
-          ]}
+      {Platform.OS === 'web' ? (
+        stackNavigator
+      ) : (
+        <ImageBackground
+          source={backgroundImage}
+          style={styles.background}
+          resizeMode="cover"
         >
-          <ImageBackground
-            source={nextImage}
-            style={styles.background}
-            resizeMode="cover"
-          />
-        </Animated.View>
-        
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: 'transparent' },
-            animation: 'fade',
-          }}
-        >
-          <Stack.Screen name="private/admin" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: 'slide_from_left' }} />
-          <Stack.Screen name="(songs)" options={{ headerShown: false, contentStyle: { backgroundColor: 'transparent' }, animation: 'slide_from_right' }} />
-          <Stack.Screen name="login" options={{ headerShown: false, animation: 'fade' }} />
-          <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
-          <Stack.Screen name="generate-lyrics-format" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
-          <Stack.Screen name="news-feed" options={{headerShown: false, contentStyle: {backgroundColor: 'transparent'}, animation:'fade'}} />
-        </Stack>
-      </ImageBackground>
+          <Animated.View
+            style={[StyleSheet.absoluteFillObject, { opacity: fadeAnim }]}
+          >
+            <ImageBackground
+              source={nextImage}
+              style={styles.background}
+              resizeMode="cover"
+            />
+          </Animated.View>
+          {stackNavigator}
+        </ImageBackground>
+      )}
     </>
   );
 }

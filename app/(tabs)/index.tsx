@@ -6,11 +6,10 @@ import { useAudioCoordinator } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Animated, AppState, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { supabase } from '@/utils/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Audio } from 'expo-av';
 import type { DailySong } from '@/types/settings';
 
 export default function Index() {
@@ -21,10 +20,7 @@ export default function Index() {
   const { signOut, user, session } = useAuth();
 
   const [dailySong, setDailySong] = useState<DailySong | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const { registerStopDailySong } = useAudioCoordinator();
-
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const { isDailySongPlaying, playDailySong, stopDailySong } = useAudioCoordinator();
 
   const rotation = useRef(new Animated.Value(0)).current;
 
@@ -76,52 +72,17 @@ export default function Index() {
     isProcessingRef.current = true;
 
     try {
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-
       if (dailySong?.daily_song_theme) {
         setActiveTheme(dailySong.daily_song_theme as ThemeKey);
       }
 
-      if (isPlaying) {
-        if (soundRef.current) {
-          await soundRef.current.stopAsync();
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-        }
-        setIsPlaying(false);
+      if (isDailySongPlaying) {
+        await stopDailySong();
         console.log('[Home] Music Stopped');
       } else {
-        if (soundRef.current) {
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-        }
-
         try {
-          const { sound } = await Audio.Sound.createAsync(
-            { uri: dailySong.daily_song_url },
-            { shouldPlay: true }
-          );
-          soundRef.current = sound;
-          setIsPlaying(true);
-
-          registerStopDailySong(async () => {
-            if (soundRef.current) {
-              await soundRef.current.stopAsync();
-              await soundRef.current.unloadAsync();
-              soundRef.current = null;
-              setIsPlaying(false);
-            }
-          });
+          await playDailySong(dailySong.daily_song_url);
           console.log('[Home] Playing:', dailySong.daily_song_title);
-
-          sound.setOnPlaybackStatusUpdate((status) => {
-            if (status.isLoaded && status.didJustFinish) {
-              soundRef.current?.unloadAsync();
-              soundRef.current = null;
-              setIsPlaying(false);
-              console.log('[Home] Finished');
-            }
-          });
         } catch {
           // Because audio requires internet — show friendly message
           console.log('[Home] Cannot play — no internet connection');
@@ -142,7 +103,7 @@ export default function Index() {
   const animationRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
-    if (isPlaying){
+    if (isDailySongPlaying){
       animationRef.current = Animated.loop(
         Animated.timing(rotation, {
         toValue: 1,
@@ -156,41 +117,21 @@ export default function Index() {
       animationRef.current?.stop();
       rotation.setValue(0);
     }
-  }, [isPlaying]);
+  }, [isDailySongPlaying]);
 
   const rotate = rotation.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
 
-  // stop music when app is on background
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', async (nextState) => {
-      if (nextState === 'background' || nextState === 'inactive') {
-        if (soundRef.current){
-          await soundRef.current.stopAsync();
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-          setIsPlaying(false);
-          console.log('[Home] Stopped - app backgrounded');
-        }
-      }
-    });
-    return () => subscription.remove();
-  }, []);
-
   // stop music when user signed out
   useEffect(() => {
-    if(!session && soundRef.current) {
-      soundRef.current.stopAsync().then(() => {
-        soundRef.current?.unloadAsync();
-        soundRef.current = null;
-        setIsPlaying(false);
+    if (!session && isDailySongPlaying) {
+      stopDailySong().then(() => {
         console.log('[Home] Stopped - signed out');
       });
     }
   }, [session]);
-
 
   return (
     <View style={styles.container}>

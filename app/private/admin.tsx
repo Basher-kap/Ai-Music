@@ -1,6 +1,6 @@
 // app/private/admin.tsx
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView, Image, useWindowDimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ScrollView, Image, useWindowDimensions, Platform } from 'react-native';
 import { router } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -28,6 +28,22 @@ export default function Admin() {
   const [previewAudioName, setPreviewAudioName] = useState<string | null>(null);
 
   const previewImageWidth = (width - 40) * 0.45; // ~45% of available content width
+
+  async function getFileBytes(uri: string): Promise<Uint8Array> {
+    if (Platform.OS === 'web') {
+      const response = await fetch(uri);
+      const arrayBuffer = await response.arrayBuffer();
+      return new Uint8Array(arrayBuffer);
+    }
+
+    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+    const binaryString = atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+  }
 
   useEffect(() => {
     // this is just a UI guard to redirect non-admins immediately
@@ -71,15 +87,7 @@ export default function Admin() {
     try {
       console.log('[Admin] Uploading daily song:', file.name);
 
-      const base64 = await FileSystem.readAsStringAsync(file.uri, {
-        encoding: 'base64',
-      });
-
-      const binaryString = atob(base64);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
+      const bytes = await getFileBytes(file.uri);
 
       const { data: existingFiles } = await supabase.storage
         .from('songs-audio')
@@ -143,15 +151,7 @@ export default function Admin() {
     try {
       console.log('[Admin] Uploading image:', file.name);
 
-      const base64 = await FileSystem.readAsStringAsync(file.uri, {
-        encoding: 'base64',
-      });
-
-      const binaryString = atob(base64);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
+      const bytes = await getFileBytes(file.uri);
 
       const filePath = `daily/daily_song_image.jpg`;
       const { error: uploadError } = await supabase.storage
