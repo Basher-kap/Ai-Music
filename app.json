@@ -7,7 +7,6 @@
     "icon": "./assets/images/ai_icon.png",
     "scheme": "aimusic",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nagiiiqt.AiMusic",
@@ -26,7 +25,6 @@
         "backgroundImage": "./assets/images/android-icon.png",
         "monochromeImage": "./assets/images/android-icon.png"
       },
-      "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "pan",
       "predictiveBackGestureEnabled": false,
       "package": "com.nagiiiqt.AiMusic"

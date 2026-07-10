@@ -28,6 +28,7 @@ module.exports = ({ config }) => {
       ...(config.plugins ?? []),
       'expo-web-browser',
       'expo-av',
+      'expo-image'
     ],
 
     ios: {
@@ -36,7 +37,6 @@ module.exports = ({ config }) => {
     },
 
     android: {
-      // Spread config.android FIRST, then override — prevents base config clobbering intentFilters
       ...config.android,
       package: androidPackage,
       intentFilters: [
