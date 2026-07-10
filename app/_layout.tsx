@@ -23,7 +23,11 @@ import { AuthProvider, SongsProvider, useAuth } from '@/store';
 import { AudioCoordinatorProvider } from '@/store';
 import { router } from 'expo-router';
 import { AppMetricsRoot, AppMetrics } from 'expo-observe';
+import Observe from 'expo-observe';
 
+if (__DEV__) {
+  Observe.configure({ dispatchInDebug: true });
+}
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
