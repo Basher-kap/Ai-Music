@@ -29,7 +29,6 @@ module.exports = ({ config }) => {
       'expo-web-browser',
       'expo-av',
       'expo-image',
-      'expo-observe',
     ],
 
     ios: {
