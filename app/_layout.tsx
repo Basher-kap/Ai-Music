@@ -24,6 +24,7 @@ import { AudioCoordinatorProvider } from '@/store';
 import { router } from 'expo-router';
 import { AppMetricsRoot, AppMetrics } from 'expo-observe';
 import Observe from 'expo-observe';
+import { UpdateBanner } from '@/components';
 
 if (__DEV__) {
   Observe.configure({ dispatchInDebug: true });
@@ -155,6 +156,7 @@ function RootLayoutInner() {
           {stackNavigator}
         </ImageBackground>
       )}
+      <UpdateBanner />
     </>
   );
 }
