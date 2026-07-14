@@ -22,7 +22,12 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { AuthProvider, SongsProvider, useAuth } from '@/store';
 import { AudioCoordinatorProvider } from '@/store';
 import { router } from 'expo-router';
+import { AppMetricsRoot, AppMetrics } from 'expo-observe';
+import Observe from 'expo-observe';
 
+if (__DEV__) {
+  Observe.configure({ dispatchInDebug: true });
+}
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
@@ -92,6 +97,14 @@ function RootLayoutInner() {
   )
   
 
+  const hasMarkedInteractive = useRef(false);
+  useEffect(() => {
+    if (loadFonts && !authLoading && !hasMarkedInteractive.current) {
+      hasMarkedInteractive.current = true;
+      AppMetrics.markInteractive();
+    }
+  }, [loadFonts, authLoading]);
+
   if (!loadFonts || authLoading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
       <ActivityIndicator size="large" color="#7EC8A0" />
@@ -148,15 +161,17 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <SongsProvider>
-          <AudioCoordinatorProvider>  
-            <RootLayoutInner/>
-          </AudioCoordinatorProvider>   
-        </SongsProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <AppMetricsRoot>
+      <ThemeProvider>
+        <AuthProvider>
+          <SongsProvider>
+            <AudioCoordinatorProvider>  
+              <RootLayoutInner/>
+            </AudioCoordinatorProvider>   
+          </SongsProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </AppMetricsRoot>
   );
 }
 
