@@ -60,7 +60,7 @@ export default function Lyrics() {
       <ScrollView showsVerticalScrollIndicator={false} style={[styles.lyricsContainer, ThemeTextContainerStyles.lyricsContainer]}>
         {/* split by lines and trim of whitespace for consistent centering */}
         { song?.lyrics ? song.lyrics.split('\n').map((line, index) => (
-           <Text key={index} style={styles.lyricsText} adjustsFontSizeToFit numberOfLines={1} minimumFontScale={0.5}>
+           <Text key={index} style={styles.lyricsText}>
               {line.trim() === '' ? ' ' : line.trim()}
            </Text>
         )) : <Text style={styles.lyricsText}>No lyrics added yet</Text>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   lyricsText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#FFFFFF',
     lineHeight: 24,
     textAlign: 'center',
