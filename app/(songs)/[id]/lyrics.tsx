@@ -4,7 +4,7 @@ import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useButtonTheme, useTextTheme, useTextContainerTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Audio } from 'expo-av';
+import { setAudioModeAsync } from 'expo-audio';
 import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -24,12 +24,14 @@ export default function Lyrics() {
   useFocusEffect(
     useCallback(() => {
       const stopAllAudio = async () => {
-        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: false, shouldDuckAndroid: false});
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: false,
+          interruptionMode: 'doNotMix', 
+        });
       };
       stopAllAudio();
-      return() => {
-
-      };
+      return () => {};
     }, [])
   );
 
