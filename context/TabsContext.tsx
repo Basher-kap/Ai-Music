@@ -103,7 +103,7 @@ const WrathTabBg = () => (
   <View style={[styles.fullStretch, { backgroundColor: '#000' }]}>
     <LinearGradient colors={["#ff0000a0", "#660000", "#000000"]} style={{ height: 20, width: '100%' }} />
     {/* Hazard Stripes */}
-    <View style={{ ...StyleSheet.absoluteFillObject, flexDirection: 'row', opacity: 0.1 }}>
+    <View style={[StyleSheet.absoluteFill, { flexDirection: 'row', opacity: 0.1 }]}>
       {[...Array(10)].map((_, i) => (
         <View key={i} style={{ flex: 1, backgroundColor: '#FF0000', marginHorizontal: 2, transform: [{ skewX: '-25deg' }] }} />
       ))}
@@ -177,7 +177,7 @@ const tabThemeStyles: Record<ThemeKey, TabThemeStyle> = {
 };
 
 const styles = StyleSheet.create({
-  fullStretch: { ...StyleSheet.absoluteFillObject }
+  fullStretch: StyleSheet.absoluteFill
 });
 
 export function useTabTheme() {
