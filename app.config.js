@@ -27,8 +27,16 @@ module.exports = ({ config }) => {
     plugins: [
       ...(config.plugins ?? []),
       'expo-web-browser',
-      'expo-av',
+        [
+          'expo-audio',
+          {
+            microphonePermission: false,
+            recordAudioAndroid: false,
+            enableBackgroundPlayback: false,
+          },
+        ],
       'expo-image',
+      'expo-asset',
     ],
 
     ios: {

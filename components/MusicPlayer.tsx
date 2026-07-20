@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Audio } from 'expo-av';
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer, type AudioStatus } from 'expo-audio';
 import { useMusicPlayerTheme } from '@/context/MusicPlayerContext';
 import { useAudioCoordinator } from '@/store';
 
@@ -10,14 +10,15 @@ type Props = {
   uri: string | null | undefined;
 };
 
-const SKIP_MS = 4000;
+const SKIP_SECONDS = 4; // was SKIP_MS = 4000 — expo-audio reports time in seconds, not ms
 const PLAY_BTN = 38;
 
 export default function MusicPlayer({ uri }: Props) {
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const playerRef = useRef<AudioPlayer | null>(null);
+  const subscriptionRef = useRef<{ remove: () => void } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [position, setPosition] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [position, setPosition] = useState(0); // seconds
+  const [duration, setDuration] = useState(0); // seconds
 
   const barWidth = useRef(0);
   const isScrubbing = useRef(false);
@@ -26,76 +27,81 @@ export default function MusicPlayer({ uri }: Props) {
   const [visualProgress, setVisualProgress] = useState(0);
 
   const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
-
   const { stopDailySong } = useAudioCoordinator();
 
   useEffect(() => {
-    let sound: Audio.Sound;
-    const loadAudio = async () => {
-      if (!uri) return;
-      if (soundRef.current) {
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
-        setIsPlaying(false);
-        setPosition(0);
-        setDuration(0);
-        setVisualProgress(0);
-      }
-      await Audio.setAudioModeAsync({
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
-        shouldDuckAndroid: false,
+    if (!uri) return;
+    let cancelled = false;
+
+    // Tear down whatever was previously loaded
+    subscriptionRef.current?.remove();
+    subscriptionRef.current = null;
+    playerRef.current?.remove();
+    playerRef.current = null;
+    setIsPlaying(false);
+    setPosition(0);
+    setDuration(0);
+    setVisualProgress(0);
+
+    (async () => {
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        shouldPlayInBackground: false,
+        interruptionMode: 'doNotMix',
       });
-      const { sound: newSound } = await Audio.Sound.createAsync(
-        { uri },
-        { shouldPlay: false },
-        (status) => {
-          if (!status.isLoaded) return;
-          if (!isScrubbing.current && !seekingRef.current) {
-            setPosition(status.positionMillis);
-            setVisualProgress(
-              status.durationMillis ? status.positionMillis / status.durationMillis : 0
-            );
-          }
-          setDuration(status.durationMillis ?? 0);
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-            setPosition(0);
-            setVisualProgress(0);
-          }
+      if (cancelled) return;
+
+      const player = createAudioPlayer(uri, { updateInterval: 250 });
+      playerRef.current = player;
+
+      subscriptionRef.current = player.addListener('playbackStatusUpdate', (status: AudioStatus) => {
+        if (!status.isLoaded) return;
+        if (!isScrubbing.current && !seekingRef.current) {
+          setPosition(status.currentTime);
+          setVisualProgress(status.duration ? status.currentTime / status.duration : 0);
         }
-      );
-      soundRef.current = newSound;
-      sound = newSound;
+        setDuration(status.duration ?? 0);
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+          setPosition(0);
+          setVisualProgress(0);
+        }
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+      subscriptionRef.current?.remove();
+      subscriptionRef.current = null;
+      playerRef.current?.remove();
+      playerRef.current = null;
     };
-    loadAudio();
-    return () => { sound?.unloadAsync(); };
   }, [uri]);
 
-  const seekTo = async (ms: number) => {
-    if (!soundRef.current) return;
+  const seekTo = async (seconds: number) => {
+    if (!playerRef.current) return;
     seekingRef.current = true;
-    await soundRef.current.setPositionAsync(ms);
-    setPosition(ms);
-    setVisualProgress(duration > 0 ? ms / duration : 0);
+    await playerRef.current.seekTo(seconds);
+    setPosition(seconds);
+    setVisualProgress(duration > 0 ? seconds / duration : 0);
     setTimeout(() => { seekingRef.current = false; }, 300);
   };
 
   const handlePlayPause = async () => {
-    if (!soundRef.current) return;
+    if (!playerRef.current) return;
     if (isPlaying) {
-      await soundRef.current.pauseAsync();
+      playerRef.current.pause();
       setIsPlaying(false);
     } else {
       // Because daily song and music player would overlap if both play at once
       await stopDailySong();
-      await soundRef.current.playAsync();
+      playerRef.current.play();
       setIsPlaying(true);
     }
   };
 
-  const handleSkipBack = () => seekTo(Math.max(0, position - SKIP_MS));
-  const handleSkipForward = () => seekTo(Math.min(duration, position + SKIP_MS));
+  const handleSkipBack = () => seekTo(Math.max(0, position - SKIP_SECONDS));
+  const handleSkipForward = () => seekTo(Math.min(duration, position + SKIP_SECONDS));
 
   const panResponder = useRef(
     PanResponder.create({
@@ -114,32 +120,28 @@ export default function MusicPlayer({ uri }: Props) {
       },
       onPanResponderRelease: async () => {
         isScrubbing.current = false;
-        if (!soundRef.current) return;
+        if (!playerRef.current) return;
         seekingRef.current = true;
-        const status = await soundRef.current.getStatusAsync();
-        if (!status.isLoaded) { seekingRef.current = false; return; }
-        const seekMs = scrubRatio.current * (status.durationMillis ?? 0);
-        await soundRef.current.setPositionAsync(seekMs);
-        setPosition(seekMs);
+        const seekSeconds = scrubRatio.current * duration;
+        await playerRef.current.seekTo(seekSeconds);
+        setPosition(seekSeconds);
         setVisualProgress(scrubRatio.current);
         setTimeout(() => { seekingRef.current = false; }, 300);
       },
     })
   ).current;
 
-  const formatTime = (ms: number) => {
-    const totalSeconds = Math.floor(ms / 1000);
+  const formatTime = (seconds: number) => {
+    const totalSeconds = Math.floor(seconds);
     const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const secs = totalSeconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
   if (!uri) return null;
 
   return (
     <View style={[styles.container, ThemeMusicPlayerStyles.container]}>
-
-      {/* Progress bar */}
       <View
         style={styles.progressBar}
         onLayout={(e) => { barWidth.current = e.nativeEvent.layout.width; }}
@@ -150,7 +152,6 @@ export default function MusicPlayer({ uri }: Props) {
         <View style={[styles.progressThumb, ThemeMusicPlayerStyles.progressThumb, { left: `${visualProgress * 100}%` }]} />
       </View>
 
-      {/* Bottom row */}
       <View style={styles.bottomRow}>
         <Text style={[styles.timeText, ThemeMusicPlayerStyles.timeText]}>
           {formatTime(isScrubbing.current ? scrubRatio.current * duration : position)}
@@ -190,7 +191,6 @@ export default function MusicPlayer({ uri }: Props) {
           {formatTime(duration)}
         </Text>
       </View>
-
     </View>
   );
 }

@@ -22,13 +22,13 @@ import * as NavigationBar from 'expo-navigation-bar';
 import { AuthProvider, SongsProvider, useAuth } from '@/store';
 import { AudioCoordinatorProvider } from '@/store';
 import { router } from 'expo-router';
-import { AppMetricsRoot, AppMetrics } from 'expo-observe';
-import Observe from 'expo-observe';
+import { ObserveRoot, Observe, AppMetrics, useObserve } from 'expo-observe';
 import { UpdateBanner } from '@/components';
 
 if (__DEV__) {
   Observe.configure({ dispatchInDebug: true });
 }
+Observe.configure({ integrations: { 'expo-router': true } }); // unlocks Navigation tab
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
@@ -37,6 +37,7 @@ function RootLayoutInner() {
   const [currentImage, setCurrentImage] = useState(backgroundImage);
   const [nextImage, setNextImage] = useState(backgroundImage);
   const { session, loading: authLoading } = useAuth();
+  const { markInteractive } = useObserve(); // per-screen, router-aware
 
   useEffect(() => {
     setNextImage(backgroundImage);
@@ -102,7 +103,7 @@ function RootLayoutInner() {
   useEffect(() => {
     if (loadFonts && !authLoading && !hasMarkedInteractive.current) {
       hasMarkedInteractive.current = true;
-      AppMetrics.markInteractive();
+      markInteractive(); 
     }
   }, [loadFonts, authLoading]);
 
@@ -145,7 +146,7 @@ function RootLayoutInner() {
           resizeMode="cover"
         >
           <Animated.View
-            style={[StyleSheet.absoluteFillObject, { opacity: fadeAnim }]}
+            style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}
           >
             <ImageBackground
               source={nextImage}
@@ -163,7 +164,7 @@ function RootLayoutInner() {
 
 export default function RootLayout() {
   return (
-    <AppMetricsRoot>
+    <ObserveRoot>
       <ThemeProvider>
         <AuthProvider>
           <SongsProvider>
@@ -173,7 +174,7 @@ export default function RootLayout() {
           </SongsProvider>
         </AuthProvider>
       </ThemeProvider>
-    </AppMetricsRoot>
+    </ObserveRoot>
   );
 }
 
