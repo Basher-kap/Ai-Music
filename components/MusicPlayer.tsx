@@ -10,14 +10,16 @@ type Props = {
   uri: string | null | undefined;
 };
 
+// lets a parent screen force-stop playback via ref (needed since
+// this component may not unmount on back press — see lyrics.tsx)
 export type MusicPlayerHandle = {
   stop: () => void;
 };
 
-const SKIP_SECONDS = 4; // was SKIP_MS = 4000 — expo-audio reports time in seconds, not ms
+const SKIP_SECONDS = 4; 
 const PLAY_BTN = 38;
 
-function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>) {
+function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>) { // CHANGED: now forwardRef
   const playerRef = useRef<AudioPlayer | null>(null);
   const subscriptionRef = useRef<{ remove: () => void } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -33,6 +35,7 @@ function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>)
   const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
   const { stopDailySong } = useAudioCoordinator();
 
+  // exposes stop() so lyrics.tsx can pause + reset playback on demand
   useImperativeHandle(ref, () => ({
     stop: () => {
       if (!playerRef.current) return;

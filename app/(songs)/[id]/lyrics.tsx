@@ -1,13 +1,13 @@
 // app/(songs)/[id]/lyrics.tsx
 import { LyricsEditForm, MusicPlayer } from '@/components';
-import type { MusicPlayerHandle } from '@/components';
+import type { MusicPlayerHandle } from '@/components'; 
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useButtonTheme, useTextTheme, useTextContainerTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { setAudioModeAsync } from 'expo-audio';
-import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { router, useFocusEffect, useGlobalSearchParams, useNavigation } from 'expo-router'; 
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lyrics() {
@@ -15,13 +15,14 @@ export default function Lyrics() {
   const { ThemeTextStyles } = useTextTheme();
   const { ThemeButtonStyles } = useButtonTheme();
   const { ThemeTextContainerStyles } = useTextContainerTheme();
+  const navigation = useNavigation(); 
 
   // fetches the songs from useSongs and find the song based on id
   const { songs, addLyrics, deleteSong, uploadAudio } = useSongs();
   const song = songs.find(s => s.id === id);
 
-  const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
-  const musicPlayerRef = useRef<MusicPlayerHandle>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const musicPlayerRef = useRef<MusicPlayerHandle>(null); // handle to call MusicPlayer.stop()
 
   useFocusEffect(
     useCallback(() => {
@@ -33,16 +34,19 @@ export default function Lyrics() {
         });
       };
       stopAllAudio();
-      // Runs when this screen loses focus for ANY reason — pressing the
-      // back button, the hardware/gesture back, or switching tabs. This is
-      // needed because the (songs) group is a Tabs navigator, which keeps
-      // screens mounted on native, so MusicPlayer's own unmount cleanup
-      // never fires on a simple back press.
-      return () => {
-        musicPlayerRef.current?.stop();
-      };
+      return () => {};
     }, [])
   );
+
+  //stop music only when the whole "(songs)" group loses focus in the but not on tab switches within this group (Review tab)
+  useEffect(() => {
+    const parent = navigation.getParent();
+    if (!parent) return;
+    const unsubscribe = parent.addListener('blur', () => {
+      musicPlayerRef.current?.stop();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -52,7 +56,7 @@ export default function Lyrics() {
         <TouchableOpacity
           style={[styles.headerBtn, ThemeButtonStyles.headerBtn]}
           onPress={() => {
-            musicPlayerRef.current?.stop();
+            musicPlayerRef.current?.stop(); //instant stop, don't wait for blur event
             router.back();
           }}
         >
@@ -72,7 +76,7 @@ export default function Lyrics() {
 
       </View>
 
-      <MusicPlayer ref={musicPlayerRef} uri={song?.localUri ?? song?.mp4song ?? null}/>
+      <MusicPlayer ref={musicPlayerRef} uri={song?.localUri ?? song?.mp4song ?? null}/> 
 
       <ScrollView showsVerticalScrollIndicator={false} style={[styles.lyricsContainer, ThemeTextContainerStyles.lyricsContainer]}>
         {/* split by lines and trim of whitespace for consistent centering */}
