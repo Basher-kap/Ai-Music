@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { supabase } from "@/utils/supabase";
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { useObserve } from "expo-observe";
+import { useObserve, Observe } from "expo-observe";
 
 export default function AuthCallback() {
     const { markInteractive } = useObserve();
@@ -13,8 +13,10 @@ export default function AuthCallback() {
         supabase.auth.getSession().then(({ data: { session } }) => {
             markInteractive();
             if (session) {
+                Observe.logEvent('login_success');
                 router.replace('/(tabs)'); // redirect to home after successful login
             } else {
+                Observe.logEvent('login_no_session', { severity: 'warn' });
                 router.replace('/login'); // redirect to login if no session
             }
         });
