@@ -1,9 +1,8 @@
 // components/MusicPlayer.tsx
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer, type AudioStatus } from 'expo-audio';
-import { useIsFocused } from 'expo-router';
 import { useMusicPlayerTheme } from '@/context/MusicPlayerContext';
 import { useAudioCoordinator } from '@/store';
 
@@ -11,10 +10,14 @@ type Props = {
   uri: string | null | undefined;
 };
 
+export type MusicPlayerHandle = {
+  stop: () => void;
+};
+
 const SKIP_SECONDS = 4; // was SKIP_MS = 4000 — expo-audio reports time in seconds, not ms
 const PLAY_BTN = 38;
 
-export default function MusicPlayer({ uri }: Props) {
+function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>) {
   const playerRef = useRef<AudioPlayer | null>(null);
   const subscriptionRef = useRef<{ remove: () => void } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -29,16 +32,17 @@ export default function MusicPlayer({ uri }: Props) {
 
   const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
   const { stopDailySong } = useAudioCoordinator();
-  const isFocused = useIsFocused();
 
-  // Pause playback whenever this screen loses focus (tab switch, back navigation, etc.)
-  // Doesn't rely on unmount timing since tab screens can stay mounted in the background.
-  useEffect(() => {
-    if (!isFocused && playerRef.current) {
+  useImperativeHandle(ref, () => ({
+    stop: () => {
+      if (!playerRef.current) return;
       playerRef.current.pause();
+      playerRef.current.seekTo(0);
       setIsPlaying(false);
-    }
-  }, [isFocused]);
+      setPosition(0);
+      setVisualProgress(0);
+    },
+  }));
 
   useEffect(() => {
     if (!uri) return;
@@ -205,6 +209,8 @@ export default function MusicPlayer({ uri }: Props) {
     </View>
   );
 }
+
+export default forwardRef(MusicPlayer);
 
 const styles = StyleSheet.create({
   container: {

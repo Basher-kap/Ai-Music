@@ -1,12 +1,13 @@
 // app/(songs)/[id]/lyrics.tsx
 import { LyricsEditForm, MusicPlayer } from '@/components';
+import type { MusicPlayerHandle } from '@/components';
 import { HEADER_HEIGHT, HEADER_PADDING_TOP } from '@/constant';
 import { useButtonTheme, useTextTheme, useTextContainerTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { setAudioModeAsync } from 'expo-audio';
 import { router, useFocusEffect, useGlobalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Lyrics() {
@@ -20,6 +21,7 @@ export default function Lyrics() {
   const song = songs.find(s => s.id === id);
 
   const [editOpen, setEditOpen] = useState(false); //at first, it is no visible
+  const musicPlayerRef = useRef<MusicPlayerHandle>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -31,7 +33,14 @@ export default function Lyrics() {
         });
       };
       stopAllAudio();
-      return () => {};
+      // Runs when this screen loses focus for ANY reason — pressing the
+      // back button, the hardware/gesture back, or switching tabs. This is
+      // needed because the (songs) group is a Tabs navigator, which keeps
+      // screens mounted on native, so MusicPlayer's own unmount cleanup
+      // never fires on a simple back press.
+      return () => {
+        musicPlayerRef.current?.stop();
+      };
     }, [])
   );
 
@@ -40,7 +49,13 @@ export default function Lyrics() {
 
       <View style={styles.header}>
 
-        <TouchableOpacity style={[styles.headerBtn, ThemeButtonStyles.headerBtn]} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={[styles.headerBtn, ThemeButtonStyles.headerBtn]}
+          onPress={() => {
+            musicPlayerRef.current?.stop();
+            router.back();
+          }}
+        >
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
@@ -57,7 +72,7 @@ export default function Lyrics() {
 
       </View>
 
-      <MusicPlayer uri={song?.localUri ?? song?.mp4song ?? null}/>
+      <MusicPlayer ref={musicPlayerRef} uri={song?.localUri ?? song?.mp4song ?? null}/>
 
       <ScrollView showsVerticalScrollIndicator={false} style={[styles.lyricsContainer, ThemeTextContainerStyles.lyricsContainer]}>
         {/* split by lines and trim of whitespace for consistent centering */}
