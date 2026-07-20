@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { THEME_KEYS } from '@/constant';
 import { useModalTheme } from '@/context';
+import { Observe } from 'expo-observe';
 
 type Props = {
     visible: boolean;
@@ -32,12 +33,19 @@ export default function AddSongForm({ visible, onClose, onSave }: Props) {
         setSaveError(null);
         try {
             await onSave({ title, artist, themes: selectedThemes });
+            Observe.logEvent('song_added', {
+                attributes: { theme_count: selectedThemes.length },
+            });
             setTitle('');
             setArtist('');
             setSelectedThemes([]);
             onClose();
         } catch (err: any) {
             setSaveError(err.message || 'Failed to save song.');
+            Observe.logEvent('song_add_failed', {
+                severity: 'error',
+                body: err.message,
+            });
         } finally {
             setSaving(false);
         }
