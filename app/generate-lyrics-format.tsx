@@ -5,6 +5,7 @@ import { supabase } from '@/utils/supabase';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
+import { Observe } from 'expo-observe';
 import { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -67,6 +68,9 @@ export default function GenerateLyricsFormat() {
         .join('\n\n');
 
       setOutput(formattedOutput);
+      Observe.logEvent('lyrics_formatted', {
+        attributes: { group_count: groups.length },
+      });
 
     } catch (err: any) {
       console.error('[Gemini] Error:', err.message ?? err);
@@ -78,6 +82,10 @@ export default function GenerateLyricsFormat() {
         } else {
             setError(errorMsg || 'Something went wrong. Please try again.');
         }
+        Observe.logEvent('lyrics_format_failed', {
+          severity: 'error',
+          body: errorMsg || undefined,
+        });
     } finally {
       setLoading(false);
     }
