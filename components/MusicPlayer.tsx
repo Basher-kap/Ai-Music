@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, PanResponder } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer, type AudioStatus } from 'expo-audio';
+import { useIsFocused } from 'expo-router';
 import { useMusicPlayerTheme } from '@/context/MusicPlayerContext';
 import { useAudioCoordinator } from '@/store';
 
@@ -28,6 +29,16 @@ export default function MusicPlayer({ uri }: Props) {
 
   const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
   const { stopDailySong } = useAudioCoordinator();
+  const isFocused = useIsFocused();
+
+  // Pause playback whenever this screen loses focus (tab switch, back navigation, etc.)
+  // Doesn't rely on unmount timing since tab screens can stay mounted in the background.
+  useEffect(() => {
+    if (!isFocused && playerRef.current) {
+      playerRef.current.pause();
+      setIsPlaying(false);
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     if (!uri) return;
