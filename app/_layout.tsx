@@ -23,12 +23,14 @@ import { AuthProvider, SongsProvider, useAuth } from '@/store';
 import { AudioCoordinatorProvider } from '@/store';
 import { router } from 'expo-router';
 import { ObserveRoot, Observe, AppMetrics, useObserve } from 'expo-observe';
+import * as Updates from 'expo-updates';
 import { UpdateBanner } from '@/components';
 
 if (__DEV__) {
   Observe.configure({ dispatchInDebug: true });
 }
 Observe.configure({ integrations: { 'expo-router': true } }); // unlocks Navigation tab
+console.log('[Updates] id:', Updates.updateId, 'createdAt:', Updates.createdAt);
 
 function RootLayoutInner() {
   const backgroundImage = useBgImg();
