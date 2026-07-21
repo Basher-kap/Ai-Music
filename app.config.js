@@ -37,6 +37,7 @@ module.exports = ({ config }) => {
         ],
       'expo-image',
       'expo-asset',
+      'expo-status-bar',
     ],
 
     ios: {
