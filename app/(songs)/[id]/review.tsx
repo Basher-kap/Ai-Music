@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ReviewsEditForm } from '@/components';
 import { useSongs } from '@/store';
+import { Observe } from 'expo-observe';
 
 export default function Review() {
   const { id } = useGlobalSearchParams();
@@ -56,8 +57,18 @@ export default function Review() {
         onClose={() => setEditOpen(false)}
         onSave={ async (songData) => {
           const { song_theme, review} = songData;
+          try {
           await addReviews(id as string, song_theme, review);
-          setEditOpen(false)
+          Observe.logEvent('review_edited', {
+            attributes: { char_count: review.length },
+          });
+          setEditOpen(false);
+        } catch (err: any) {
+          Observe.logEvent('review_edit_failed', {
+            severity: 'error',
+            body: err.message,
+          });
+        }
         }}
       />
 

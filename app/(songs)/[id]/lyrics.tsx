@@ -6,6 +6,7 @@ import { useButtonTheme, useTextTheme, useTextContainerTheme } from '@/context';
 import { useSongs } from '@/store';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { setAudioModeAsync } from 'expo-audio';
+import { Observe } from 'expo-observe';
 import { router, useFocusEffect, useGlobalSearchParams, useNavigation } from 'expo-router'; 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -94,8 +95,18 @@ export default function Lyrics() {
         onClose={() => setEditOpen(false)} //when pressed, sets to false to make it not visible now
         onSave={async (songData) => {
             const { title, artist, lyrics } = songData;
-            await addLyrics(id as string, title, artist, lyrics);
-            setEditOpen(false);
+            try {
+              await addLyrics(id as string, title, artist, lyrics);
+              Observe.logEvent('lyrics_edited', {
+                attributes: { char_count: lyrics.length },
+              });
+              setEditOpen(false);
+            } catch (err: any) {
+              Observe.logEvent('lyrics_edit_failed', {
+                severity: 'error',
+                body: err.message,
+              });
+            }
           }}
         onDelete={async() => {
           await deleteSong(id as string);

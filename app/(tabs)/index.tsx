@@ -11,6 +11,7 @@ import { Alert, Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, Vie
 import { supabase } from '@/utils/supabase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { DailySong } from '@/types/settings';
+import { Observe } from 'expo-observe';
 
 export default function Index() {
   const { ThemeTextStyles } = useTextTheme();
@@ -82,10 +83,14 @@ export default function Index() {
       } else {
         try {
           await playDailySong(dailySong.daily_song_url);
-          console.log('[Home] Playing:', dailySong.daily_song_title);
+          Observe.logEvent('daily_song_played');
         } catch {
           // Because audio requires internet — show friendly message
           console.log('[Home] Cannot play — no internet connection');
+          Observe.logEvent('daily_song_play_failed', {
+            severity: 'warn',
+            body: 'No internet connection',
+          });
           Alert.alert(
             'No Internet',
             'Daily song requires an internet connection to play.',

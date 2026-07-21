@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer, type AudioStatus } from 'expo-audio';
 import { useMusicPlayerTheme } from '@/context/MusicPlayerContext';
 import { useAudioCoordinator } from '@/store';
+import { Observe } from 'expo-observe';
 
 type Props = {
   uri: string | null | undefined;
@@ -115,6 +116,7 @@ function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>)
       await stopDailySong();
       playerRef.current.play();
       setIsPlaying(true);
+      Observe.logEvent('music_played');
     }
   };
 
