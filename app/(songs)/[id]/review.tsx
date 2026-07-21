@@ -56,19 +56,21 @@ export default function Review() {
         song={song}
         onClose={() => setEditOpen(false)}
         onSave={ async (songData) => {
-          const { song_theme, review} = songData;
+          const { song_theme, review } = songData;
           try {
-          await addReviews(id as string, song_theme, review);
-          Observe.logEvent('review_edited', {
-            attributes: { char_count: review.length },
-          });
-          setEditOpen(false);
-        } catch (err: any) {
-          Observe.logEvent('review_edit_failed', {
-            severity: 'error',
-            body: err.message,
-          });
-        }
+            await addReviews(id as string, song_theme, review);
+            setEditOpen(false);
+            try {
+              Observe.logEvent('review_edited', {
+                attributes: { char_count: review.length },
+              });
+            } catch {}
+          } catch (err: any) {
+            Observe.logEvent('review_edit_failed', {
+              severity: 'error',
+              body: err.message,
+            });
+          }
         }}
       />
 

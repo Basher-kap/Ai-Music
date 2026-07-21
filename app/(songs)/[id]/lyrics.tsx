@@ -97,10 +97,14 @@ export default function Lyrics() {
             const { title, artist, lyrics } = songData;
             try {
               await addLyrics(id as string, title, artist, lyrics);
-              Observe.logEvent('lyrics_edited', {
-                attributes: { char_count: lyrics.length },
-              });
               setEditOpen(false);
+              try {
+                Observe.logEvent('lyrics_edited', {
+                  attributes: { char_count: lyrics.length },
+                });
+              } catch {
+                // telemetry failures should never affect the actual save
+              }
             } catch (err: any) {
               Observe.logEvent('lyrics_edit_failed', {
                 severity: 'error',
