@@ -26,10 +26,10 @@ import { ObserveRoot, Observe, AppMetrics, useObserve } from 'expo-observe';
 import * as Updates from 'expo-updates';
 import { UpdateBanner } from '@/components';
 
-if (__DEV__) {
-  Observe.configure({ dispatchInDebug: true });
-}
-Observe.configure({ integrations: { 'expo-router': true } }); // unlocks Navigation tab
+Observe.configure({
+  ...(__DEV__ && { dispatchInDebug: true }),
+  integrations: { 'expo-router': true },
+});
 console.log('[Updates] id:', Updates.updateId, 'createdAt:', Updates.createdAt);
 
 function RootLayoutInner() {
