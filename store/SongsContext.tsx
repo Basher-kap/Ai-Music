@@ -414,6 +414,7 @@ export function SongsProvider({ children }: { children: ReactNode }) {
   // ─── addLyrics ────────────────────────────────────────────────────────────
 
   const addLyrics = async (id: string, title: string, artist: string, lyrics: string) => {
+    console.log('[debug] id:', id, typeof id, 'match found:', songsRef.current.some(s => s.id === id));
     const fields = { title, artist, lyrics };
     const updated = songsRef.current.map(s => s.id === id ? { ...s, ...fields } : s);
     setSongs(updated); songsRef.current = updated;

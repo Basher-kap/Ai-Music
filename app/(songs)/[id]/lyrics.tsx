@@ -49,6 +49,8 @@ export default function Lyrics() {
     return unsubscribe;
   }, [navigation]);
 
+  console.log('[debug] render, song.lyrics:', JSON.stringify(song?.lyrics));
+
   return (
     <View style={styles.container}>
 
@@ -79,7 +81,11 @@ export default function Lyrics() {
 
       <MusicPlayer ref={musicPlayerRef} uri={song?.localUri ?? song?.mp4song ?? null}/> 
 
-      <ScrollView showsVerticalScrollIndicator={false} style={[styles.lyricsContainer, ThemeTextContainerStyles.lyricsContainer]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={[styles.lyricsContainer, ThemeTextContainerStyles.lyricsContainer]}
+        contentContainerStyle={styles.lyricsContent}
+      >
         {/* split by lines and trim of whitespace for consistent centering */}
         { song?.lyrics ? song.lyrics.split('\n').map((line, index) => (
            <Text key={index} style={styles.lyricsText}>
@@ -160,11 +166,14 @@ const styles = StyleSheet.create({
   lyricsContainer: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 12,
     backgroundColor: 'rgba(15, 15, 15, 0.26)',
     borderColor: 'rgba(255,255,255,0.2)',
     borderRadius: 10,
     margin: 12,
+  },
+  lyricsContent: {
+    paddingTop: 12,
+    paddingBottom: 40, // extra room so the last line clears the tab bar / bottom edge when scrolled to the end
   },
   lyricsText: {
     fontSize: 13,
