@@ -31,6 +31,7 @@ function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>)
   const isScrubbing = useRef(false);
   const seekingRef = useRef(false);
   const scrubRatio = useRef(0);
+  const durationRef = useRef(0);
   const [visualProgress, setVisualProgress] = useState(0);
 
   const { ThemeMusicPlayerStyles } = useMusicPlayerTheme();
@@ -60,6 +61,7 @@ function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>)
     setIsPlaying(false);
     setPosition(0);
     setDuration(0);
+    durationRef.current = 0;
     setVisualProgress(0);
 
     (async () => {
@@ -80,6 +82,7 @@ function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>)
           setVisualProgress(status.duration ? status.currentTime / status.duration : 0);
         }
         setDuration(status.duration ?? 0);
+        durationRef.current = status.duration ?? 0;
         if (status.didJustFinish) {
           setIsPlaying(false);
           setPosition(0);
@@ -142,7 +145,7 @@ function MusicPlayer({ uri }: Props, ref: React.ForwardedRef<MusicPlayerHandle>)
         isScrubbing.current = false;
         if (!playerRef.current) return;
         seekingRef.current = true;
-        const seekSeconds = scrubRatio.current * duration;
+        const seekSeconds = scrubRatio.current * durationRef.current;
         await playerRef.current.seekTo(seekSeconds);
         setPosition(seekSeconds);
         setVisualProgress(scrubRatio.current);
