@@ -49,8 +49,6 @@ export default function Lyrics() {
     return unsubscribe;
   }, [navigation]);
 
-  console.log('[debug] render, song.lyrics:', JSON.stringify(song?.lyrics));
-
   return (
     <View style={styles.container}>
 
